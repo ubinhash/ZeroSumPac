@@ -16,8 +16,45 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
 
+export const shapeMainnet = {
+  id: 360,
+  name: 'Shape',
+  network: 'Shape',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    public: { http: ['https://mainnet.shape.network'] },
+    default: { http: ['https://mainnet.shape.network'] },
+  },
+  blockExplorers: {
+    etherscan: { name: 'ShapeScan', url: 'https://shapescan.xyz' },
+    default: { name: 'ShapeScan', url: 'https://shapescan.xyz' },
+  },
+} 
+export const shapeSepolia = {
+  id: 11011,
+  name: 'ShapeSepolia',
+  network: 'ShapeSepolia',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    public: { http: ['https://sepolia.shape.network'] },
+    default: { http: ['https://sepolia.shape.network'] },
+  },
+  blockExplorers: {
+    etherscan: { name: 'ShapeSepoliaScan', url: 'https://explorer-sepolia.shape.network' },
+    default: { name: 'ShapeSepoliaScan', url: 'https://explorer-sepolia.shape.network' },
+  },
+} 
+
 const { chains, publicClient  } = configureChains(
-  [mainnet],
+  [mainnet,shapeMainnet,shapeSepolia],
   [
     alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY , priority:0 }),
     publicProvider({ priority: 1 }),
