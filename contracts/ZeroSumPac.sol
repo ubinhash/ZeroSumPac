@@ -13,12 +13,14 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
 
     // Pass msg.sender to Ownable's constructor
     constructor() ERC721("ZSP", "ZSP") Ownable(msg.sender) {}
+    uint256 totalSupply = 666; // TBD
+    uint256 mintPrice = 0.015 ether; //TBD
 
-    function mint(address to) external onlyOwner {
-        _safeMint(to, nextTokenId);
-        nextTokenId++;
+    modifier hasStock(uint256 amount) {
+         require(nextTokenId+amount<totalSupply,"Out of Stock");
+        _;
     }
-
+ 
     function _batchMint(address to, uint256 amount) internal {
         for (uint256 i = 0; i < amount; i++) {
             _safeMint(to, nextTokenId);
@@ -26,14 +28,33 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
         }
     }
 
+    function ownerMint(address to, uint256 amount) external onlyOwner hasStock(amount){
+
+        _batchMint(to,amount);
+    }
+
+    function whitelistMint() external{
+        //TBD
+    }
+
+    function publicMint(address to, uint256 amount) external hasStock(amount){
+        require(msg.value*amount>=mintPrice,"Insufficient Fund");
+        _batchMint(msg.sender,amount);
+        
+    }
+
     function setApprovedMinter(address _contract,bool allows) external onlyOwner {
         approvedMintContracts[_contract] = allows;
     }
 
-    function mintFromApprovedContract(address to,uint256 amount) external {
+    function mintFromApprovedContract(address to,uint256 amount) external hasStock(amount){
         require(approvedMintContracts[msg.sender], "Not an approved minter");
         _batchMint(to, amount);
 
+    }
+
+      function withdraw() external onlyOwner {
+        payable(msg.sender).transfer(address(this).balance);
     }
     
 }
