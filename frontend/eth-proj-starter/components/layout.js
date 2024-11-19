@@ -14,6 +14,7 @@ import {
 } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
+import NavBar from './nav';
 
 
 export const shapeMainnet = {
@@ -64,7 +65,7 @@ const { chains, publicClient  } = configureChains(
 
 const { connectors } = getDefaultWallets({
   appName: 'ZeroSumPac',
-  projectId: '123',//TBD
+  projectId: '69f7cc51c5923f81d3f0d53cdd6f3e71',//TBD
   chains
 });
 
@@ -79,8 +80,10 @@ export default function Layout({ children }) {
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains}>
         <div>
-          <ConnectButton></ConnectButton>
-          {children}
+          {/* <ConnectButton></ConnectButton> */}
+          <NavBar children={children}>
+
+          </NavBar>
         </div>
         
       </RainbowKitProvider>

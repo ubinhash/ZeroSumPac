@@ -1,9 +1,18 @@
+@font-face {
+  font-family: 'Kode Mono';
+  src: url('/fonts/KodeMono-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900; /* Adjust based on the font's weight range */
+  font-style: normal;
+}
+
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: 'Kode Mono', monospace;
+  /* font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; */
   line-height: 1.6;
   font-size: 18px;
 }

@@ -1,0 +1,86 @@
+.grid {
+    display: grid;
+    grid-template-columns: 60px 1fr 60px; /* Fixed-width sides and flexible center */
+    grid-template-rows: 60px 1fr 60px;  /* Fixed-height top and bottom */
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  .fixed {
+    background-color: #ffffff; /* Light gray for visibility */
+    border: 1px solid #333;
+    
+  }
+  .center{
+    display: flex;  /* Enable flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+  }
+  
+  .main {
+    grid-column: 2 / 3; /* Center column */
+    grid-row: 2 / 3;    /* Center row */
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    font-size: 2rem;
+    border: 1.5px solid #333;
+    overflow-y: auto; /* Enables vertical scrolling for overflowing content */
+    max-height: calc(100vh - 120px); /* Prevents the main section from exceeding the grid cell's height */
+   /* scroll-snap-type: y mandatory; */
+  }
+
+  
+  /* .main > * {
+    scroll-snap-align: start;
+    flex-shrink: 0; 
+  }
+   */
+
+   .cornerIcon{
+    width: 30px; /* Adjust the icon size */
+    height: 30px;
+
+
+   }
+   .cornerIcon2{
+    width: 25px; /* Adjust the icon size */
+    height: 25px;
+
+
+   }
+
+   .subGrid {
+    display: grid;
+    grid-template-columns: 150px 100px 100px 100px 100px 1fr; /* 5 equal-width columns */
+  }
+
+ 
+   .cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+
+    border-right: 2px solid #333;
+  }
+  .active{
+    background-color: #333;
+    color:white;
+}
+  .walletcell{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    padding: 10px;
+    background-color:rgb(241, 195, 191);
+  }
+  .link{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    /* background-color: aqua; */
+  }
