@@ -8,6 +8,7 @@ import styles from "./nav.module.css";
 import { useRouter } from 'next/router';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { CustomConnectButton } from "./connectbutton";
+import ResponsiveWarning from "./responsive";
 // npm install @fortawesome/react-fontawesome
 //npm install @fortawesome/free-solid-svg-icons
 //npm install @fortawesome/free-brands-svg-icons
@@ -29,7 +30,7 @@ export default function NavBar({ backgroundColor = '#ffffff50' ,children}) {
         <div className={`${styles.cell} ${router.pathname === '/' ? styles.active : ''}`}>
               <Link style={{ textDecoration: 'none',color:"inherit" }} className={styles.link} exact href="/" 
                 onClick={handleClick}>
-                ZeroSumPac
+                ZeroSumPact
               </Link>
         </div>
         <div className={`${styles.cell} ${router.pathname === '/art' ? styles.active : ''}`}>
@@ -63,7 +64,11 @@ export default function NavBar({ backgroundColor = '#ffffff50' ,children}) {
         />
       </div>
       <div className={styles.fixed}></div>
-      <div className={styles.main}>{children}</div>
+      <div className={styles.main}>
+
+      <ResponsiveWarning minWidth={1000} />
+        {children}
+        </div>
       <div className={styles.fixed}></div>
       <div className={`${styles.fixed} ${styles.center}`}>
         <img src="/icons/dev.png" className={styles.cornerIcon2}

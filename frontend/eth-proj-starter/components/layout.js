@@ -38,8 +38,8 @@ export const shapeMainnet = {
 } 
 export const shapeSepolia = {
   id: 11011,
-  name: 'ShapeSepolia',
-  network: 'ShapeSepolia',
+  name: 'Sepolia',
+  network: 'Sepolia',
   iconUrl: '/icons/shapecircleblack.png',
   nativeCurrency: {
     decimals: 18,
