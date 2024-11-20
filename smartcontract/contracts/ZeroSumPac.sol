@@ -13,11 +13,11 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
 
     // Pass msg.sender to Ownable's constructor
     constructor() ERC721("ZSP", "ZSP") Ownable(msg.sender) {}
-    uint256 totalSupply = 666; // TBD
+    uint256 maxSupply = 666; // TBD
     uint256 mintPrice = 0.015 ether; //TBD
 
     modifier hasStock(uint256 amount) {
-         require(nextTokenId+amount<totalSupply,"Out of Stock");
+         require(nextTokenId+amount<maxSupply,"Out of Stock");
         _;
     }
  
@@ -37,7 +37,7 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
         //TBD
     }
 
-    function publicMint(address to, uint256 amount) external hasStock(amount){
+    function publicMint(address to, uint256 amount) external payable hasStock(amount){
         require(msg.value*amount>=mintPrice,"Insufficient Fund");
         _batchMint(msg.sender,amount);
         
