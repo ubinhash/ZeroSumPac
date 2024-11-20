@@ -7,6 +7,7 @@ import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import styles from "./nav.module.css";
 import { useRouter } from 'next/router';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { CustomConnectButton } from "./connectbutton";
 // npm install @fortawesome/react-fontawesome
 //npm install @fortawesome/free-solid-svg-icons
 //npm install @fortawesome/free-brands-svg-icons
@@ -34,14 +35,25 @@ export default function NavBar({ backgroundColor = '#ffffff50' ,children}) {
         <div className={`${styles.cell} ${router.pathname === '/art' ? styles.active : ''}`}>
             <Link style={{ textDecoration: 'none',color:"inherit" }} className={styles.link} exact href="/art" 
                 onClick={handleClick}>
-                Art
+                <span className={styles.circle}></span> Art
               </Link>
         </div>
-        <div className={styles.cell}>Game</div>
-        <div className={styles.cell}>RULES</div>
+        <div className={`${styles.cell} ${router.pathname === '/rules' ? styles.active : ''}`}>
+            <Link style={{ textDecoration: 'none',color:"inherit" }} className={styles.link} exact href="/rules" 
+                onClick={handleClick}>
+                <span className={styles.circle}></span> Rules
+              </Link>
+        </div>
+        <div className={`${styles.cell} ${router.pathname === '/game' ? styles.active : ''}`}>
+            <Link style={{ textDecoration: 'none',color:"inherit" }} className={styles.link} exact href="/game" 
+                onClick={handleClick}>
+                <span className={styles.circle}></span> Play
+              </Link>
+        </div>
         <div className={styles.cell}>MINT</div>
+   
         <div className={styles.walletcell}>
-        <ConnectButton />
+       <CustomConnectButton></CustomConnectButton>
         </div>
     </div>
         

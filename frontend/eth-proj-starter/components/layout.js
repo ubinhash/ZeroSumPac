@@ -21,6 +21,7 @@ export const shapeMainnet = {
   id: 360,
   name: 'Shape',
   network: 'Shape',
+  iconUrl: '/icons/shapecircleblack.png',
   nativeCurrency: {
     decimals: 18,
     name: 'ETH',
@@ -39,6 +40,7 @@ export const shapeSepolia = {
   id: 11011,
   name: 'ShapeSepolia',
   network: 'ShapeSepolia',
+  iconUrl: '/icons/shapecircleblack.png',
   nativeCurrency: {
     decimals: 18,
     name: 'ETH',

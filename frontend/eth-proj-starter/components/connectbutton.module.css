@@ -1,0 +1,77 @@
+.wrapper{
+    height: 100%;
+    width: 100%;
+    /* background-color: aqua; */
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+.innerwrapper{
+    height: 100%;
+    width: 100%;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+   
+}
+.innerwrapper:first-child {
+    flex: 0 0 25%;               /* First child takes up 30% width */
+    border-right: 2px dotted black;
+  }
+  
+  .innerwrapper:nth-child(2) {
+    flex: 0 0 50%;               /* Second child takes up 40% width */
+    border-right: 2px dotted black;
+  }
+  
+  .innerwrapper:last-child {
+    flex: 0 0 25%;               /* Last child takes up 30% width */
+  }
+.mybutton{
+    font-family: inherit;
+    background-color: transparent;
+    height: 100%;
+    width: 100%;
+    border: 0px;
+    font-size:1em;
+    cursor: pointer;
+    transition: 0.3s all ease;
+}
+.mybutton:hover{
+    background-color: rgba(255, 255, 255, 0.206);
+}
+.dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: black;
+    margin-right: 15px;
+    margin-left: 15px;
+    transition: transform 0.3s ease; /* Smooth transition */
+  }
+
+  
+  
+  .mybutton:hover .dotright {
+
+    transform: scale(1.5) translateX(-5px);;
+    opacity: 1; /* Show the dot on hover */
+  }
+  .mybutton:hover .dotleft {
+
+    transform: scale(1.5) translateX(5px);;
+    opacity: 1; /* Show the dot on hover */
+  }
+  .iconWrapper {
+    display: inline-block;
+    margin-right: 0.5rem;    /* Space between icon and text */
+  }
+  
+  .icon {
+    width: 12px;  /* Control icon size */
+    height: 12px; /* Control icon size */
+  }

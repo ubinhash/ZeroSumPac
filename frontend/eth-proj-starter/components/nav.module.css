@@ -1,7 +1,8 @@
 .grid {
     display: grid;
-    grid-template-columns: 60px 1fr 60px; /* Fixed-width sides and flexible center */
-    grid-template-rows: 60px 1fr 60px;  /* Fixed-height top and bottom */
+
+    grid-template-columns: 60px 1fr 60px; /* remeber to adjust the height in main when you adjust this, should be 2x*/
+    grid-template-rows: 60px 1fr 60px;  
     height: 100vh;
     width: 100vw;
   }
@@ -51,8 +52,9 @@
    }
 
    .subGrid {
+    height:60px;
     display: grid;
-    grid-template-columns: 150px 100px 100px 100px 100px 1fr; /* 5 equal-width columns */
+    grid-template-columns: 150px 120px 120px 120px 120px 1fr; 
   }
 
  
@@ -73,7 +75,6 @@
     justify-content: center;
     align-items: center;
     font-size: 1rem;
-    padding: 10px;
     background-color:rgb(241, 195, 191);
   }
   .link{
@@ -83,4 +84,20 @@
     height: 100%;
     width: 100%;
     /* background-color: aqua; */
+  }
+  .link:hover .circle{
+    transform: scale(1.5);
+  }
+  .active .circle{
+    transform: scale(1);
+
+  }
+
+.circle {
+    width: 8px;
+    height: 8px;
+    background-color: currentColor;
+    border-radius: 50%;
+    margin-right: 8px;
+    transition: 0.3s all ease;
   }
