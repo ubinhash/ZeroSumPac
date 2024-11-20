@@ -35,6 +35,9 @@ contract GameShield is  IERC1155Receiver,Ownable {
     function setOperator(address _operator,bool allowed) external onlyOwner {
         allowedOperators[_operator]=allowed;
     }
+    function compareStrings(string memory a, string memory b) public pure returns (bool) {
+        return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
+    }
 
     function parse(uint256 tokenId) external returns (uint256) {
         // Ensure the sender owns exactly 1 of the tokenId
@@ -46,13 +49,18 @@ contract GameShield is  IERC1155Receiver,Ownable {
             otomToken.isApprovedForAll(msg.sender, address(this)),
             "Contract is not approved to transfer your tokens."
         );
+        require(
+            !compareStrings(otomDatabase.getMoleculeByTokenId(tokenId).bond.bondType,"singleton"),
+            "Must be Molecule"
+        );
+    
 
         otomToken.safeTransferFrom(msg.sender, address(this), tokenId, 1, "");
-
         return readShieldAmount(tokenId);
     }
 
     function readShieldAmount(uint256 tokenId) public view returns (uint256) {
+
         Molecule memory molecule = otomDatabase.getMoleculeByTokenId(tokenId);
         uint256 computedValue =molecule.hardness * 2 + molecule.toughness*2; 
         return computedValue;
