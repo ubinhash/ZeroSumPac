@@ -71,13 +71,17 @@ export default function NavBar({ backgroundColor = '#ffffff50' ,children}) {
         </div>
       <div className={styles.fixed}></div>
       <div className={`${styles.fixed} ${styles.center}`}>
+        <Link href="https://github.com/ubinhash/ZeroSumPac">
         <img src="/icons/dev.png" className={styles.cornerIcon2}
         />
+        </Link>
       </div>
       <div className={styles.fixed}></div>
       <div className={`${styles.fixed} ${styles.center}`}>
-        <img src="/icons/artist.png" className={styles.cornerIcon2}
-        />
+    
+          <img src="/icons/artist.png" className={styles.cornerIcon2}
+          />
+  
       </div>
     </div>
   );

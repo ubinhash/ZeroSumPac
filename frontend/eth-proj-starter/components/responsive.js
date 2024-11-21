@@ -29,7 +29,7 @@ const ResponsiveWarning = ({ minWidth = 768 }) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        backgroundColor: "rgba(0, 0, 0, 0.9)",
         color: "white",
         fontSize: "1.5rem",
         zIndex: 9999,

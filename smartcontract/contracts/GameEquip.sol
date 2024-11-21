@@ -108,7 +108,7 @@ contract GameEquip is  IERC1155Receiver,Ownable {
     function equipEyes(uint256 playerid,uint256 eyesTokenId) external{
         // check if it has been equipped
         require(eyesToken.ownerOf(eyesTokenId) == msg.sender, "Not Owner");
-        require(!eyesInfo[eyesTokenId].isEquipped==false,"Eyes has been used");
+        require(!eyesInfo[eyesTokenId].isEquipped,"Eyes has been used");
         require(!playerEquippedEyes[playerid],"You already equipped an eye");
         eyesInfo[eyesTokenId].isEquipped=true;
         eyesInfo[eyesTokenId].equipTime=block.timestamp;
@@ -129,8 +129,8 @@ contract GameEquip is  IERC1155Receiver,Ownable {
     function equipKeys(uint256 playerid,uint256 keysTokenId) external{
         // check if it has been equipped
         require(keysToken.ownerOf(keysTokenId) == msg.sender, "Not Owner");
-        require(keysUsed[playerid]==false,"Keys has been used");
-        require(playerEquippedKeys[playerid] == false,"You already equipped a key");
+        require(!keysUsed[playerid],"Keys has been used");
+        require(!playerEquippedKeys[playerid],"You already equipped a key");
 
         playerEquippedKeys[playerid]=true;
         keysUsed[keysTokenId]=true;
