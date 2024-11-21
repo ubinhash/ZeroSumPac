@@ -2,6 +2,8 @@
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./GameEquip.sol";
+// Intended to be helper contract for Game, User don't interact with it
+
 contract Maze is Ownable{
     uint8 public constant GRID_SIZE = 32;
     uint8 public constant TOTAL_MAZES = 10;
