@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./GameEquip.sol";
 contract Maze is Ownable{
     uint8 public constant GRID_SIZE = 32;
     uint8 public constant TOTAL_MAZES = 10;
@@ -11,16 +12,17 @@ contract Maze is Ownable{
     mapping(uint8=>uint256) public maze_dots_consumed;
     uint256 public total_dots_consumed=0;
     mapping(address => bool) public allowedOperators;
-    uint256[] public MAZE_UNLOCK_DOTS_REQUIRED = [0,0,0,0,0,4000,5000,6000,7000,8000];
+    uint256[] public MAZE_UNLOCK_DOTS_REQUIRED = [0,0,0,0,0,4,5500,6500,7500];
 
     event MazeStatusChanged(uint8 maze,bool unlocked);
-
+    GameEquip public gameEquipContract;
 
 
     constructor() Ownable(msg.sender) {
         for (uint8 mazeId = 0; mazeId < TOTAL_MAZES; mazeId++) {
             _setObstaclesForMaze(mazeId);
         }
+        //TODO: ADD GAME CONTRACT TO ALLOWED OPERATOR
     }
      modifier onlyAllowedOperator() {
         
@@ -29,6 +31,9 @@ contract Maze is Ownable{
     }
     function setOperator(address _operator,bool allowed) external onlyOwner {
         allowedOperators[_operator]=allowed;
+    }
+    function setGameEquipContract(address _contractAddress) external onlyOwner{
+        gameEquipContract = GameEquip(_contractAddress);
     }
     function setMazeUnlockDotsRequired(uint256 level, uint256 value) external onlyOwner{
         MAZE_UNLOCK_DOTS_REQUIRED[level] = value;
@@ -73,10 +78,21 @@ contract Maze is Ownable{
         }
 
     }
+
+    function _isMazeUnlocked(uint8 maze,uint256 playerid) public view returns(bool){
+        if(maze == TOTAL_MAZES-1){
+            return gameEquipContract.playerEquippedKeys(playerid);
+        }
+        else{
+            return maze_unlocked[maze];
+        }
+
+    }
     function _movePlayerInMaze(uint8 maze, uint8 x, uint8 y,uint8 oldx,uint8 oldy,uint256 playerid) external onlyAllowedOperator returns(uint256){
-        require(mazes[maze][x][y]!=CellState.HasObstacle);
-        require(x>=0 && x <GRID_SIZE && y>=0 && y<GRID_SIZE);
-        require(maze_unlocked[maze]);
+        require(mazes[maze][x][y]!=CellState.HasObstacle,"Obstacle");
+        require(x>=0 && x <GRID_SIZE && y>=0 && y<GRID_SIZE,"Boundary");
+        require(maze< TOTAL_MAZES,"invalid maze");
+        require(_isMazeUnlocked(maze,playerid),"maze not unlocked");
 
         hasplayer[maze][oldx][oldy]=0;
         hasplayer[maze][x][y]=playerid;
@@ -90,8 +106,8 @@ contract Maze is Ownable{
             mazes[maze][x][y]=CellState.Empty;
             maze_dots_consumed[maze]+=1;
             total_dots_consumed+=1;
-            for(uint8 i=5;i<TOTAL_MAZES;i++){
-                if(total_dots_consumed>=MAZE_UNLOCK_DOTS_REQUIRED[i]){
+            for(uint8 i=5;i<TOTAL_MAZES-1;i++){
+                if(!maze_unlocked[maze] && total_dots_consumed>=MAZE_UNLOCK_DOTS_REQUIRED[i]){
                     unlockMaze(i,true);
                 }
             }
