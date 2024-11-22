@@ -7,12 +7,14 @@ import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IOtomsDatabase.sol";
+import "./Game.sol";
 contract GameEquip is  IERC1155Receiver,Ownable {
     mapping(address => bool) public allowedOperators;
     IOtomsDatabase public otomDatabase; // Reference to the ZSP contract using ERC721Enumerable
     IERC1155 public otomToken;
     IERC721 public eyesToken;
     IERC721 public keysToken;
+    Game public gameContract;
     //later add our games's contract
 
     struct EyeEquip {
@@ -56,6 +58,9 @@ contract GameEquip is  IERC1155Receiver,Ownable {
     function setKeysToken(address _contractaddr) external onlyOwner {
         keysToken=IERC721(_contractaddr);
     }
+    function setGameContract(address _contractaddr) external onlyOwner {
+        gameContract=Game(_contractaddr);
+    }
 
 
     function setOperator(address _operator,bool allowed) external onlyOwner {
@@ -66,8 +71,8 @@ contract GameEquip is  IERC1155Receiver,Ownable {
     }
 
     // FUNCTIONS ON THE SHIELD
-
-    function shield(uint256 tokenId) external returns (uint256) {
+    //WHY IS SHIELD TIME NOT ADDING UP?
+    function shield(uint256 tokenId,uint256 playerid) external returns (uint256) {
         // Ensure the sender owns exactly 1 of the tokenId
         require(
             otomToken.balanceOf(msg.sender, tokenId) >= 1,
@@ -84,13 +89,14 @@ contract GameEquip is  IERC1155Receiver,Ownable {
     
 
         otomToken.safeTransferFrom(msg.sender, address(this), tokenId, 1, "");
+        gameContract._addShieldTime(playerid,readShieldAmount(tokenId));
         return readShieldAmount(tokenId);
     }
 
     function readShieldAmount(uint256 tokenId) public view returns (uint256) {
 
         Molecule memory molecule = otomDatabase.getMoleculeByTokenId(tokenId);
-        uint256 computedValue =molecule.hardness * 2 + molecule.toughness*2; 
+        uint256 computedValue =(molecule.toughness+molecule.hardness)*3600/1000000000000000000; 
         return computedValue;
 
     }
@@ -117,6 +123,7 @@ contract GameEquip is  IERC1155Receiver,Ownable {
     }
     function unequipEyes(uint256 eyesTokenId) external{
         //you must wait for a day before unequiping
+        require(eyesToken.ownerOf(eyesTokenId) == msg.sender, "Not Owner");
         require(eyesInfo[eyesTokenId].equipTime + 86400 < block.timestamp,"You must wait a day");
         eyesInfo[eyesTokenId].isEquipped=false;
         playerEquippedEyes[eyesInfo[eyesTokenId].playerId]=false;
