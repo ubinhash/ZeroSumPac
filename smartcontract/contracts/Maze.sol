@@ -100,14 +100,17 @@ contract Maze is Ownable{
             return 1;
         }
     }
-    function _movePlayerInMaze(uint8 maze, uint8 x, uint8 y,uint8 oldx,uint8 oldy,uint256 playerid) external onlyAllowedOperator returns(uint256){
+    function _movePlayerInMaze(uint8 maze, uint8 x, uint8 y,uint8 oldmaze,uint8 oldx,uint8 oldy,uint256 playerid,bool ignorestride) external onlyAllowedOperator returns(uint256){
         require(mazes[maze][x][y]!=CellState.HasObstacle,"Obstacle");
         require(x>=0 && x <GRID_SIZE && y>=0 && y<GRID_SIZE,"Boundary");
         require(maze< TOTAL_MAZES,"invalid maze");
         require(_isMazeUnlocked(maze,playerid),"maze not unlocked");
-        require(Helper.distance(x,y,oldx,oldy)<=_getMaxStride(playerid) && Helper.distance(x,y,oldx,oldy)>0,"distance greater than max stride");
+        //TODO PLEASE IGNORE THIS WHEN YOU FIRST ENTER
+        //TODO BUG RELATED TO SWITCHING MAZE
 
-        hasplayer[maze][oldx][oldy]=0;
+        require(ignorestride || (Helper.distance(x,y,oldx,oldy)<=_getMaxStride(playerid) && Helper.distance(x,y,oldx,oldy)>0),"distance is zero or greater than max stride");
+
+        hasplayer[oldmaze][oldx][oldy]=0;
         hasplayer[maze][x][y]=playerid;
 
         //TODO SET IN OTHER CONTRACTS ABOUT PLAYER INFORMATION

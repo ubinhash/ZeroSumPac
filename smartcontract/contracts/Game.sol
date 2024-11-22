@@ -179,7 +179,7 @@ contract Game is Ownable {
 
         emit NFTRegistered(nftContract, tokenId, msg.sender,next_player_id);
         emit PlayerStatusChanged(PlayerStatus.Active,next_player_id);
-        _movePlayerHelper(maze,x,y,next_player_id);
+        _movePlayerHelper(maze,x,y,next_player_id,true);
         emit PlayerMoved(maze,x,y,next_player_id);
         _incrementMoveCount(next_player_id); // don't put it inside moveplayer in maze, because there might be passive moves
         //Don't call movePlayerTo since you're entering the first time it checkes for adjacency etc
@@ -197,7 +197,7 @@ contract Game is Ownable {
             require(block.timestamp>players[playerid].nextSwitchMazeTime || msg.value >=config[ConfigKey.MAZE_SWITCH_PENALTY] , "Need to pay the penalty if want to switch maze before time is up");
             players[playerid].nextMoveTime = block.timestamp + config[ConfigKey.FIRST_ENTRANCE_MOVE_INTERVAL];
             players[playerid].nextSwitchMazeTime = block.timestamp + config[ConfigKey.MAZE_SWITCH_INTERVAL];
-            _movePlayerHelper(maze,x,y,playerid);
+            _movePlayerHelper(maze,x,y,playerid,true);
 
         }
         else{
@@ -205,7 +205,7 @@ contract Game is Ownable {
             //This can be checked in maze contract
             //require(Helper.isAdjacent(currx,curry,x,y),"distance greater than max stride");
             if(mazeContract.hasplayer(maze,x,y)==0){
-                 _movePlayerHelper(maze,x,y,playerid);
+                 _movePlayerHelper(maze,x,y,playerid,false);
             }
             else{
                 uint256 otherplayerid=mazeContract.hasplayer(maze,x,y);
@@ -221,8 +221,8 @@ contract Game is Ownable {
                 players[otherplayerid].protectionExpireTime=block.timestamp+config[ConfigKey.PROTECTION_INTERVAL]; //victim is now immune for the next protection interval
                  _changeDot(playerid,int256(dotdelta));
                  _changeDot(otherplayerid,-int256(dotdelta));
-                 _movePlayerHelper(maze,x,y,playerid);
-                _movePlayerHelper(maze,currx,curry,otherplayerid);
+                _movePlayerHelper(maze,x,y,playerid,false);
+                _movePlayerHelper(maze,currx,curry,otherplayerid,true); //the other player is moved passively, stride will not be checked
 
                 emit PlayerAttacked(playerid,otherplayerid,dotdelta);
             }
@@ -242,9 +242,9 @@ contract Game is Ownable {
         _incrementMoveCount(playerid); 
     }
 
-    function _movePlayerHelper(uint8 maze, uint8 x, uint8 y,uint256 playerid) internal{
+    function _movePlayerHelper(uint8 maze, uint8 x, uint8 y,uint256 playerid,bool ignorestride) internal{
         
-        uint256 dot_add = mazeContract._movePlayerInMaze(maze,x,y,players[playerid].playerposition.x,players[playerid].playerposition.y,playerid);
+        uint256 dot_add = mazeContract._movePlayerInMaze(maze,x,y,players[playerid].playerposition.maze,players[playerid].playerposition.x,players[playerid].playerposition.y,playerid,ignorestride);
         players[playerid].playerposition.x=x;
         players[playerid].playerposition.y=y;
         players[playerid].playerposition.maze=maze;
