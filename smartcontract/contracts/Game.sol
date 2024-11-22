@@ -200,7 +200,9 @@ contract Game is Ownable {
 
         }
         else{
-            require(Helper.isAdjacent(currx,curry,x,y),"You can only move to adjacent squares");
+            //require movement<max stride
+            //This can be checked in maze contract
+            //require(Helper.isAdjacent(currx,curry,x,y),"distance greater than max stride");
             if(mazeContract.hasplayer(maze,x,y)==0){
                  _movePlayerHelper(maze,x,y,playerid);
             }
