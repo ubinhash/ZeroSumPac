@@ -9,6 +9,7 @@ pragma solidity ^0.8.0;
 //TODO:END GAME can be called externally
 //TODO: GAME PAUSE
 //TODO Eyes related manhattan distance
+//TODO Player can add/remove alliances
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./Helper.sol";

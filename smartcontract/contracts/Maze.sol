@@ -105,7 +105,7 @@ contract Maze is Ownable{
         require(x>=0 && x <GRID_SIZE && y>=0 && y<GRID_SIZE,"Boundary");
         require(maze< TOTAL_MAZES,"invalid maze");
         require(_isMazeUnlocked(maze,playerid),"maze not unlocked");
-        require(Helper.distance(x,y,oldx,oldy)<=_getMaxStride(playerid),"distance greater than max stride");
+        require(Helper.distance(x,y,oldx,oldy)<=_getMaxStride(playerid) && Helper.distance(x,y,oldx,oldy)>0,"distance greater than max stride");
 
         hasplayer[maze][oldx][oldy]=0;
         hasplayer[maze][x][y]=playerid;
