@@ -59,12 +59,28 @@ const GAME_ABI = [
       },
 ];
 
+const web3Mainnet = new Web3(process.env.RPC_MAINNET);
+const web3Sepolia = new Web3(process.env.RPC_SEPOLIA);
+const static_config = {
+    "FIRST_ENTRANCE_MOVE_INTERVAL": 60,
+    "MOVE_INTERVAL": 10,
+    "PROTECTION_INTERVAL": 43200,
+    "MAX_SHIELD_INTERVAL": 86400,
+    "MAZE_SWITCH_INTERVAL": 604800,
+    "MAZE_SWITCH_PENALTY": "1000000000000000",  //0.001 eth
+    "SHIELD_PRICE": "50000000000000",       //0.00005 eth
+    "MIN_LOCK_IN_LV": 3,
+    "MIN_SHIELD_LV": 3,
+    "EAT_PERCENTAGE": 10,
+    "ROB_PERCENTAGE": 10
+};
 
 router.get('/getConfig', async (req, res) => {
     const {network="shape-sepolia" } = req.query;
     const gamecontract = CONTRACTS[network]?.GAME;
     console.log(gamecontract)
-    const web3 = new Web3(process.env.RPC_SEPOLIA);
+    const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
+
     console.log(process.env.RPC_SEPOLIA)
     if (!gamecontract) {
         return res.status(500).json({ error: `Contract not found for GAME on ${network}` });
@@ -87,6 +103,7 @@ router.get('/getConfig', async (req, res) => {
         console.log(dailyMoves)
         const formatBigIntArray = (arr) => arr.map(value => value.toString());
         res.send({
+            config:static_config,
             dotsRequired: formatBigIntArray(dotsRequired),
             dailyMoves: formatBigIntArray(dailyMoves)
         });
