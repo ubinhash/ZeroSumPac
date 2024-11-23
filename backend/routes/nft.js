@@ -1,7 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-
+require('dotenv').config();
 // router.get('/getNFTByOwner', async (req, res) => {
 //     const { owner, contract,withMetadata = "false" } = req.query;
 
@@ -30,7 +30,7 @@ const CONTRACTS = {
     },
     'shape-sepolia': {
         OTOM: "0xYourOTOMSepoliaContractAddressHere",  // Replace with actual Sepolia OTOM contract address
-        PAC: "0xEd1247683db7AD0C78825b07723595AE518E2f2F"     // Replace with actual Sepolia PAC contract address
+        PAC: process.env.ZSP_SEPOLIA     // Replace with actual Sepolia PAC contract address
     }
 };
 
@@ -48,7 +48,7 @@ const getNFTByOwner = async (owner, contract, withMetadata, network) => {
     try {
         while (hasNextPage && pageCount < 5) {  // Limit to 5 pages
             const url = `https://${network}.g.alchemy.com/nft/v3/${API_KEY}/getNFTsForOwner?owner=${owner}&contractAddresses[]=${contract}&withMetadata=${withMetadata}&pageSize=100&pageKey=${pageKey}`;
-            console.log(url);  // Log the URL for debugging
+            // console.log(url);  
 
             const response = await axios.get(url, { headers });
 
@@ -160,7 +160,7 @@ router.get('/getPacByOwner', async (req, res) => {
         return res.status(400).json({ error: "Invalid network. Allowed values are 'shape-mainnet' or 'shape-sepolia'" });
     }
     const contract = CONTRACTS[network]?.PAC;
-    console.log(contract);
+    // console.log(contract);
     if (!contract) {
         return res.status(500).json({ error: `Contract not found for PAC on network ${network}` });
     }

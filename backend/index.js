@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const nftRoutes = require('./routes/nft');
-
+const gameSettingRoutes = require('./routes/gamesetting');
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 
 app.use(express.json());
 app.use('/', nftRoutes);
-
+app.use('/', gameSettingRoutes);
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
