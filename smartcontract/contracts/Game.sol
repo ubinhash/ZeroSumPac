@@ -10,6 +10,7 @@ pragma solidity ^0.8.0;
 //TODO: GAME PAUSE
 //TODO Eyes related manhattan distance
 //TODO Player can add/remove alliances
+//TODO TURN OFFF SHIELD WHEN YOU MOVE!, add another param to "Player" ,vulnertableTime
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./Helper.sol";
@@ -34,6 +35,7 @@ struct Player {
         uint256 nextSwitchMazeTime;
         uint256 shieldExpireTime;
         uint256 protectionExpireTime;
+        uint256 vulnerableTime;
         address nftContract;
         uint256 tokenId;
         DailyMove moveInfo;
@@ -171,6 +173,7 @@ contract Game is Ownable {
             nextSwitchMazeTime:block.timestamp + config[ConfigKey.MAZE_SWITCH_INTERVAL],
             shieldExpireTime: 0,
             protectionExpireTime:0,
+            vulnerableTime:0,
             nftContract:nftContract,
             tokenId:tokenId,
             moveInfo:DailyMove(0,0),
@@ -212,8 +215,8 @@ contract Game is Ownable {
                 uint256 dotdelta=(players[otherplayerid].dots* config[ConfigKey.EAT_PERCENTAGE] + 99) / 100;
 
                 require(players[playerid].level>=players[otherplayerid].level,"Can't attack higher ranked");
-                require(block.timestamp>players[otherplayerid].shieldExpireTime,"Shielded");
-                require(block.timestamp>players[otherplayerid].protectionExpireTime,"Protected");
+                require(block.timestamp>players[otherplayerid].shieldExpireTime|| block.timestamp<players[otherplayerid].vulnerableTime,"Shielded");
+                require(block.timestamp>players[otherplayerid].protectionExpireTime|| block.timestamp<players[otherplayerid].vulnerableTime,"Protected");
                 //check level
                 //check shield
                 //eat pac
@@ -277,7 +280,7 @@ contract Game is Ownable {
         require(victim.dots>=4);
         require(mazeContract._isSurrounded(x_victim, y_victim, maze_victim), "Not Surrounded");
         require(maze_victim==maze_player && Helper.isAdjacent(x_victim, y_victim, x_player, y_player), "No");
-        require(block.timestamp > victim.shieldExpireTime && block.timestamp > victim.protectionExpireTime, "Can't Attack");
+        require((block.timestamp > victim.shieldExpireTime && block.timestamp > victim.protectionExpireTime)|| block.timestamp<victim.vulnerableTime, "Can't Attack");
         
 
         // Update the victim's protection timestamp

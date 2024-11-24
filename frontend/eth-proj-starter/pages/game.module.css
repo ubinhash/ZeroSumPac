@@ -8,15 +8,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px; /* Adjust for spacing */
     box-sizing: border-box;
   }
   
-  .section1 {
-    flex: 0 0 10%; /* Basis 10%, but won't shrink below min-width */
-    min-width: 100px; /* Set a minimum width */
-    background-color: #f0f0f0;
-  }
+
   
   .section2 {
     flex: 1; /* Takes up the remaining space */
@@ -27,5 +22,76 @@
     flex: 0 0 25%; /* Basis 20%, but won't shrink below min-width */
     min-width: 150px; /* Set a minimum width */
     background-color: #b0b0b0;
+  }
+  
+
+  .section1 {
+    flex: 0 0 10%; /* Basis 10%, but won't shrink below min-width */
+    min-width: 100px; /* Set a minimum width */
+    background-color: #f0f0f0;
+    border-right: 2px solid black;
+
+    display: flex;
+    flex-direction: column; /* Stack mazeSelector and menuOptions vertically */
+    justify-content: space-between; /* Push top and bottom sections apart */
+    height: 100%; /* Take full height of parent container */
+    box-sizing: border-box;
+  }
+  
+  .mazeSelector {
+    flex: 1; /* Allow this section to grow if needed */
+    display: flex;
+    flex-direction: column; /* Arrange buttons in a vertical column */
+    overflow-y: auto; /* Enable vertical scrolling if too many buttons */
+
+    width: 100%;
+    background-color: #d0d0d0;
+    /* border-bottom: 5px solid #333; */
+  }
+  
+  .mazeButtons{
+    display: flex;
+    flex-direction: column; /* Arrange buttons in a vertical column */
+    max-height: 60vh;
+    overflow-y: auto; /* Enable vertical scrolling if too many buttons */
+  }
+  .mazeButtons button {
+    width: 100%; /* Buttons take up full width of container */
+    background-color: #fff;
+    border: none;
+    border-bottom: 2px solid #333;
+    font-family: inherit;
+    cursor: pointer;
+    padding:5px 0px;
+  }
+  
+.mazeButtons button:hover {
+    background-color: #ddd;
+  }
+  .mazeInfo{
+    border-top:3px solid #333;
+  }
+  
+  .menuOptions {
+    display: flex;
+    flex-direction: column; /* Arrange buttons in a vertical column */
+
+    background-color: #d0d0d0; /* Example background */
+    width: 100%;
+  }
+  
+  .menuOptions button {
+    width: 100%; /* Buttons take up full width of container */
+    background-color: #fff;
+    border:none;
+    border-top: 2px solid #333;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 18px;
+    padding:10px 0px;
+  }
+  
+  .menuOptions button:hover {
+    background-color: #ddd;
   }
   
