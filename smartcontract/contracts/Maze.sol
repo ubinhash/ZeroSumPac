@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./GameEquip.sol";
 import "./Helper.sol";
+import "./ZeroSumPac.sol";
 // Intended to be helper contract for Game, User don't interact with it
 
 contract Maze is Ownable{
@@ -16,9 +17,10 @@ contract Maze is Ownable{
     uint256 public total_dots_consumed=0;
     mapping(address => bool) public allowedOperators;
     uint256[] public MAZE_UNLOCK_DOTS_REQUIRED = [0,0,0,0,0,4,5500,6500,7500];
-
+    uint256[] public MAZE_UNLOCK_MINT_REQUIRED = [0,10,20,300,666,0,0,0,0];
     event MazeStatusChanged(uint8 maze,bool unlocked);
     GameEquip public gameEquipContract;
+
 
 
     constructor() Ownable(msg.sender) {
@@ -39,15 +41,28 @@ contract Maze is Ownable{
     function setGameEquipContract(address _contractAddress) external onlyOwner{
         gameEquipContract = GameEquip(_contractAddress);
     }
+
     function setMazeUnlockDotsRequired(uint256 level, uint256 value) external onlyOwner{
         MAZE_UNLOCK_DOTS_REQUIRED[level] = value;
     }
+     function setMazeUnlockMintsRequired(uint256 level, uint256 value) external onlyOwner{
+        MAZE_UNLOCK_MINT_REQUIRED[level] = value;
+    }
+
 
     function unlockMaze(uint8 maze,bool unlocked) public onlyAllowedOperator{
         maze_unlocked[maze]=unlocked;
         emit MazeStatusChanged(maze,unlocked);
     }
     
+    function updateMintCount(uint256 mintCount) public onlyAllowedOperator{
+          for(uint8 i=0;i<5;i++){
+                if(!maze_unlocked[i] && mintCount>= MAZE_UNLOCK_MINT_REQUIRED[i]){
+                    unlockMaze(i,true);
+                }
+            }
+    }
+
     function _setObstaclesForMaze(uint8 mazeId)public onlyAllowedOperator {
         //cross shape
         if(mazeId % 3 == 0){
@@ -123,7 +138,7 @@ contract Maze is Ownable{
             maze_dots_consumed[maze]+=1;
             total_dots_consumed+=1;
             for(uint8 i=5;i<TOTAL_MAZES-1;i++){
-                if(!maze_unlocked[maze] && total_dots_consumed>=MAZE_UNLOCK_DOTS_REQUIRED[i]){
+                if(!maze_unlocked[i] && total_dots_consumed>=MAZE_UNLOCK_DOTS_REQUIRED[i]){
                     unlockMaze(i,true);
                 }
             }
