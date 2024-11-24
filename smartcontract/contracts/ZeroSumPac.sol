@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 // import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-
+import "./Maze.sol";
 contract ZeroSumPac is ERC721Enumerable, Ownable {
     uint256 public nextTokenId;
     mapping(address => bool) public approvedMintContracts;
@@ -15,17 +15,25 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
     constructor() ERC721("ZSP", "ZSP") Ownable(msg.sender) {}
     uint256 maxSupply = 666; // TBD
     uint256 mintPrice = 0.015 ether; //TBD
+    Maze public mazeContract;
+
+    function setMazeContract(address _contract) external onlyOwner {
+        mazeContract =Maze(_contract);
+    }
 
     modifier hasStock(uint256 amount) {
          require(nextTokenId+amount<maxSupply,"Out of Stock");
         _;
     }
+
+
  
     function _batchMint(address to, uint256 amount) internal {
         for (uint256 i = 0; i < amount; i++) {
             _safeMint(to, nextTokenId);
             nextTokenId++;
         }
+        mazeContract.updateMintCount(nextTokenId);
     }
 
     function ownerMint(address to, uint256 amount) external onlyOwner hasStock(amount){
