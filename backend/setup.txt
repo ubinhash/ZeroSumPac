@@ -1,0 +1,8 @@
+npm install express dotenv axios
+setup alchemy key in dotenv
+npm install web3
+node index.js(may edit port to run this on diff port)
+
+//setup ip filter
+npm install express-ipfilter
+npm install cors
