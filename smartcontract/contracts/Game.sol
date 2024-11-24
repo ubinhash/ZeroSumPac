@@ -67,6 +67,7 @@ contract Game is Ownable {
         config[ConfigKey.MIN_SHIELD_LV] = 3;
         config[ConfigKey.EAT_PERCENTAGE] = 10;
         config[ConfigKey.ROB_PERCENTAGE] = 10;
+        config[ConfigKey.VULNERABLE_INTERVAL]=600;
      
     }
     mapping(address => bool) public allowedNFTContracts;
@@ -105,7 +106,8 @@ contract Game is Ownable {
         MIN_LOCK_IN_LV,
         MIN_SHIELD_LV,
         EAT_PERCENTAGE,
-        ROB_PERCENTAGE
+        ROB_PERCENTAGE,
+        VULNERABLE_INTERVAL
     }
     mapping(ConfigKey => uint256) private config;
 
@@ -241,6 +243,7 @@ contract Game is Ownable {
                 //swap position, give 10% of dots, round up!
             //else
                 //just move 
+        players[playerid].vulnerableTime=block.timestamp+config[ConfigKey.VULNERABLE_INTERVAL];
         players[playerid].protectionExpireTime=0; //your protection immediately expires once you move actively, don't put this inside helper because of passive moving:)
         _incrementMoveCount(playerid); 
     }

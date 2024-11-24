@@ -74,7 +74,8 @@ const static_config = {
     "MIN_LOCK_IN_LV": 3,
     "MIN_SHIELD_LV": 3,
     "EAT_PERCENTAGE": 10,
-    "ROB_PERCENTAGE": 10
+    "ROB_PERCENTAGE": 10,
+    "VULNERABLE_INTERVAL":600
 };
 
 router.get('/getConfig', async (req, res) => {
