@@ -28,7 +28,7 @@
   .section1 {
     flex: 0 0 10%; /* Basis 10%, but won't shrink below min-width */
     min-width: 100px; /* Set a minimum width */
-    background-color: #f0f0f0;
+    background-color: #d35c5c;
     border-right: 2px solid black;
 
     display: flex;
@@ -45,7 +45,7 @@
     overflow-y: auto; /* Enable vertical scrolling if too many buttons */
 
     width: 100%;
-    background-color: #d0d0d0;
+    background-color: #ffffff;
     /* border-bottom: 5px solid #333; */
   }
   
@@ -54,6 +54,8 @@
     flex-direction: column; /* Arrange buttons in a vertical column */
     max-height: 60vh;
     overflow-y: auto; /* Enable vertical scrolling if too many buttons */
+    background-color: #000000;
+
   }
   .mazeButtons button {
     width: 100%; /* Buttons take up full width of container */
@@ -68,8 +70,30 @@
 .mazeButtons button:hover {
     background-color: #ddd;
   }
+  .mazeButtons button.active {
+    
+    background-color: #c72626; /* Active button background */
+    color: #fff; /* Change text color to white */
+}
+.mazeButtons button.active {
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
+}
+ 
+
+/* .mazeButtons button.active::after {
+    content: "a";
+    position: absolute;
+    top: 50%;
+    right: -10px; 
+    transform: translateY(-20px);
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent transparent #007bff; 
+} */
   .mazeInfo{
     border-top:3px solid #333;
+    font-size: 10px;
+    padding: 5px;
   }
   
   .menuOptions {

@@ -16,7 +16,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./Helper.sol";
 import "./Reward.sol"; // Import the ZSP contract
 import "./Maze.sol";
-enum PlayerStatus { Inactive, Active, LockedIn , Forfeit }
+enum PlayerStatus { Inactive, Active, LockedIn , Forfeit, Eliminated}
 enum Ending { Not_Ended ,Ending1_CoGovernance ,Ending2_Oligarchy , Ending3_Monoploy}
 struct DailyMove{
     uint256 day;   // Day number based on block.timestamp / 1 days
@@ -113,6 +113,7 @@ contract Game is Ownable {
 
     uint256[] public DOTS_REQUIRED_FOR_LEVELS = [0, 0, 40, 200, 500, 5001];
     uint256[] public DAILY_MOVES_FOR_LEVELS = [0,10,15,20,25,30];
+    bool public eliminationModeOn=false;
     
 
     function setDotsRequiredForLevel(uint256 level, uint256 value) external onlyOwner{
@@ -387,6 +388,11 @@ contract Game is Ownable {
         else{
             players[playerid].level=1;
         }
+
+        if(eliminationModeOn && dots==0 && players[playerid].status==PlayerStatus.Active){
+            players[playerid].status=PlayerStatus.Eliminated;
+            emit PlayerStatusChanged(PlayerStatus.Eliminated,playerid);
+        }
     }
     function _checkGameEnded() internal{
         if(level3DotsLocked>endingThreshold){
@@ -405,12 +411,22 @@ contract Game is Ownable {
         return nft.ownerOf(tokenId);
     }
 
+    function _checkEliminationMode() internal {
+        if(mazeContract.total_dots_consumed==mazeContract.total_dots_in_mazes){
+            eliminationModeOn=true;
+            config[ConfigKey.EAT_PERCENTAGE] = 100;
+            config[ConfigKey.ROB_PERCENTAGE] = 25;
+        }
+    }
+
     function _changeDot(uint256 playerid,int256 dotdelta) internal{
         uint256 dots=players[playerid].dots;
         require(dotdelta >= 0 || dots>= uint256(-dotdelta), "Underflow error");
         require(dotdelta <= 0 || uint256(dotdelta) <= type(uint256).max - dots, "Overflow error");
         players[playerid].dots = uint256(int256(dots) + dotdelta);
         _checkLevelChange(playerid);
+        _checkEliminationMode();
+
         emit DotChanged(dotdelta, playerid);
     }
 

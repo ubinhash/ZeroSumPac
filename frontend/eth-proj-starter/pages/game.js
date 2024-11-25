@@ -8,7 +8,7 @@ export default function Game() {
   const mainStyle = {
 
   };
-
+  const [totalMaze,setTotalMaze] = useState(10);
   const [display,setDisplay] = useState('maze')
   const [maze, setMaze] = useState(0); // State to store selected maze
 
@@ -33,17 +33,19 @@ export default function Game() {
         <div className={styles.mazeSelector}>
             <div  className={styles.mazeButtons}>
                 {/* Maze selection buttons */}
-                {[0, 1, 2, 3,4,5,6,7,8].map((mazeNumber) => (
-                    <button key={mazeNumber} onClick={() => handleMazeSelect(mazeNumber)}>
+                {[...Array(totalMaze-1).keys()].map((mazeNumber) => (
+                    <button key={mazeNumber} className={`${ maze === mazeNumber && display ==="maze" ? styles.active : ""}`}
+                    onClick={() => handleMazeSelect(mazeNumber)}>
                         Maze {mazeNumber}
                     </button>
                 ))}
-                <button key={9} onClick={() => handleMazeSelect(9)}>
+                <button key={totalMaze-1}  className={`${ maze === 9 && display ==="maze"  ? styles.active : ""}`}
+                onClick={() => handleMazeSelect(9)}>
                     Special
                 </button>
             </div>
             <div className={styles.mazeInfo}>
-                HELLOW
+                There are total of [] mazes. Maze [] will unlock when [] nft are minted.
             </div>
             {/* Add as many buttons as needed */}
         </div>
@@ -59,6 +61,8 @@ export default function Game() {
       {display === "maze" && <h1>Maze {maze}</h1>} 
       {display === "log" && <h1>Log </h1>} {/* Replace with your actual Log component */}
       {display === "ranking" && <h1>Ranking</h1>} {/* Replace with your actual Ranking component */}
+      {display === "forfeit" && <h1>Forfeit</h1>} {/* Replace with your actual Log component */}
+      {display === "lockin" && <h1>lockin</h1>} {/* Replace with your actual Ranking component */}
       </div>
       <div className={`${styles.section} ${styles.section3}`}>
         <h1>Section 3</h1>

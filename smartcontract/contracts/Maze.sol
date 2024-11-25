@@ -15,6 +15,7 @@ contract Maze is Ownable{
     mapping(uint8=>bool) public maze_unlocked;
     mapping(uint8=>uint256) public maze_dots_consumed;
     uint256 public total_dots_consumed=0;
+    uint256 public total_dots_in_mazes=10000;
     mapping(address => bool) public allowedOperators;
     uint256[] public MAZE_UNLOCK_DOTS_REQUIRED = [0,0,0,0,0,4,5500,6500,7500];
     uint256[] public MAZE_UNLOCK_MINT_REQUIRED = [0,10,20,300,666,0,0,0,0];
