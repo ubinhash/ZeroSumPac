@@ -18,11 +18,7 @@
     background-color: #d0d0d0;
   }
   
-  .section3 {
-    flex: 0 0 25%; /* Basis 20%, but won't shrink below min-width */
-    min-width: 150px; /* Set a minimum width */
-    background-color: #b0b0b0;
-  }
+
   
 
   .section1 {
@@ -55,6 +51,7 @@
     max-height: 60vh;
     overflow-y: auto; /* Enable vertical scrolling if too many buttons */
     background-color: #000000;
+    
 
   }
   .mazeButtons button {
@@ -65,7 +62,11 @@
     font-family: inherit;
     cursor: pointer;
     padding:5px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
+
   
 .mazeButtons button:hover {
     background-color: #ddd;
@@ -78,7 +79,14 @@
 .mazeButtons button.active {
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
 }
- 
+.mazebuttoncontent{
+   display: flex;
+   align-items: center;
+   gap:8px;
+}
+
+
+
 
 /* .mazeButtons button.active::after {
     content: "a";
@@ -119,3 +127,63 @@
     background-color: #ddd;
   }
   
+
+  /* ---- RIGHT SECTION */
+  .section3 {
+    flex: 0 0 25%; /* Basis 20%, but won't shrink below min-width */
+    min-width: 150px; /* Set a minimum width */
+    background-color: #b0b0b0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    border-left: 2px solid #333;
+
+  }
+
+  .menuTop {
+    flex: 0 0 200px; /* Fixed 30% of height */
+    background-color: #cf5050; /* Optional styling */
+    width: 100%;
+    height: 100%;
+    
+  }
+  
+  .menuMiddle {
+    flex: 1; /* Takes the remaining space */
+    overflow-y: auto; /* Scrollable content */
+    background-color: #fff; /* Optional styling */
+
+    width: 100%;
+    padding: 16px; /* Optional padding for content */
+  }
+  
+  .menuBottom {
+    flex: 0 0 auto; /* Content takes its intrinsic size */
+    display: flex;
+    flex-direction: column; /* Arrange buttons in a vertical column */
+    width: 100%;
+  }
+.actionButton {
+    width: 100%; /* Buttons take up full width of container */
+    background-color: #fff;
+    border: none;
+    border-top: 2px solid #333;
+    font-family: inherit;
+    cursor: pointer;
+    padding:5px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    padding:5px 0px;
+    flex-direction: column;
+  }
+
+  .unlockText {
+    margin-top: 4px;
+    font-size: 12px;
+
+    opacity: 0.8;
+    text-align: center;
+  }
