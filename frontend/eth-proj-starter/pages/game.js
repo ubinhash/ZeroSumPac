@@ -13,7 +13,7 @@ export default function Game() {
   const [totalMaze,setTotalMaze] = useState(10);
   const [mazeUnlocked,setMazeUnlocked]=useState(Array(totalMaze).fill(false));
   const [unlockedInfo,setunlockedInfo]=useState("There are total of 10 Mazes. They will gradually unlock as mint status and game progresses.");
-  
+  const [playerId,setPlayerId] =useState(1);
   const [playerData, setPlayerData] = useState({
     playerposition: { x: 0, y: 0, maze: 0 },
     dots: 0,
@@ -67,6 +67,9 @@ export default function Game() {
         
     
     <div className={`${styles.section} ${styles.section1}`}>
+        <div className={`${styles.menuOptions} ${styles.topMenuOptions}`} >
+            <button onClick={() => handleOptionSelect('laws')} >Laws</button>
+        </div>
         <div className={styles.mazeSelector}>
             <div  className={styles.mazeButtons}>
                 {/* Maze selection buttons */}
@@ -108,7 +111,7 @@ export default function Game() {
         </div>
     </div>
       <div className={`${styles.section} ${styles.section2}`}>
-      {display === "maze" && <MyMaze></MyMaze>} 
+      {display === "maze" && <MyMaze currplayerid={playerId} mazeId={currmaze}></MyMaze>} 
       {display === "log" && <h1>Log </h1>} {/* Replace with your actual Log component */}
       {display === "ranking" && <h1>Ranking</h1>} {/* Replace with your actual Ranking component */}
       {display === "forfeit" && <h1>Forfeit</h1>} {/* Replace with your actual Log component */}

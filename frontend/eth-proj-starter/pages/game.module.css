@@ -25,7 +25,7 @@
     flex: 0 0 10%; /* Basis 10%, but won't shrink below min-width */
     min-width: 100px; /* Set a minimum width */
     background-color: #d35c5c;
-    border-right: 2px solid black;
+    border-right: 2px solid #333;
 
     display: flex;
     flex-direction: column; /* Stack mazeSelector and menuOptions vertically */
@@ -50,7 +50,7 @@
     flex-direction: column; /* Arrange buttons in a vertical column */
     max-height: 60vh;
     overflow-y: auto; /* Enable vertical scrolling if too many buttons */
-    background-color: #000000;
+    background-color: #333;
     
 
   }
@@ -125,6 +125,24 @@
   
   .menuOptions button:hover {
     background-color: #ddd;
+  }
+  .topMenuOptions{
+    border-bottom: 2px solid #333;
+
+
+  }
+
+  .topMenuOptions button{
+    border-top: 0px solid #333;
+    border-bottom: 2px solid #333;
+    background-color: #fae7b9;
+    color:black;
+    cursor: pointer;
+    padding:8px 0px;
+
+  }
+  .topMenuOptions button:hover{
+        background-color: #f5dca0;
   }
   
 

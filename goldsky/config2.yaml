@@ -1,0 +1,49 @@
+name: game-decoded-logs2
+version: 1
+status: ACTIVE
+resource_size: s
+apiVersion: 3
+sources:
+  shape_sepolia_raw_logs:
+    dataset_name: shape_sepolia.raw_logs
+    version: 1.0.0
+    type: dataset
+    start_at: earliest
+    filter: address = lower('0xeF0F735942a5DB62858544F64F186F0585F22B87')
+transforms:
+  shape_decoded:
+    primary_key: id
+    # Fetch the ABI from basescan, then use it to decode 
+    #https://gist.githubusercontent.com/ubinhash/19930d13e9f264eb9c929a989176837a/raw/8ac4b83e3c76ee61cead2f18d9f8e49451ef65bf/gamenov26.json
+    sql: >
+      SELECT 
+        `id`,
+        _gs_log_decode(
+            _gs_fetch_abi('https://gist.githubusercontent.com/ubinhash/19930d13e9f264eb9c929a989176837a/raw/8ac4b83e3c76ee61cead2f18d9f8e49451ef65bf/gamenov26.json', 'raw'), 
+            `topics`, 
+            `data`
+        ) AS `decoded`, 
+        block_number, 
+        transaction_hash 
+      FROM shape_sepolia_raw_logs
+  shape_clean:
+    primary_key: id
+    # Clean up the previous transform, unnest the values from the `decoded` object.
+    sql: >
+      SELECT 
+        `id`, 
+        decoded.event_params AS `event_params`, 
+        decoded.event_signature AS `event_signature`,
+        block_number,
+        transaction_hash
+        FROM shape_decoded 
+        WHERE decoded IS NOT NULL
+sinks:
+  postgres_shape_sepolia_raw_logs_start_block_6761524:
+    type: postgres
+    table: shape_sepolia_raw_logs_nov26_2
+    schema: public
+    secret_name: POSTGRES_SECRET_CM3S84L560
+    description: 'Postgres sink for: shape_sepolia_raw_logs_start_block_6761524'
+    from: shape_clean
+

@@ -120,7 +120,7 @@
     background-color: lightgreen;
   }
   
-  .mazeCellHover {
+  .mazeCell:hover {
     background-color: lightcoral;
   }
   
@@ -130,6 +130,7 @@
     content: '';
     position: absolute;
     background-color: rgb(199, 199, 199);
+   
   }
   
   .mazeCell::before {
@@ -138,6 +139,7 @@
     top: 50%; /* Centered vertically */
     left: 0;
     transform: translateY(-50%);
+    z-index: 1;
   }
   
   .mazeCell::after {
@@ -146,6 +148,18 @@
     left: 50%; /* Centered horizontally */
     top: 0;
     transform: translateX(-50%);
+    z-index: 1;
+  }
+  .cellimage{
+
+    width: 100%; /* Adjust size as needed */
+    height: 100%; /* Adjust size as needed */
+    object-fit: contain;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+
   }
   
   .centerCircle {
@@ -161,9 +175,15 @@
     align-items: center;
   }
 
-  .centerCircle.empty {
+  .centerCircle.eaten {
 
     background-color: transparent;
     border: 1px solid black;
+
+  }
+  .centerCircle.empty {
+
+    background-color: transparent;
+    border: 1px solid transparent;
 
   }
