@@ -105,6 +105,27 @@ const parseMoleculeInfo = (nfts) => {
     return moleculesInfo;
 };
 
+const parseNFTInfo = (nfts) => {
+    const nftInfo = [];
+
+    for (const nft of nfts) {
+
+
+
+        // Add to moleculesInfo if bondValue exists and is not 'singleton'
+        nftInfo.push({
+            tokenId: nft.tokenId,
+            contract:nft.contract.address,
+            name: nft.raw?.metadata?.name || nft.contract.name + " #" + nft.tokenId,
+            balance: nft.balance || "",
+            image: nft.raw?.metadata?.image || "",
+        });
+        
+    }
+
+    return nftInfo;
+};
+
 
 
 router.get('/getOTOMByOwner', async (req, res) => {
@@ -129,7 +150,7 @@ router.get('/getOTOMByOwner', async (req, res) => {
 });
 
 router.get('/getOTOMMoleculeByOwner', async (req, res) => {
-    const { owner, withMetadata = "false",network="shape-mainnet" } = req.query;
+    const { owner, withMetadata = "true",network="shape-mainnet" } = req.query;
 
     if (!owner) {
         return res.status(400).json({ error: "Missing required parameter: owner" });
@@ -151,7 +172,7 @@ router.get('/getOTOMMoleculeByOwner', async (req, res) => {
 });
 
 router.get('/getPacByOwner', async (req, res) => {
-    const { owner, withMetadata = "false",network="shape-mainnet"} = req.query;
+    const { owner, withMetadata = "true",network="shape-mainnet"} = req.query;
 
     if (!owner) {
         return res.status(400).json({ error: "Missing required parameter: owner" });
@@ -167,7 +188,8 @@ router.get('/getPacByOwner', async (req, res) => {
 
     try {
         const nftData = await getNFTByOwner(owner, contract, withMetadata,network);
-        res.json(nftData);
+        const nftInfo = parseNFTInfo(nftData);
+        res.json(nftInfo);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

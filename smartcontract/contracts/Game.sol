@@ -6,18 +6,18 @@ pragma solidity ^0.8.0;
 //REWARD RELATED FUNCTION CALL?
 //SET array varriables?
 //max contract size ..
-//TODO:END GAME can be called externally
-//TODO: GAME PAUSE
-//TODO Eyes related manhattan distance
-//TODO Player can add/remove alliances
-//TODO TURN OFFF SHIELD WHEN YOU MOVE!, add another param to "Player" ,vulnertableTime
+
+//TODO: GAME PAUSE DONE
+//TODO Eyes related manhattan distance -> in maze 
+//TODO Player can add/remove alliances -> TBD
+//DONE TURN OFFF SHIELD WHEN YOU MOVE!, add another param to "Player" ,vulnertableTime
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./Helper.sol";
 import "./Reward.sol"; // Import the ZSP contract
 import "./Maze.sol";
 enum PlayerStatus { Inactive, Active, LockedIn , Forfeit, Eliminated}
-enum Ending { Not_Ended ,Ending1_CoGovernance ,Ending2_Oligarchy , Ending3_Monoploy}
+enum Ending { Not_Ended ,Ending1_CoGovernance ,Ending2_Oligarchy , Ending3_Monoploy, Paused}
 struct DailyMove{
     uint256 day;   // Day number based on block.timestamp / 1 days
     uint256 move;  //move on that day
@@ -124,12 +124,13 @@ contract Game is Ownable {
     }
 
     modifier ownsNFT(uint256 playerid) {
-        IERC721 nft = IERC721(players[playerid].nftContract);
-        uint256 tokenId=players[playerid].tokenId;
-        require(nft.ownerOf(tokenId) == msg.sender, "Not owner");
+        // IERC721 nft = IERC721(players[playerid].nftContract);
+        // uint256 tokenId=players[playerid].tokenId;
+        require(IERC721(players[playerid].nftContract).ownerOf(players[playerid].tokenId)==msg.sender);
         _;
 
     }
+
     function setRewardContract(address _contract) external onlyOwner {
         rewardContract =Reward(_contract);
     }
@@ -150,10 +151,10 @@ contract Game is Ownable {
     function setOperator(address _operator,bool allowed) external onlyOwner {
         allowedOperators[_operator]=allowed;
     }
-    function setConfigUint(ConfigKey key, uint256 value) public onlyOwner {
+    function setConfigUint(ConfigKey key, uint256 value) external onlyAllowedOperator {
         config[key] = value;
     }
-    function getConfigUint(ConfigKey key) public view returns (uint256) {
+    function getConfigUint(ConfigKey key) external view returns (uint256) {
         return config[key];
     }
 
@@ -186,7 +187,7 @@ contract Game is Ownable {
         emit NFTRegistered(nftContract, tokenId, msg.sender,next_player_id);
         emit PlayerStatusChanged(PlayerStatus.Active,next_player_id);
         _movePlayerHelper(maze,x,y,next_player_id,true);
-        emit PlayerMoved(maze,x,y,next_player_id);
+        // emit PlayerMoved(maze,x,y,next_player_id); //duplicate
         _incrementMoveCount(next_player_id); // don't put it inside moveplayer in maze, because there might be passive moves
         //Don't call movePlayerTo since you're entering the first time it checkes for adjacency etc
         next_player_id+=1;
@@ -350,7 +351,7 @@ contract Game is Ownable {
         uint256 currentday=block.timestamp/86400;
         if(currentday==players[playerid].moveInfo.day){
             uint256 maxmoveperday=DAILY_MOVES_FOR_LEVELS[players[playerid].level];
-            require(players[playerid].moveInfo.move<maxmoveperday,"max move exceeded for today");
+            require(players[playerid].moveInfo.move<maxmoveperday,"M1");
             players[playerid].moveInfo.move+=1;
         }
         else{
@@ -405,7 +406,7 @@ contract Game is Ownable {
             //register remaining top lv 4 player to 1/1 whitelist manually
         }
     }
-    function _getPlayerIdAddress(uint256 playerid) internal view returns(address){
+    function _getPlayerIdAddress(uint256 playerid) public view returns(address){
         IERC721 nft = IERC721(players[playerid].nftContract);
         uint256 tokenId=players[playerid].tokenId;
         return nft.ownerOf(tokenId);
@@ -421,8 +422,8 @@ contract Game is Ownable {
 
     function _changeDot(uint256 playerid,int256 dotdelta) internal{
         uint256 dots=players[playerid].dots;
-        require(dotdelta >= 0 || dots>= uint256(-dotdelta), "Underflow error");
-        require(dotdelta <= 0 || uint256(dotdelta) <= type(uint256).max - dots, "Overflow error");
+        require(dotdelta >= 0 || dots>= uint256(-dotdelta), "O1");
+        require(dotdelta <= 0 || uint256(dotdelta) <= type(uint256).max - dots, "O2");
         players[playerid].dots = uint256(int256(dots) + dotdelta);
         _checkLevelChange(playerid);
         _checkEliminationMode();
@@ -431,9 +432,9 @@ contract Game is Ownable {
     }
 
     function lockIn(uint256 playerid) external ownsNFT(playerid){
-        require(GAME_ENDED==Ending.Not_Ended,"Game Ended");
-        require(players[playerid].status==PlayerStatus.Active, "Need to be an active player");
-        require(players[playerid].level>=config[ConfigKey.MIN_LOCK_IN_LV], "Min lock-in level not reached");
+        require(GAME_ENDED==Ending.Not_Ended,"Inactive");
+        require(players[playerid].status==PlayerStatus.Active, "N1");
+        require(players[playerid].level>=config[ConfigKey.MIN_LOCK_IN_LV], "M1");
         
         players[playerid].status=PlayerStatus.LockedIn;
         uint256 dots=players[playerid].dots;
@@ -455,10 +456,9 @@ contract Game is Ownable {
 
     //please be careful, playerid is NOT tokenid
     function forfeit(uint256 playerid,uint256 destination_playerid) external ownsNFT(playerid){
-        require(GAME_ENDED==Ending.Not_Ended,"Game Ended");
+        require(GAME_ENDED==Ending.Not_Ended,"Inactive");
         require(playerid!=destination_playerid);
-        require(players[playerid].status==PlayerStatus.Active,"Not Active");
-        require(players[destination_playerid].status==PlayerStatus.Active,"Not Active");
+        require(players[playerid].status==PlayerStatus.Active && players[destination_playerid].status==PlayerStatus.Active,"NA");
         //forfeit all the dots and exit the game
         uint256 dots=players[playerid].dots;
         players[playerid].status=PlayerStatus.Forfeit;
@@ -473,7 +473,15 @@ contract Game is Ownable {
     function checkPlayerId(address nftContract, uint256 tokenId) external view returns (uint256) {
         return nft_to_playerid[nftContract][tokenId];
     }
-
+    
+    function toggleGame() external onlyOwner(){
+       if(GAME_ENDED==Ending.Not_Ended){
+            GAME_ENDED=Ending.Paused;
+       }
+       if(GAME_ENDED==Ending.Paused){
+            GAME_ENDED=Ending.Not_Ended;
+       }
+    }
 
     function withdraw() external onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
@@ -485,4 +493,5 @@ contract Game is Ownable {
     //     require(success, "Withdrawal failed");
     // }
 
+   
 }

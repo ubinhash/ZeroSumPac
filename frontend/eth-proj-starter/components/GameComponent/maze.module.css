@@ -57,23 +57,26 @@
     flex-direction: row;
   }
 .info1 {
-    width: 30%;
+    width: 20%;
     padding-left: 10px;
     background-color: lightgreen;
     text-align: left;
+    font-size: 18px;
   }
   
 .info2 {
-    width: 40%;
+    width: 45%;
     background-color: lightblue;
     text-align: center;
+    font-size: 18px;
   }
   
  .info3 {
-    width: 30%;
+    width: 35%;
     padding-right: 10px;
     background-color: lightcoral;
     text-align: right;
+    font-size: 18px;
   }
   .mazeContainer {
     /* background-color: bisque; */
@@ -150,8 +153,17 @@
     transform: translateX(-50%);
     z-index: 1;
   }
-  .cellimage{
+  .imageContainer {
+    position: relative;
+    width: 100%; /* Fill the entire cell */
+    height: 100%; /* Fill the entire cell */
+  }
+  
 
+  .cellImage{
+    position: absolute;
+    top: 0;
+  left: 0;
     width: 100%; /* Adjust size as needed */
     height: 100%; /* Adjust size as needed */
     object-fit: contain;
@@ -162,10 +174,11 @@
 
   }
   
+  
   .centerCircle {
     position: absolute;
-    width: 6px; /* Adjust size as needed */
-    height: 6px; /* Adjust size as needed */
+    width: 25%; /* Adjust size as needed */
+    height: 25%; /* Adjust size as needed */
     background-color: rgb(0, 0, 0);
     border-radius: 50%; /* Makes it a circle */
     cursor: pointer;

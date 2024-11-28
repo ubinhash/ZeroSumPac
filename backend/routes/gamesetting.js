@@ -10,7 +10,8 @@ const CONTRACTS = {
     'shape-sepolia': {
         GAME: process.env.GAME_SEPOLIA ,    // Replace with actual Sepolia PAC contract address
         MAZE : process.env.MAZE_SEPOLIA ,
-        GAME_EQUIP:process.env.GAME_EQUIP_SEPOLIA
+        GAME_EQUIP:process.env.GAME_EQUIP_SEPOLIA,
+        ZSP:process.env.ZSP_SEPOLIA
     }
 };
 
@@ -118,8 +119,13 @@ router.get('/getConfig', async (req, res) => {
     // res.send(gamecontract);
 });
 
+router.get('/getContracts', async (req, res) => {
+    const {network="shape-sepolia" } = req.query;
+    res.send(CONTRACTS[network]);
+});
+
 //Function to get player info (player location, dots ranks etc)
-//function to get isCurrentMazeUnlockedForPlayer
+//function to get isCurrentMazeUnlockedForPlayer returns array[]
 //GET PLAYER MAX STRIDE
 
 

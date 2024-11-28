@@ -1,15 +1,77 @@
 import React, { useState, useEffect } from "react";
 import styles from './maze.module.css'; // Import the CSS module
 
-const MyMaze = ({ mazeId,currplayerid=0 }) => {
+const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
   const [zoom, setZoom] = useState(1); // Default zoom level
   const [maze, setMaze] = useState([]); // Initialize maze state // information to get from backend
   const [gridSize,setGridSize]=useState(20) // information to get from backend
-  const [hoverRow, setHoverRow] = useState(null);
-  const [hoverCol, setHoverCol] = useState(null);
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [selectedCol, setSelectedCol] = useState(null);
+  const [dotInfo, setDotInfo] = useState({
+    maze_dot_consumed: 0,
+    total_dot_in_maze: 0,
+    total_dot_consumed: 0,
+    total_dots: 0
+  });
 
+  const [hoverX, setHoverX] = useState(null);
+  const [hoverY, setHoverY] = useState(null);
+  const [selectedRow, setSelectedX] = useState(null);
+  const [selectedCol, setSelectedY] = useState(null);
+
+
+  const setObstacles =(mazeData) => {
+    if(mazeId%2==1){
+      mazeData[14][5].obstacleImage="5-1.png"
+      mazeData[13][6].obstacleImage="5-1.png"
+      mazeData[12][7].obstacleImage="5-1.png"
+      mazeData[11][8].obstacleImage="6-1.png"
+      mazeData[11][9].obstacleImage="2-1.png"
+      mazeData[11][10].obstacleImage="2-1.png"
+      mazeData[11][11].obstacleImage="6-2.png"
+      mazeData[12][12].obstacleImage="5-2.png"
+      mazeData[13][13].obstacleImage="5-2.png"
+      mazeData[14][14].obstacleImage="5-2.png"
+      mazeData[5][5].obstacleImage="5-2.png"
+      mazeData[6][6].obstacleImage="5-2.png"
+      mazeData[7][7].obstacleImage="5-2.png"
+      mazeData[8][8].obstacleImage="6-4.png"
+      mazeData[8][9].obstacleImage="2-1.png"
+      mazeData[8][10].obstacleImage="2-1.png"
+      mazeData[8][11].obstacleImage="6-3.png"
+      mazeData[7][12].obstacleImage="5-1.png"
+      mazeData[6][13].obstacleImage="5-1.png"
+      mazeData[5][14].obstacleImage="5-1.png"
+    }
+    else if(mazeId%2==0){
+
+      mazeData[5][5].obstacleImage="3-1.png"
+      mazeData[5][6].obstacleImage="2-1.png"
+      mazeData[5][7].obstacleImage="1-3.png"
+      mazeData[6][5].obstacleImage="2-2.png"
+      mazeData[7][5].obstacleImage="1-2.png"
+
+      mazeData[14][14].obstacleImage="3-3.png"
+      mazeData[14][13].obstacleImage="2-1.png"
+      mazeData[14][12].obstacleImage="1-1.png"
+      mazeData[13][14].obstacleImage="2-2.png"
+      mazeData[12][14].obstacleImage="1-4.png"
+
+
+      mazeData[5][14].obstacleImage="3-4.png"
+      mazeData[5][13].obstacleImage="2-1.png"
+      mazeData[5][12].obstacleImage="1-1.png"
+      mazeData[6][14].obstacleImage="2-2.png"
+      mazeData[7][14].obstacleImage="1-2.png"
+
+      mazeData[14][5].obstacleImage="3-2.png"
+      mazeData[13][5].obstacleImage="2-2.png"
+      mazeData[12][5].obstacleImage="1-4.png"
+      mazeData[14][6].obstacleImage="2-1.png"
+      mazeData[14][7].obstacleImage="1-3.png"
+
+
+
+    }
+  }
   useEffect(() => {
     // Initialize mazeData with gridSize x gridSize, each cell will have id, visited, cellInfo, hasPlayer, and obstacle
     const mazeData = Array(gridSize).fill(null).map(() => 
@@ -26,30 +88,9 @@ const MyMaze = ({ mazeId,currplayerid=0 }) => {
     mazeData[1][1].cellInfo=1;
     mazeData[2][2].hasPlayer=1;
     mazeData[3][5].hasPlayer=2;
-
-    mazeData[7][5].hasPlayer=3;
-    mazeData[4][15].obstacleImage="5-1.png"
-    mazeData[5][14].obstacleImage="5-1.png"
-    mazeData[6][13].obstacleImage="5-1.png"
-    mazeData[7][12].obstacleImage="6-1.png"
-    mazeData[8][12].obstacleImage="2-1.png"
-    mazeData[9][12].obstacleImage="2-1.png"
-    mazeData[10][12].obstacleImage="6-2.png"
-    mazeData[11][13].obstacleImage="5-2.png"
-    mazeData[12][14].obstacleImage="5-2.png"
-    mazeData[13][15].obstacleImage="5-2.png"
-
-    mazeData[4][4].obstacleImage="5-2.png"
-    mazeData[5][5].obstacleImage="5-2.png"
-    mazeData[6][6].obstacleImage="5-2.png"
-    mazeData[7][7].obstacleImage="6-4.png"
-    mazeData[8][7].obstacleImage="2-1.png"
-    mazeData[9][7].obstacleImage="2-1.png"
-    mazeData[10][7].obstacleImage="6-3.png"
-    mazeData[11][6].obstacleImage="5-1.png"
-    mazeData[12][5].obstacleImage="5-1.png"
-    mazeData[13][4].obstacleImage="5-1.png"
-
+    mazeData[1][2].hasPlayer=3;
+    
+    setObstacles(mazeData);
     setMaze(mazeData);
   }, [mazeId]);
   
@@ -58,16 +99,17 @@ const MyMaze = ({ mazeId,currplayerid=0 }) => {
   };
 
   const zoomOut = () => {
-    setZoom(prevZoom => Math.max(prevZoom / 1.2, 1)); // Minimum zoom level (example: 1x zoom)
+    setZoom(prevZoom => Math.max(prevZoom / 1.2, 1/1.2)); // Minimum zoom level (example: 1x zoom)
   };
 
   const handleHover = (rowIndex, colIndex) => {
-    setHoverRow(rowIndex);
-    setHoverCol(colIndex);
+    setHoverX(rowIndex);
+    setHoverY(colIndex);
   };
   const handleSelect = (rowIndex, colIndex) => {
-    setSelectedRow(rowIndex);
-    setSelectedCol(colIndex);
+    setSelectedX(rowIndex);
+    setSelectedY(colIndex);
+    onSelect(rowIndex,colIndex,maze[rowIndex][colIndex].hasPlayer);
   };
 
   return (
@@ -82,8 +124,8 @@ const MyMaze = ({ mazeId,currplayerid=0 }) => {
         <div 
           className={styles.mazeContainer} 
           style={{ 
-            gridTemplateColumns: `repeat(${gridSize}, ${zoom * 25}px)`, // Dynamic zoom
-            gridTemplateRows: `repeat(${gridSize}, ${zoom * 25}px)`,
+            gridTemplateColumns: `repeat(${gridSize}, ${zoom * 28}px)`, // Dynamic zoom
+            gridTemplateRows: `repeat(${gridSize}, ${zoom * 28}px)`,
           }}
         >
 {
@@ -101,7 +143,7 @@ const MyMaze = ({ mazeId,currplayerid=0 }) => {
                   >
                     <div
                       className={`${styles.centerCircle} ${
-                        cell?.cellInfo === 2 || cell?.playerid !== 0
+                        cell?.cellInfo === 2 || ( cell.hasPlayer && cell?.hasPlayer !== 0)
                           ? styles.empty
                           : cell?.cellInfo === 0
                           ? styles.filled
@@ -110,10 +152,10 @@ const MyMaze = ({ mazeId,currplayerid=0 }) => {
                           : ''
                       } ${cell?.playerid !== 0 ? styles.hasplayer : ''}`}
                     ></div>
-
-                    {cell?.playerid !== 0 && (
+                    <div className={styles.imageContainer}>
+                    {cell.hasPlayer && cell?.hasPlayer !== 0 && (
                       <img
-                        src={cell?.playerid === currplayerid ? "/icons/pacs/mypac.png" : "/icons/pacs/pac.png"}
+                        src={cell.hasPlayer === currplayerid ? "/icons/pacs/mypac.png" : "/icons/pacs/plainpac.png"}
                         alt="Player Icon"
                         className={styles.cellImage}
                       />
@@ -125,7 +167,18 @@ const MyMaze = ({ mazeId,currplayerid=0 }) => {
                         alt="Obstacle"
                         className={styles.cellImage}
                       />
+                      
                     )}
+
+                    {selectedRow==rowIndex &&  selectedCol==colIndex &&  (
+                      <img
+                        src={"/icons/pacs/selected.png"}
+                        alt="Obstacle"
+                        className={styles.cellImage}
+                      />
+                    )}
+                    </div>
+                  
                   </div>
                 );
               })
@@ -136,9 +189,9 @@ const MyMaze = ({ mazeId,currplayerid=0 }) => {
         </div>
       </div>
       <div className={styles.infoSection}>
-        <div className={styles.info1}>({hoverRow},{hoverCol})</div>
-        <div className={styles.info2}>Subsection 2</div>
-        <div className={styles.info3}>Subsection 3</div>
+        <div className={styles.info1}>({hoverX},{hoverY})</div>
+        <div className={styles.info2}> Maze {mazeId} Dot Eaten : {dotInfo.maze_dot_consumed} /  {dotInfo.total_dot_in_maze} </div>
+        <div className={styles.info3}>Total Dot  {dotInfo.total_dot_consumed} /  {dotInfo.total_dots}  </div>
       </div>
     </div>
   );

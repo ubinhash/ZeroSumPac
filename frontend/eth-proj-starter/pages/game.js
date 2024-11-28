@@ -4,6 +4,7 @@ import utilStyles from '../styles/utils.module.css'
 import styles from './game.module.css';
 import { useState } from 'react';
 import MyMaze from '../components/GameComponent/mymaze.js'
+import PlayerSelect from '../components/GameComponent/playerselect.js';
 export default function Game() {
 
   const mainStyle = {
@@ -29,6 +30,8 @@ export default function Game() {
     status: "Inactive",
   });
 
+ 
+
   const [config,setconfig] = useState({
     FIRST_ENTRANCE_MOVE_INTERVAL: 60,
     MOVE_INTERVAL: 10,
@@ -43,11 +46,23 @@ export default function Game() {
     ROB_PERCENTAGE: 10,
     VULNERABLE_INTERVAL: 600,
   });
+
+  const [contracts, setContracts] = useState({
+    GAME: '',
+    MAZE: '',
+    GAME_EQUIP: '',
+    ZSP: '',
+  });
   
   
   
   const [display,setDisplay] = useState('maze')
   const [currmaze, setCurrMaze] = useState(0); // State to store selected maze
+  const [mazePositionSelected, setMazePositionSelected] = useState({ x: null, y: null, selected_playerid: null });
+
+  const handlePositionSelection = (x, y, selected_playerid) => {
+    setMazePositionSelected({ x, y, selected_playerid});
+  };
 
   const handleMazeSelect = (mazeNumber) => {
     setDisplay('maze');
@@ -111,7 +126,7 @@ export default function Game() {
         </div>
     </div>
       <div className={`${styles.section} ${styles.section2}`}>
-      {display === "maze" && <MyMaze currplayerid={playerId} mazeId={currmaze}></MyMaze>} 
+      {display === "maze" && <MyMaze currplayerid={playerId} mazeId={currmaze} onSelect={handlePositionSelection}></MyMaze>} 
       {display === "log" && <h1>Log </h1>} {/* Replace with your actual Log component */}
       {display === "ranking" && <h1>Ranking</h1>} {/* Replace with your actual Ranking component */}
       {display === "forfeit" && <h1>Forfeit</h1>} {/* Replace with your actual Log component */}
@@ -120,10 +135,13 @@ export default function Game() {
 
       <div className={`${styles.section} ${styles.section3}`}>
         <div className={styles.menuTop}>
+            <PlayerSelect></PlayerSelect>
             {/* Content for the top section */}
         </div>
         <div className={styles.menuMiddle}>
             {/* Scrollable text content */}
+       
+            ({mazePositionSelected.x}, {mazePositionSelected.y})
         </div>
         <div className={styles.menuBottom}>
             {/* Fixed-size buttons */}

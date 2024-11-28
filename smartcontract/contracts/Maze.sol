@@ -7,7 +7,7 @@ import "./ZeroSumPac.sol";
 // Intended to be helper contract for Game, User don't interact with it
 
 contract Maze is Ownable{
-    uint8 public constant GRID_SIZE = 32;
+    uint8 public constant GRID_SIZE = 20;
     uint8 public constant TOTAL_MAZES = 10;
     enum CellState { HasDot, Empty, HasObstacle }
     mapping(uint8 => mapping(uint8 => mapping(uint8 => CellState))) public mazes;
@@ -66,16 +66,25 @@ contract Maze is Ownable{
 
     function _setObstaclesForMaze(uint8 mazeId)public onlyAllowedOperator {
         //cross shape
-        if(mazeId % 3 == 0){
-            for (uint8 i = 10;i < 22; i++) {
+        if(mazeId % 2 == 0){
+            for (uint8 i = 5;i < 15; i++) {
                 mazes[mazeId][i][i] = CellState.HasObstacle;
-                mazes[mazeId][31-i][i] = CellState.HasObstacle;
+                mazes[mazeId][19-i][i] = CellState.HasObstacle;
             }
+            mazes[mazeId][9][9] = CellState.HasDot;
+            mazes[mazeId][10][10] = CellState.HasDot;
+            mazes[mazeId][10][9] = CellState.HasDot;
+            mazes[mazeId][9][10] = CellState.HasDot;
+
+            mazes[mazeId][8][9] = CellState.HasObstacle;
+            mazes[mazeId][8][10] = CellState.HasObstacle;
+            mazes[mazeId][11][9] = CellState.HasObstacle;
+            mazes[mazeId][11][10] = CellState.HasObstacle;
         }
 
          //rect shape
-        if(mazeId % 3 == 1){
-            for (uint8 j = 12;j < 20; j++) {
+        if(mazeId % 2 == 1){
+            for (uint8 j = 5;j < 15; j++) {
                 mazes[mazeId][10][j] = CellState.HasObstacle;
                 mazes[mazeId][21][j] = CellState.HasObstacle;
             }
@@ -90,12 +99,12 @@ contract Maze is Ownable{
             mazes[mazeId][20][19] = CellState.HasObstacle;
         }
 
-        //diagnol shape
-        if(mazeId % 3 == 2){
-            for (uint8 i = 4;i < 28; i++) {
-                mazes[mazeId][i][i] = CellState.HasObstacle;
-            }
-        }
+        // //diagnol shape
+        // if(mazeId % 3 == 2){
+        //     for (uint8 i = 2;i < 18; i++) {
+        //         mazes[mazeId][i][i] = CellState.HasObstacle;
+        //     }
+        // }
 
     }
 

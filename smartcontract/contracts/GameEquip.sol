@@ -143,6 +143,38 @@ contract GameEquip is  IERC1155Receiver,Ownable {
         keysUsed[keysTokenId]=true;
     }
 
+ //---- VOTING RELATED---FUNCTIONS //
+     // no external function need to be called to finalize election result!
+
+       mapping (uint256 => uint256) public topVotedCount;      //dayNum to current top candiadate voteCounnt
+       mapping (uint256 => uint256) public topVotedPlayer;      //dayNum to current top candiadate playerid
+       mapping (uint256 => mapping(uint256 => uint256)) public votes;   //day -> playerid->votecount
+       mapping (uint256 => mapping(uint256 => bool)) public voted;   // 
+
+      modifier isGoverner(uint256 playerid) {
+            uint256 currentday=block.timestamp/86400;
+            require(topVotedPlayer[currentday]==playerid);
+            _;
+       }
+      function voteForGoverner(uint256 playerid,uint256 myplayerid) external {
+        uint256 nextday=block.timestamp/86400 +1;
+
+        require(!voted[nextday][myplayerid],"voted");
+         voted[nextday][myplayerid]=true;
+         votes[nextday][playerid]+=1 ;
+         if(votes[nextday][playerid]>topVotedCount[nextday]){
+            topVotedCount[nextday]=playerid;
+         }
+      }
+
+      function setEat(uint256 percentage,uint256 playerid) external isGoverner(playerid) {
+            require(gameContract._getPlayerIdAddress(playerid)==msg.sender);
+            require(percentage>=0 && percentage<=100);
+            gameContract.setConfigUint(Game.ConfigKey.EAT_PERCENTAGE, percentage);
+
+      }
+
+
     //---- IERC1155Receiver ---FUNCTIONS //
 
     function onERC1155Received(
