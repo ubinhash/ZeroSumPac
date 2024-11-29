@@ -33,9 +33,12 @@ contract GameEquip is  IERC1155Receiver,Ownable {
         otomToken =IERC1155(0x2f9810789aebBB6cdC6c0332948fF3B6D11121E3);
         otomDatabase =IOtomsDatabase(0x953761a771d6Ad9F888e41b3E7c9338a32b1A346);
         eyesToken = IERC721(0xF3851e1b7824BD920350E6Fe9B890bb76d01C9f7);
+         keysToken = IERC721(0x05aA491820662b131d285757E5DA4b74BD0F0e5F);
         // keysToken = IERC721();
 
         //Testnet
+        otomToken = IERC1155(0xc709F59f1356230025d4fdFDCeD92341A14FF2F8);
+        otomDatabase =IOtomsDatabase(0xC6E01938846D3d62EafD7FF485afeE416f6D8A40);
          eyesToken = IERC721(0xAA394da7d62E502a7E3dA7e11d21A74c277143d5);
          keysToken = IERC721(0x01eB5CF188ba7d075FDf7eDF2BB8426b17CA3320);
     }
@@ -150,7 +153,7 @@ contract GameEquip is  IERC1155Receiver,Ownable {
        mapping (uint256 => uint256) public topVotedPlayer;      //dayNum to current top candiadate playerid
        mapping (uint256 => mapping(uint256 => uint256)) public votes;   //day -> playerid->votecount
        mapping (uint256 => mapping(uint256 => bool)) public voted;   // 
-
+       mapping(uint256 => bool) public parameterSet;   // 
       modifier isGoverner(uint256 playerid) {
             uint256 currentday=block.timestamp/86400;
             require(topVotedPlayer[currentday]==playerid);
@@ -168,8 +171,11 @@ contract GameEquip is  IERC1155Receiver,Ownable {
       }
 
       function setEat(uint256 percentage,uint256 playerid) external isGoverner(playerid) {
+            uint256 currentday=block.timestamp/86400;
             require(gameContract._getPlayerIdAddress(playerid)==msg.sender);
             require(percentage>=0 && percentage<=100);
+            require(!parameterSet[currentday],"You can only adjust once per day");
+            parameterSet[currentday]=true;
             gameContract.setConfigUint(Game.ConfigKey.EAT_PERCENTAGE, percentage);
 
       }

@@ -21,46 +21,7 @@ const CONTRACTS = {
 
 
 // ABI of your contract
-const GAME_ABI = [
-    {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "name": "DAILY_MOVES_FOR_LEVELS",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "name": "DOTS_REQUIRED_FOR_LEVELS",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-];
+const GAME_ABI = require('./GameABI.json');
 
 const web3Mainnet = new Web3(process.env.RPC_MAINNET);
 const web3Sepolia = new Web3(process.env.RPC_SEPOLIA);
@@ -106,8 +67,13 @@ router.get('/getConfig', async (req, res) => {
         console.log( dotsRequired)
         console.log(dailyMoves)
         const formatBigIntArray = (arr) => arr.map(value => value.toString());
+        const eatPercentageKey = 8;
+        const eatPercentage = await game.methods.getConfigUint(eatPercentageKey).call();
         res.send({
-            config:static_config,
+            config: {
+                ...static_config,
+                EAT_PERCENTAGE: eatPercentage.toString() // Override the static value
+            },
             dotsRequired: formatBigIntArray(dotsRequired),
             dailyMoves: formatBigIntArray(dailyMoves)
         });
@@ -127,6 +93,7 @@ router.get('/getContracts', async (req, res) => {
 //Function to get player info (player location, dots ranks etc)
 //function to get isCurrentMazeUnlockedForPlayer returns array[]
 //GET PLAYER MAX STRIDE
+//function to get dotlocked in for lvl3, lv4 total and dot consumed for maze
 
 
 // function to get ranking

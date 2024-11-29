@@ -29,7 +29,7 @@ const CONTRACTS = {
         PAC: "0x7564e43e59A14823d5D66e86c98C0AaB9d96743E"
     },
     'shape-sepolia': {
-        OTOM: "0xYourOTOMSepoliaContractAddressHere",  // Replace with actual Sepolia OTOM contract address
+        OTOM: "0xc709F59f1356230025d4fdFDCeD92341A14FF2F8",  // Replace with actual Sepolia OTOM contract address
         PAC: process.env.ZSP_SEPOLIA     // Replace with actual Sepolia PAC contract address
     }
 };

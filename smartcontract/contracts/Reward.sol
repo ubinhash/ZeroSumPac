@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ZeroSumPac.sol"; // Import the ZSP contract
 
 contract Reward is  IERC721Receiver,Ownable {
-    ERC721Enumerable public zspContract; // Reference to the ZSP contract using ERC721Enumerable
+    ZeroSumPac public zspContract; // Reference to the ZSP contract using ERC721Enumerable
     address public special_claim;
     mapping(address => uint256) public oneofone_whitelist;
     mapping(address => uint256) public oneofone_claimed;
@@ -97,10 +97,9 @@ contract Reward is  IERC721Receiver,Ownable {
     }
     //megre this three into one function to save contract size?
 
-    function GiveReward(address _address, uint256 level) external onlyAllowedOperator{
-        if(level==3){
-            LV3Reward(_address);
-        }
+
+     function GiveReward(address _address, uint256 level) external onlyAllowedOperator{
+
          if(level==4){
             LV4Reward(_address);
         }
@@ -108,8 +107,18 @@ contract Reward is  IERC721Receiver,Ownable {
             LV5Reward(_address);
         }
     }
-    function LV3Reward(address _address)  internal{
-            //TBD? 
+
+    function GiveReward(uint256 level,uint256 tokenId, address contractAddress) external onlyAllowedOperator{
+        if(level==3){
+            if(contractAddress==address(zspContract)){
+                Lv3Reward(tokenId);
+            }
+        }
+    }
+    function Lv3Reward(uint256 tokenId)  internal{
+
+            zspContract.setSpecial(tokenId,true);
+    
     }
      function LV4Reward(address _address) internal{
             addToWhitelist(_address,1);

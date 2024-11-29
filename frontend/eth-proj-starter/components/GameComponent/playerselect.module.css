@@ -1,0 +1,151 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    background-color: white;
+    /* background-color: antiquewhite; */
+    position: relative;
+
+  }
+  
+  .selector {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically center the select element */
+    align-items: center;     /* Horizontally center the select element */
+    width: 100%;
+
+    
+  }
+  
+  .selector select {
+
+    width: 100%;
+    font-family: inherit;
+    text-align: center;
+    border-radius: 0;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom:4px solid black;
+    padding:5px;
+
+  }
+  
+  
+  .middle {
+    display: flex;
+    height:100%;
+    width: 100%;
+
+  }
+  
+  .avatar {
+    flex: 1;
+    text-align: center;
+    border-right:4px solid black;
+    max-width: 110px;
+    max-height: 110px;
+
+  }
+  
+  .avatar img {
+    width: 110px;
+    height: 110px;
+ 
+  }
+  
+  .playerinfo {
+    /* background-color: rgb(219, 130, 13); */
+    flex: 1;
+
+    font-size: 10px;
+    max-width: calc(100% - 110px);
+    display: flex;
+    flex-direction: column; /* Arrange children vertically */
+    height: 100%;
+    overflow-wrap: break-word;
+    
+ 
+  }
+  
+  .playerinfo_top {
+    height: 25px; /* Fixed height for the top section */
+    background-color: #f0f0f0; /* Optional: Add a background for visibility */
+    border-bottom: 2px solid black;
+    display: flex;
+    justify-content: space-between; /* Space between the labels */
+    align-items: center; /* Vertically center the labels */
+
+
+  }
+  
+  .leftLabel {
+    padding-left: 5px;
+    text-align: left;
+  }
+  
+  .rightLabel {
+    padding-right: 5px;
+    text-align: right; 
+  }
+  
+  .playerinfo_bottom {
+    flex: 1; /* Take up the remaining space */
+    font-size: 16px;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+
+  }
+  .fineprint{
+    font-size: 9px;;
+  }
+  
+
+  
+  .bottom {
+    border-top:2px solid black;
+    width: 100%;
+    border-bottom:2px solid black;
+  }
+  
+  /* PROGRES BAR STYLES */
+
+  /* Container styles */
+.progressContainer {
+    width: 100%;
+ 
+    box-sizing: border-box;
+
+  
+}
+
+/* Progress bar styles */
+.progressBar {
+    position: relative;
+    height: 15px;
+    background: #e0e0e0;
+    border-radius: 0px;
+    overflow: hidden;
+    border-bottom: 2px solid black;
+  
+    background-color: rgb(255, 255, 255);
+}
+
+/* Inner progress bar */
+.progressFill {
+    height: 100%;
+    background: black;
+
+    transition: width 0.3s ease;
+}
+
+/* Labels container */
+.progressLabels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 14px;
+    padding:5px 10px;
+}

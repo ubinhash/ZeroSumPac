@@ -374,7 +374,7 @@ contract Game is Ownable {
         if(dots>=DOTS_REQUIRED_FOR_LEVELS[5]){
             players[playerid].level=5;
             GAME_ENDED = Ending.Ending3_Monoploy;
-            rewardContract.GiveReward(_getPlayerIdAddress(playerid),5);
+            rewardContract.GiveReward(5,players[playerid].tokenId,players[playerid].nftContract);
             emit GameEnded(3);
         }
         else if (dots>=DOTS_REQUIRED_FOR_LEVELS[4]){
@@ -432,7 +432,7 @@ contract Game is Ownable {
     }
 
     function lockIn(uint256 playerid) external ownsNFT(playerid){
-        require(GAME_ENDED==Ending.Not_Ended,"Inactive");
+        require(GAME_ENDED==Ending.Not_Ended);
         require(players[playerid].status==PlayerStatus.Active, "N1");
         require(players[playerid].level>=config[ConfigKey.MIN_LOCK_IN_LV], "M1");
         
