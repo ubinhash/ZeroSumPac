@@ -6,7 +6,8 @@ import { useState,useEffect } from 'react';
 import MyMaze from '../components/GameComponent/mymaze.js'
 import PlayerSelect from '../components/GameComponent/playerselect.js';
 import MovePlayerButton from '../components/GameComponent/button-move.js';
-
+import PopupMessage from '../components/GameComponent/popup.js';
+import webconfig from '../components/config/config.js';
 
 export default function Game() {
 
@@ -14,6 +15,8 @@ export default function Game() {
 
   };
   //INFO TO BE FILLED IN FROM BACKEND;
+  const [displayMsg,setDisplayMsg]=useState("Hello")
+  const [popupMsg,setPopupMsg]=useState("")
   const [totalMaze,setTotalMaze] = useState(10);
   const [mazeUnlocked,setMazeUnlocked]=useState(Array(totalMaze).fill(false));
   const [unlockedInfo,setunlockedInfo]=useState("There are total of 10 Mazes. They will gradually unlock as mint status and game progresses.");
@@ -67,7 +70,9 @@ export default function Game() {
 
   const fetchContracts = async () => {
     try {
-      const response = await fetch('http://localhost:3002/getContracts');
+      // const response = await fetch(`http://localhost:3002/getContracts`);
+      const response = await fetch(`${webconfig.apiBaseUrl}/getContracts`);
+      
       const data = await response.json();
 
       // Update the contracts state with the fetched data
@@ -168,12 +173,15 @@ export default function Game() {
             {/* Scrollable text content */}
        
             ({mazePositionSelected.x}, {mazePositionSelected.y})
+            <br></br>
             {contracts.GAME}
+            <br></br>
+            {displayMsg}
         </div>
         <div className={styles.menuBottom}>
             {/* Fixed-size buttons */}
 
-                <MovePlayerButton contracts={contracts} selected_position={mazePositionSelected} currmaze={currmaze}></MovePlayerButton>
+                
             <button className={styles.actionButton}>
                 SHIELD
                 <span className={styles.unlockText}>[Unlock at level {config.MIN_SHIELD_LV}]</span>
@@ -182,15 +190,19 @@ export default function Game() {
                 ROB
                 <span className={styles.unlockText}>Surround a victim to rob {config.ROB_PERCENTAGE} % of dots</span>
             </button>
-             <button className={styles.actionButton}>
+             {/* <button className={styles.actionButton}>
                 MOVE
                 <span className={styles.unlockText}>Move to adjacent squares</span>
-            </button>
+            </button> */}
+            <MovePlayerButton contracts={contracts} selected_position={mazePositionSelected} currmaze={currmaze} setDisplayMsg={setDisplayMsg} setPopupMsg={setPopupMsg}></MovePlayerButton>
+            <PopupMessage msg={popupMsg} setMsg={setPopupMsg}></PopupMessage>
         </div>
+       
         
       </div>
+                
     </div>
-
+  
 
     </Layout>
   )

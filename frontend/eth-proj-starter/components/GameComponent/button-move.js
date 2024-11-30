@@ -1,9 +1,10 @@
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
 import gameABI from '../abi/game-abi.js';
-
-const MovePlayerButton = ({ contracts ,selected_position,currmaze}) => {
+import styles from './button.module.css'; // Import the CSS module
+import React, { useState, useEffect } from "react";
+const MovePlayerButton = ({ contracts ,selected_position,currmaze,setDisplayMsg,setPopupMsg}) => {
   // Dummy arguments for movePlayerTo
-  const playerid = 1; // Example Player ID
+  const playerid = 1; // TO BE CHANGED TODO
   const maze = currmaze; // Example Maze ID
   const x = selected_position.x; // Example X Coordinate
   const y = selected_position.y; // Example Y Coordinate
@@ -30,28 +31,43 @@ const MovePlayerButton = ({ contracts ,selected_position,currmaze}) => {
     hash: data?.hash,
   });
 
+  // useEffect(() => {
+  //   if (isPrepareError) {
+  //     setDisplayMsg(`Error: ${prepareError?.message}`);
+  //   }
+  // }, [isPrepareError, prepareError]); 
+
+  useEffect(() => {
+    if (isLoading) {
+      setPopupMsg(`Waiting for transaction to confirm`);
+    }
+    if(isSuccess){
+      setPopupMsg(`Move Success!`);
+    }
+    if(isPrepareError){
+      setDisplayMsg(`You can't move there`);
+    }
+    else{
+      setDisplayMsg(``);
+    }
+   
+
+  }, [isLoading,isSuccess,isPrepareError]); 
+
+
+
   return (
-    <div>
-      {/* Button to trigger the write function */}
-      <button
-        onClick={() => write?.()}
-        disabled={!write || isLoading}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: isLoading ? 'gray' : 'blue',
-          color: 'white',
-          cursor: isLoading ? 'not-allowed' : 'pointer',
-        }}
-      >
-        {isLoading ? 'Moving Player...' : 'Move Player'}
+    <div className={styles.ButtonContainer}>
+
+      <button  className={styles.actionButton}  disabled={!write || isLoading || isPrepareError} onClick={() => write?.()}>{isLoading ? 'Moving' : 'Move'}
+
+      <span className={styles.unlockText}>Move to adjacent squares</span>
+      {/* {isSuccess && <p>Player moved successfully!</p>}
+      {isPrepareError && <p style={{ color: 'red' ,fontSize:"5px"}}>Error: {prepareError?.message}</p>} */}
       </button>
-      <button    disabled={!write || isLoading} onClick={() => write?.()}>{isLoading ? 'Moving' : 'Move'}</button>
 
-      {/* Display success message */}
-      {isSuccess && <p>Player moved successfully!</p>}
+ 
 
-      {/* Display error if any */}
-      {isPrepareError && <p style={{ color: 'red' ,fontSize:"5px"}}>Error: {prepareError?.message}</p>}
     </div>
   );
 };

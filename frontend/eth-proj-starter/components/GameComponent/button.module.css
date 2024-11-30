@@ -1,0 +1,29 @@
+.actionButton {
+    width: 100%; /* Buttons take up full width of container */
+    background-color: #fff;
+    border: none;
+    border-top: 2px solid #333;
+    font-family: inherit;
+    cursor: pointer;
+    padding:5px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    padding:5px 0px;
+    flex-direction: column;
+  }
+  .actionButton:hover{
+    background-color: aliceblue;
+  }
+  .actionButton:active{
+    background-color:black;
+    color:white;
+  }
+  .unlockText {
+    margin-top: 4px;
+    font-size: 12px;
+
+    opacity: 0.8;
+    text-align: center;
+  }

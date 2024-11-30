@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from './maze.module.css'; // Import the CSS module
+import webconfig from '../config/config.js';
 
 const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
   const [zoom, setZoom] = useState(1); // Default zoom level
@@ -72,6 +73,62 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
 
     }
   }
+
+  const setMazeDotData = async (mazeNumber, mazeData) => {
+    try {
+      const response = await fetch(`${webconfig.apiBaseUrl}/dot_locations?maze_number=${mazeNumber}`);
+      const data = await response.json();
+  
+      const updatedMazeData = mazeData.map((row, xIndex) =>
+        row.map((cell, yIndex) => {
+          if (xIndex < gridSize && yIndex < gridSize) {
+            return {
+              ...cell,
+              cellInfo: data[xIndex]?.[yIndex] ?? cell.cellInfo, // Use the value from data or retain the original
+            };
+          }
+          return cell;
+        })
+      );
+  
+      return updatedMazeData;
+    } catch (error) {
+      console.error('Error fetching maze data:', error);
+      return mazeData; // Return the original mazeData on error
+    }
+  };
+  
+  const setMazePlayerData = async (mazeNumber, mazeData) => {
+    try {
+      const response = await fetch(`${webconfig.apiBaseUrl}/player_locations?maze_number=${mazeNumber}`);
+      const data = await response.json();
+  
+      const updatedMazeData = mazeData.map((row, xIndex) =>
+        row.map((cell, yIndex) => {
+          if (xIndex < gridSize && yIndex < gridSize) {
+            return {
+              ...cell,
+              hasPlayer: data[xIndex]?.[yIndex] ?? cell.hasPlayer, // Use the value from data or retain the original
+            };
+          }
+          return cell;
+        })
+      );
+  
+      return updatedMazeData;
+    } catch (error) {
+      console.error('Error fetching maze data:', error);
+      return mazeData; // Return the original mazeData on error
+    }
+  };
+  
+  const fetchAndPopulateMaze = async (mazeId, mazeData) => {
+    let updatedMazeData = await setMazeDotData(mazeId, mazeData);
+    updatedMazeData = await setMazePlayerData(mazeId, updatedMazeData);
+    setMaze(updatedMazeData); // Update state after processing
+  };
+  
+  
   useEffect(() => {
     // Initialize mazeData with gridSize x gridSize, each cell will have id, visited, cellInfo, hasPlayer, and obstacle
     const mazeData = Array(gridSize).fill(null).map(() => 
@@ -79,19 +136,26 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
         id: Math.random(),             // Unique identifier for the cell
         visited: false,                // Whether the cell has been visited
         cellInfo: 0,                   // cellInfo value (0 = filled, 1 = empty, 2 = obstacle)
-        playerid: 0,              //  playerid in the cell, 0=no one
+        hasPlayer:0,          //  playerid in the cell, 0=no one
         obstacleImage: null,               //0 - none, 1.pngwhat obstacle are there
       }))
-
+      
       
     );
-    mazeData[1][1].cellInfo=1;
-    mazeData[2][2].hasPlayer=1;
-    mazeData[3][5].hasPlayer=2;
-    mazeData[1][2].hasPlayer=3;
-    
     setObstacles(mazeData);
     setMaze(mazeData);
+   
+    fetchAndPopulateMaze(mazeId,mazeData);
+    console.log(mazeData[2][3])
+
+    // mazeData[1][1].cellInfo=1;
+    // console.log(mazeData[2][6]);
+    // mazeData[2][6].hasPlayer=1;
+    
+    // mazeData[3][5].hasPlayer=2;
+    // mazeData[1][2].hasPlayer=3;
+    
+ 
   }, [mazeId]);
   
   const zoomIn = () => {
@@ -150,10 +214,11 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
                           : cell?.cellInfo === 1
                           ? styles.eaten
                           : ''
-                      } ${cell?.playerid !== 0 ? styles.hasplayer : ''}`}
+                      }`}
                     ></div>
                     <div className={styles.imageContainer}>
-                    {cell.hasPlayer && cell?.hasPlayer !== 0 && (
+                 
+                    {( cell?.hasPlayer !== 0) && (
                       <img
                         src={cell.hasPlayer === currplayerid ? "/icons/pacs/mypac.png" : "/icons/pacs/plainpac.png"}
                         alt="Player Icon"

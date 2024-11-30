@@ -13,7 +13,7 @@ const DB = {
     },
     'shape-sepolia': {
         connectionString: process.env.DB_CONNECTION_STRING,
-        dbname:'shape_sepolia_raw_logs_nov26_4'
+        dbname:'shape_sepolia_raw_logs_nov30'
     }
 };
 
@@ -107,7 +107,8 @@ router.get('/logs', async (req, res) => {
         // const result = await client.query(query, values);
 
 router.get('/player_locations', async (req, res) => {
-    const {mazenumber = 0, network="shape-sepolia" } = req.query;
+    const {maze_number = 0, network="shape-sepolia" } = req.query;
+    console.log(maze_number,req.query)
     const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
     const client = new Client({ connectionString });
@@ -131,9 +132,9 @@ router.get('/player_locations', async (req, res) => {
             )
             SELECT *
             FROM RankedEvents
-            WHERE rank = 1 AND event_params[1] = $2; -- Filter by maze number
+            WHERE rank = 1 AND event_params[1]::INTEGER = $2; -- Filter by maze number
         `;
-        const values = ['PlayerMoved', mazenumber.toString()];
+        const values = ['PlayerMoved', maze_number];
 
 
         const result = await client.query(query, values);
@@ -145,7 +146,7 @@ router.get('/player_locations', async (req, res) => {
         result.rows.forEach(row => {
             const [, x, y, playerid] = row.event_params.map(Number);
             if (x >= 0 && x < gridsize && y >= 0 && y < gridsize) {
-                grid[y][x] = playerid; // Note: y is the row, x is the column
+                grid[x][y] = playerid; // Note: y is the row, x is the column
             }
         });
         res.send(grid);
@@ -162,7 +163,7 @@ router.get('/player_locations', async (req, res) => {
 });
 
 router.get('/dot_locations', async (req, res) => {
-    const {mazenumber = 0,network="shape-sepolia" } = req.query;
+    const {maze_number = 0,network="shape-sepolia" } = req.query;
     const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
     const client = new Client({ connectionString });
@@ -184,7 +185,7 @@ router.get('/dot_locations', async (req, res) => {
             ORDER BY block_number, transaction_index, log_index;
         `;
 
-        const result = await client.query(query, [mazenumber]);
+        const result = await client.query(query, [maze_number]);
 
         // Update the grid with traversed locations
         for (const row of result.rows) {

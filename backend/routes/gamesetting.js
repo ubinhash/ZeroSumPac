@@ -93,7 +93,8 @@ router.get('/getContracts', async (req, res) => {
 //Function to get player info (player location, dots ranks etc)
 //function to get isCurrentMazeUnlockedForPlayer returns array[]
 //GET PLAYER MAX STRIDE
-//function to get dotlocked in for lvl3, lv4 total and dot consumed for maze
+//function to get dotlocked in for lvl3, lv4 total 
+//dot consumed for maze
 
 
 // function to get ranking
