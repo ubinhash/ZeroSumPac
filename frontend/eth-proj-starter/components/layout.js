@@ -15,6 +15,7 @@ import {
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import NavBar from './nav';
+import { WagmiProvider } from 'wagmi'
 
 
 export const shapeMainnet = {
@@ -79,6 +80,7 @@ const wagmiConfig = createConfig({
 
 export default function Layout({ children }) {
   return (
+  
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains}>
         <div>
@@ -90,6 +92,7 @@ export default function Layout({ children }) {
         
       </RainbowKitProvider>
     </WagmiConfig>
+
   );
   }
   

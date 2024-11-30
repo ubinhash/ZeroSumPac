@@ -154,14 +154,18 @@ contract GameEquip is  IERC1155Receiver,Ownable {
        mapping (uint256 => mapping(uint256 => uint256)) public votes;   //day -> playerid->votecount
        mapping (uint256 => mapping(uint256 => bool)) public voted;   // 
        mapping(uint256 => bool) public parameterSet;   // 
+       bool electionOpen;
       modifier isGoverner(uint256 playerid) {
             uint256 currentday=block.timestamp/86400;
             require(topVotedPlayer[currentday]==playerid);
             _;
        }
+       function setElectionOpen(bool isopen) external onlyOwner{
+            electionOpen=isopen;
+       }
       function voteForGoverner(uint256 playerid,uint256 myplayerid) external {
         uint256 nextday=block.timestamp/86400 +1;
-
+        require(electionOpen,"election not open");
         require(!voted[nextday][myplayerid],"voted");
          voted[nextday][myplayerid]=true;
          votes[nextday][playerid]+=1 ;
@@ -171,7 +175,9 @@ contract GameEquip is  IERC1155Receiver,Ownable {
       }
 
       function setEat(uint256 percentage,uint256 playerid) external isGoverner(playerid) {
+
             uint256 currentday=block.timestamp/86400;
+            require(!gameContract.eliminationModeOn(),"Can't alter params when elimination mode is on");
             require(gameContract._getPlayerIdAddress(playerid)==msg.sender);
             require(percentage>=0 && percentage<=100);
             require(!parameterSet[currentday],"You can only adjust once per day");

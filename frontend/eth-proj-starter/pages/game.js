@@ -2,9 +2,12 @@ import Head from 'next/head'
 import Layout from '../components/layout'
 import utilStyles from '../styles/utils.module.css'
 import styles from './game.module.css';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import MyMaze from '../components/GameComponent/mymaze.js'
 import PlayerSelect from '../components/GameComponent/playerselect.js';
+import MovePlayerButton from '../components/GameComponent/button-move.js';
+
+
 export default function Game() {
 
   const mainStyle = {
@@ -59,6 +62,29 @@ export default function Game() {
   const [display,setDisplay] = useState('maze')
   const [currmaze, setCurrMaze] = useState(0); // State to store selected maze
   const [mazePositionSelected, setMazePositionSelected] = useState({ x: null, y: null, selected_playerid: null });
+
+
+
+  const fetchContracts = async () => {
+    try {
+      const response = await fetch('http://localhost:3002/getContracts');
+      const data = await response.json();
+
+      // Update the contracts state with the fetched data
+      setContracts({
+        GAME: data.GAME,
+        MAZE: data.MAZE,
+        GAME_EQUIP: data.GAME_EQUIP,
+        ZSP: data.ZSP,
+      });
+    } catch (error) {
+      console.error('Error fetching contracts:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchContracts();
+  }, []);
 
   const handlePositionSelection = (x, y, selected_playerid) => {
     setMazePositionSelected({ x, y, selected_playerid});
@@ -142,9 +168,12 @@ export default function Game() {
             {/* Scrollable text content */}
        
             ({mazePositionSelected.x}, {mazePositionSelected.y})
+            {contracts.GAME}
         </div>
         <div className={styles.menuBottom}>
             {/* Fixed-size buttons */}
+
+                <MovePlayerButton contracts={contracts} selected_position={mazePositionSelected} currmaze={currmaze}></MovePlayerButton>
             <button className={styles.actionButton}>
                 SHIELD
                 <span className={styles.unlockText}>[Unlock at level {config.MIN_SHIELD_LV}]</span>
@@ -155,6 +184,7 @@ export default function Game() {
             </button>
              <button className={styles.actionButton}>
                 MOVE
+                <span className={styles.unlockText}>Move to adjacent squares</span>
             </button>
         </div>
         
