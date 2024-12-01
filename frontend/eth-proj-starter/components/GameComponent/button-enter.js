@@ -2,7 +2,7 @@ import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from
 import gameABI from '../abi/game-abi.js';
 import styles from './button.module.css'; // Import the CSS module
 import React, { useState, useEffect } from "react";
-const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position,currmaze,setDisplayMsg,setPopupMsg,onMoveSuccess}) => {
+const EnterPlayerButton = ({ contracts,currplayerid,playerData ,selected_position,currmaze,setDisplayMsg,setPopupMsg,onMoveSuccess}) => {
   // Dummy arguments for movePlayerTo
   const playerid = currplayerid; // TO BE CHANGED TODO
   const maze = currmaze; // Example Maze ID
@@ -18,8 +18,8 @@ const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position
   } = usePrepareContractWrite({
     address: contracts.GAME, // Address for your GAME contract
     abi: gameABI, // ABI of the contract
-    functionName: 'movePlayerTo', // Function name
-    args: [playerid, maze, x, y], // Arguments for the function
+    functionName: 'enterGame', // Function name
+    args: [playerData.nftContract,playerData.tokenId, maze, x, y], // Arguments for the function
     value: valueToSend, // Ether to send (if required by the contract)
   });
 
@@ -36,24 +36,24 @@ const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position
     hash: data?.hash,
   });
 
-  // const {
-  //   config: config_enter,
-  //   error: prepareError_Enter,
-  //   isError: isPrepareError_Enter,
-  // } = usePrepareContractWrite({
-  //   address: contracts.GAME, // Address for your GAME contract
-  //   abi: gameABI, // ABI of the contract
-  //   functionName: 'enterGame', // Function name
-  //   args: ["0x252DfB6aE02f7625807B5372699f0fed83B79161","3",maze, x, y], // Arguments for the function
+  const {
+    config: config_enter,
+    error: prepareError_Enter,
+    isError: isPrepareError_Enter,
+  } = usePrepareContractWrite({
+    address: contracts.GAME, // Address for your GAME contract
+    abi: gameABI, // ABI of the contract
+    functionName: 'enterGame', // Function name
+    args: ["0x252DfB6aE02f7625807B5372699f0fed83B79161","3",maze, x, y], // Arguments for the function
 
-  // });
+  });
 
-  // const { data_enter, write_enter } = useContractWrite(config_enter);
+  const { data_enter, write_enter } = useContractWrite(config_enter);
 
-  // // Wait for transaction to complete
-  // const { isLoading_Enter, isSuccess_Enter } = useWaitForTransaction({
-  //   hash: data_enter?.hash,
-  // });
+  // Wait for transaction to complete
+  const { isLoading_Enter, isSuccess_Enter } = useWaitForTransaction({
+    hash: data_enter?.hash,
+  });
 
   // useEffect(() => {
   //   if (isPrepareError) {
@@ -94,19 +94,18 @@ const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position
   return (
     <div className={styles.ButtonContainer}>
 
-      <button  className={styles.actionButton}  disabled={!write || isLoading || isPrepareError} onClick={() => write?.()}>{isLoading ? 'Moving' : 'Move'}
+      <button  className={styles.actionButton}  disabled={!write || isLoading || isPrepareError} onClick={() => write?.()}>{isLoading ? 'Entering' : 'Enter Game'}
 
-      <span className={styles.unlockText}>Move to adjacent squares</span>
+      <span className={styles.unlockText}>Enter NFT Game for the first time</span>
+      {/* {playerData.tokenId} */}
       {/* {isSuccess && <p>Player moved successfully!</p>}
       {isPrepareError && <p style={{ color: 'red' ,fontSize:"5px"}}>Error: {prepareError?.message}</p>} */}
       </button>
 
 
 
- 
-
     </div>
   );
 };
 
-export default MovePlayerButton;
+export default EnterPlayerButton;

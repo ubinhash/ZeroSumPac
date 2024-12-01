@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from './maze.module.css'; // Import the CSS module
 import webconfig from '../config/config.js';
 
-const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
+const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate}) => {
   const [zoom, setZoom] = useState(1); // Default zoom level
   const [maze, setMaze] = useState([]); // Initialize maze state // information to get from backend
   const [gridSize,setGridSize]=useState(20) // information to get from backend
@@ -20,7 +20,7 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
 
 
   const setObstacles =(mazeData) => {
-    if(mazeId%2==1){
+    if(mazeId%2==0){
       mazeData[14][5].obstacleImage="5-1.png"
       mazeData[13][6].obstacleImage="5-1.png"
       mazeData[12][7].obstacleImage="5-1.png"
@@ -42,7 +42,7 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
       mazeData[6][13].obstacleImage="5-1.png"
       mazeData[5][14].obstacleImage="5-1.png"
     }
-    else if(mazeId%2==0){
+    else if(mazeId%2==1){
 
       mazeData[5][5].obstacleImage="3-1.png"
       mazeData[5][6].obstacleImage="2-1.png"
@@ -123,12 +123,29 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
   };
   
   const fetchAndPopulateMaze = async (mazeId, mazeData) => {
+    console.log("Fetching maze data...");
     let updatedMazeData = await setMazeDotData(mazeId, mazeData);
     updatedMazeData = await setMazePlayerData(mazeId, updatedMazeData);
     setMaze(updatedMazeData); // Update state after processing
   };
   
+  const fetchDotInfo = async (mazeNumber) => {
+    try {
+      const response = await fetch(`${webconfig.apiBaseUrl}/getDotConsumed?maze_number=${mazeNumber}`);
+      const data = await response.json();
+      setDotInfo(prevDotInfo => ({
+        ...prevDotInfo,
+        maze_dot_consumed: data.mazeDotsConsumed,
+        total_dot_consumed: data.totalDotsConsumed,
+        total_dots: data.totalDotsInMaze
+      }));
   
+    } catch (error) {
+      console.error('Error fetching maze data:', error);
+    }
+  };
+  
+
   useEffect(() => {
     // Initialize mazeData with gridSize x gridSize, each cell will have id, visited, cellInfo, hasPlayer, and obstacle
     const mazeData = Array(gridSize).fill(null).map(() => 
@@ -146,7 +163,11 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
     setMaze(mazeData);
    
     fetchAndPopulateMaze(mazeId,mazeData);
-    console.log(mazeData[2][3])
+    fetchDotInfo(mazeId)
+    setTriggerMazeUpdate(() => () => {
+      fetchAndPopulateMaze(mazeId, mazeData);
+      fetchDotInfo(mazeId);
+  });
 
     // mazeData[1][1].cellInfo=1;
     // console.log(mazeData[2][6]);
@@ -156,7 +177,7 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
     // mazeData[1][2].hasPlayer=3;
     
  
-  }, [mazeId]);
+  }, [mazeId,setTriggerMazeUpdate]);
   
   const zoomIn = () => {
     setZoom(prevZoom => Math.min(prevZoom * 1.2, 3)); // Maximum zoom level (example: 3x zoom)
@@ -220,7 +241,7 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
                  
                     {( cell?.hasPlayer !== 0) && (
                       <img
-                        src={cell.hasPlayer === currplayerid ? "/icons/pacs/mypac.png" : "/icons/pacs/plainpac.png"}
+                        src={cell.hasPlayer == currplayerid ? "/icons/pacs/mypac.png" : "/icons/pacs/plainpac.png"}
                         alt="Player Icon"
                         className={styles.cellImage}
                       />
@@ -254,9 +275,9 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect}) => {
         </div>
       </div>
       <div className={styles.infoSection}>
-        <div className={styles.info1}>({hoverX},{hoverY})</div>
+        <div className={styles.info1}>({hoverX},{hoverY}) {currplayerid}</div>
         <div className={styles.info2}> Maze {mazeId} Dot Eaten : {dotInfo.maze_dot_consumed} /  {dotInfo.total_dot_in_maze} </div>
-        <div className={styles.info3}>Total Dot  {dotInfo.total_dot_consumed} /  {dotInfo.total_dots}  </div>
+        <div className={styles.info3}>Total Dot:  {dotInfo.total_dot_consumed} /  {dotInfo.total_dots}  </div>
       </div>
     </div>
   );

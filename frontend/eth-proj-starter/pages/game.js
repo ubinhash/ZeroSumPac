@@ -6,9 +6,12 @@ import { useState,useEffect } from 'react';
 import MyMaze from '../components/GameComponent/mymaze.js'
 import PlayerSelect from '../components/GameComponent/playerselect.js';
 import MovePlayerButton from '../components/GameComponent/button-move.js';
+import EnterPlayerButton from '../components/GameComponent/button-enter.js'
+import RobPlayerButton from '../components/GameComponent/button-rob.js'
 import PopupMessage from '../components/GameComponent/popup.js';
 import webconfig from '../components/config/config.js';
-
+import Rankings from '../components/GameComponent/ranking.js';
+import Logs from '../components/GameComponent/logs.js';
 export default function Game() {
 
   const mainStyle = {
@@ -20,8 +23,9 @@ export default function Game() {
   const [totalMaze,setTotalMaze] = useState(10);
   const [mazeUnlocked,setMazeUnlocked]=useState(Array(totalMaze).fill(false));
   const [unlockedInfo,setunlockedInfo]=useState("There are total of 10 Mazes. They will gradually unlock as mint status and game progresses.");
-  const [playerId,setPlayerId] =useState(1);
+  // const [playerId,setPlayerId] =useState(1);
   const [playerData, setPlayerData] = useState({
+    playerid:0,
     playerposition: { x: 0, y: 0, maze: 0 },
     dots: 0,
     level: 0,
@@ -65,8 +69,8 @@ export default function Game() {
   const [display,setDisplay] = useState('maze')
   const [currmaze, setCurrMaze] = useState(0); // State to store selected maze
   const [mazePositionSelected, setMazePositionSelected] = useState({ x: null, y: null, selected_playerid: null });
-
-
+  const [triggerMazeUpdate, setTriggerMazeUpdate] = useState(() => () => {});
+  const [triggerPlayerUpdate, setTriggerPlayerUpdate] = useState(() => () => {});
 
   const fetchContracts = async () => {
     try {
@@ -103,6 +107,13 @@ export default function Game() {
   const handleOptionSelect =(option) =>{
     setDisplay(option);
   }
+  const onSelectPlayer =(playerdata) =>{
+    setPlayerData(playerdata);
+    console.log("printing",playerdata.playerid);
+  }
+  useEffect(() => {
+    console.log("Trigger function updated:", triggerMazeUpdate);
+  }, [triggerMazeUpdate]);
 
   return (
     <Layout home>
@@ -157,16 +168,16 @@ export default function Game() {
         </div>
     </div>
       <div className={`${styles.section} ${styles.section2}`}>
-      {display === "maze" && <MyMaze currplayerid={playerId} mazeId={currmaze} onSelect={handlePositionSelection}></MyMaze>} 
-      {display === "log" && <h1>Log </h1>} {/* Replace with your actual Log component */}
-      {display === "ranking" && <h1>Ranking</h1>} {/* Replace with your actual Ranking component */}
+      {display === "maze" && <MyMaze currplayerid={playerData.playerid} playerData={playerData} mazeId={currmaze} onSelect={handlePositionSelection} setTriggerMazeUpdate={setTriggerMazeUpdate}></MyMaze>} 
+      {display === "log" && <Logs currplayerid={playerData.playerid}></Logs>} {/* Replace with your actual Log component */}
+      {display === "ranking" && <Rankings></Rankings>} {/* Replace with your actual Ranking component */}
       {display === "forfeit" && <h1>Forfeit</h1>} {/* Replace with your actual Log component */}
       {display === "lockin" && <h1>lockin</h1>} {/* Replace with your actual Ranking component */}
       </div>
 
       <div className={`${styles.section} ${styles.section3}`}>
         <div className={styles.menuTop}>
-            <PlayerSelect></PlayerSelect>
+            <PlayerSelect onSelectPlayer={onSelectPlayer} setTriggerPlayerUpdate={setTriggerPlayerUpdate}></PlayerSelect>
             {/* Content for the top section */}
         </div>
         <div className={styles.menuMiddle}>
@@ -175,6 +186,8 @@ export default function Game() {
             ({mazePositionSelected.x}, {mazePositionSelected.y})
             <br></br>
             {contracts.GAME}
+            <br></br>
+            {playerData.playerid}
             <br></br>
             {displayMsg}
         </div>
@@ -186,15 +199,17 @@ export default function Game() {
                 SHIELD
                 <span className={styles.unlockText}>[Unlock at level {config.MIN_SHIELD_LV}]</span>
             </button>
-            <button className={styles.actionButton}>
+            {/* <button className={styles.actionButton}>
                 ROB
                 <span className={styles.unlockText}>Surround a victim to rob {config.ROB_PERCENTAGE} % of dots</span>
-            </button>
+            </button> */}
              {/* <button className={styles.actionButton}>
                 MOVE
                 <span className={styles.unlockText}>Move to adjacent squares</span>
             </button> */}
-            <MovePlayerButton contracts={contracts} selected_position={mazePositionSelected} currmaze={currmaze} setDisplayMsg={setDisplayMsg} setPopupMsg={setPopupMsg}></MovePlayerButton>
+            <RobPlayerButton contracts={contracts} currplayerid={playerData.playerid} victimplayerid={mazePositionSelected.selected_playerid} selected_position={mazePositionSelected} currmaze={currmaze} setDisplayMsg={setDisplayMsg} setPopupMsg={setPopupMsg} onMoveSuccess={() => {triggerMazeUpdate(); triggerPlayerUpdate();}} ></RobPlayerButton>
+            <MovePlayerButton contracts={contracts} currplayerid={playerData.playerid} playerData={playerData} selected_position={mazePositionSelected} currmaze={currmaze} setDisplayMsg={setDisplayMsg} setPopupMsg={setPopupMsg} onMoveSuccess={() => {triggerMazeUpdate(); triggerPlayerUpdate();}} ></MovePlayerButton>
+            <EnterPlayerButton contracts={contracts} currplayerid={playerData.playerid} playerData={playerData} selected_position={mazePositionSelected} currmaze={currmaze} setDisplayMsg={setDisplayMsg} setPopupMsg={setPopupMsg}onMoveSuccess={() => {triggerMazeUpdate(); triggerPlayerUpdate();}} ></EnterPlayerButton>
             <PopupMessage msg={popupMsg} setMsg={setPopupMsg}></PopupMessage>
         </div>
        

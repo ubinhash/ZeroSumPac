@@ -21,6 +21,12 @@ const getGridSize= () => {
     return 20;
 }
 
+function unsignedToSigned(value) {
+    const maxInt256 = BigInt("0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+    const bigValue = BigInt(value);
+    return bigValue > maxInt256 ? bigValue - (BigInt(1) << BigInt(256)) : bigValue;
+}
+
 
 function logDisplay(logs) {
     const logsDisplay = [];
@@ -35,9 +41,11 @@ function logDisplay(logs) {
             });
         } else if (log.event_signature === "DotChanged") {
             const [dotdelta, playerid] = log.event_params;
+            const dotdeltaUnsigned = BigInt(dotdelta); // Replace with the actual database value
+            const dotdeltaSigned = unsignedToSigned(dotdeltaUnsigned);
 
             logsDisplay.push({
-                string: `Player ${playerid} Dot Change: ${dotdelta > 0 ? "+" : ""}${dotdelta}`,
+                string: `Player ${playerid} Dot Change: ${dotdeltaSigned > 0 ? "+" : ""}${dotdeltaSigned}`,
                 playerid: [playerid]
             });
         } else if (log.event_signature === "PlayerAttacked") {
@@ -75,7 +83,7 @@ router.get('/logs', async (req, res) => {
         const query = `
             SELECT *
             FROM ${dbname}
-            ORDER BY block_number, transaction_index, log_index;
+            ORDER BY block_number DESC, transaction_index DESC, log_index DESC;
         `;
         const result = await client.query(query);
 
@@ -234,7 +242,9 @@ router.get('/rankings', async (req, res) => {
 
         result.rows.forEach(row => {
             const [dotdelta, playerid] = row.event_params; // Extract dotdelta and playerid
-            const delta = parseInt(dotdelta, 10); // Ensure dotdelta is a number
+            const dotdeltaUnsigned = BigInt(dotdelta); // Replace with the actual database value
+            const dotdeltaSigned = unsignedToSigned(dotdeltaUnsigned);
+            const delta = parseInt(dotdeltaSigned, 10); // Ensure dotdelta is a number
 
             if (!playerDots[playerid]) {
                 playerDots[playerid] = 0; // Initialize player's dots

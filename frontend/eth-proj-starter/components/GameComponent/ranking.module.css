@@ -1,0 +1,64 @@
+/* ranking.module.css */
+.container {
+    padding: 20px;
+
+    width: 100%;
+    height:100%;
+    background-color: white;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .headerItem {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    font-weight: bold;
+    font-size: 12px;
+    background-color: #f9f9f9;
+  }
+  
+  .headerItem:not(:last-child) {
+    border-right: none;
+  }
+
+  .title {
+    font-size: 32px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .table {
+    font-size :14px;
+    width: 100%;
+    border-collapse: collapse;
+    margin: auto;
+  }
+  
+  .table th,
+  .table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 2px solid #ddd;
+  }
+  
+  .table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: gray;
+  }
+  

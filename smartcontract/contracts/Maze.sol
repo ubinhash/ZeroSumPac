@@ -84,19 +84,30 @@ contract Maze is Ownable{
 
          //rect shape
         if(mazeId % 2 == 1){
-            for (uint8 j = 5;j < 15; j++) {
-                mazes[mazeId][10][j] = CellState.HasObstacle;
-                mazes[mazeId][21][j] = CellState.HasObstacle;
-            }
-            mazes[mazeId][11][12] = CellState.HasObstacle;
-            mazes[mazeId][12][12] = CellState.HasObstacle;
-            mazes[mazeId][19][12] = CellState.HasObstacle;
-            mazes[mazeId][20][12] = CellState.HasObstacle;
+            mazes[mazeId][5][5] = CellState.HasObstacle;
+            mazes[mazeId][5][6] = CellState.HasObstacle;
+            mazes[mazeId][5][7] = CellState.HasObstacle;
+            mazes[mazeId][6][5] = CellState.HasObstacle;
+            mazes[mazeId][7][5] = CellState.HasObstacle;
 
-            mazes[mazeId][11][19] = CellState.HasObstacle;
-            mazes[mazeId][12][19] = CellState.HasObstacle;
-            mazes[mazeId][19][19] = CellState.HasObstacle;
-            mazes[mazeId][20][19] = CellState.HasObstacle;
+            mazes[mazeId][14][14] = CellState.HasObstacle;
+            mazes[mazeId][14][13] = CellState.HasObstacle;
+            mazes[mazeId][14][12] = CellState.HasObstacle;
+            mazes[mazeId][13][14] = CellState.HasObstacle;
+            mazes[mazeId][12][14] = CellState.HasObstacle;
+
+            mazes[mazeId][5][14] = CellState.HasObstacle;
+            mazes[mazeId][5][13] = CellState.HasObstacle;
+            mazes[mazeId][5][12] = CellState.HasObstacle;
+            mazes[mazeId][6][14] = CellState.HasObstacle;
+            mazes[mazeId][7][14] = CellState.HasObstacle;
+
+            mazes[mazeId][14][5] = CellState.HasObstacle;
+            mazes[mazeId][13][5] = CellState.HasObstacle;
+            mazes[mazeId][12][5] = CellState.HasObstacle;
+            mazes[mazeId][14][6] = CellState.HasObstacle;
+            mazes[mazeId][14][7] = CellState.HasObstacle;
+
         }
 
         // //diagnol shape

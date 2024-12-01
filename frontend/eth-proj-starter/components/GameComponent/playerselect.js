@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import styles from './playerselect.module.css'; // Import the styles
+import webconfig from '../config/config.js';
+import { useAccount } from 'wagmi';  
 const ProgressBar = ({ startval, endval, myval,mylevel }) => {
     // var progressPercentage = ((myval - startval) / (endval - startval)) * 100;
     var progressPercentage =2+ ((myval - startval) / (endval - startval)) * 98;
@@ -26,8 +28,9 @@ const ProgressBar = ({ startval, endval, myval,mylevel }) => {
 };
 
 
-const PlayerSelect = ({ onSelectPlayer,config }) => {
+const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate }) => {
   // Example player data (replace with actual data from your source)
+  const { address } = useAccount();
   const [players,setplayers] = useState([
     {
       "tokenId": "0",
@@ -36,39 +39,13 @@ const PlayerSelect = ({ onSelectPlayer,config }) => {
       "balance": "1",
       "image": "/icons/pacs/fullpac.jpg"
     },
-    {
-      "tokenId": "1",
-      "contract": "0xe70128b41a93F0B7f4255A8293F665023FcbEDEd",
-      "name": "ZSP #1",
-      "balance": "1",
-      "image": ""
-    },
-    {
-      "tokenId": "2",
-      "contract": "0xe70128b41a93F0B7f4255A8293F665023FcbEDEd",
-      "name": "ZSP #2",
-      "balance": "1",
-      "image": ""
-    },
-    {
-      "tokenId": "3",
-      "contract": "0xe70128b41a93F0B7f4255A8293F665023FcbEDEd",
-      "name": "ZSP #3",
-      "balance": "1",
-      "image": ""
-    },
-    {
-      "tokenId": "4",
-      "contract": "0xe70128b41a93F0B7f4255A8293F665023FcbEDEd",
-      "name": "ZSP #4",
-      "balance": "1",
-      "image": ""
-    }
   ]);
 
-  const [selectedPlayer, setSelectedPlayer] = useState(0);
+
+
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [playerData, setPlayerData] = useState({
-    playerid:1,
+    playerid:0,
     playerposition: { x: 0, y: 0, maze: 0 },
     dots: 0,
     level: 0,
@@ -80,17 +57,88 @@ const PlayerSelect = ({ onSelectPlayer,config }) => {
     nftContract: "",
     tokenId: 0,
     moveInfo: { day: 0, move: 0 },
-    status: "Inactive",
+    status: "Please Connect Wallet",
   });
 
+  useEffect(() => {
+    if (address) {
+      const network = 'shape-sepolia'; // Or dynamically set the network based on user's selection
+      fetchUserNft(address, network);
+    } else {
+      setplayers([]);
+    }
+  
+    setTriggerPlayerUpdate(() => () => {
+      if(selectedPlayer){
+        fetchPlayerData(selectedPlayer, 'shape-sepolia');
+      }
+    });
+  }, [address, selectedPlayer, setTriggerPlayerUpdate]); // Add `selectedPlayer` to the dependency array
+  
+
   // Handle player selection
-  const fetchPlayerData = (player) =>{
+  const fetchUserNft = async (owner, network) => {
+    try {
+      // Assuming webconfig.apiBaseUrl is already set correctly
+      const response = await fetch(`${webconfig.apiBaseUrl}/getPacByOwner?owner=${owner}&network=${network}`);
+      
+      const data = await response.json();
+  
+      // Update the players state with the fetched data
+      console.log("bad bad")
+      console.log(response);
+      console.log("bad bad end")
+      setplayers(data);
+    } catch (error) {
+      console.error('Error fetching contracts:', error);
+    }
+  };
+  
+  const fetchPlayerData = async (player,network) =>{
+    try {
+    const response = await fetch(`${webconfig.apiBaseUrl}/getPlayerId?contract=${player.contract}&tokenid=${player.tokenId}&network=${network}`);
+    const data = await response.json();
+    const playerid= data.playerId
+    const response2 = await fetch(`${webconfig.apiBaseUrl}/getPlayerInfo?playerid=${playerid}&network=${network}`);
+    const data2 = await response2.json();
+
+    if (playerid == 0) {
+      // Set only nftContract and tokenId for playerData
+      const updatedPlayerData = {
+        playerid:0,
+        playerposition: { x: 0, y: 0, maze: 0 },
+        dots: 0,
+        level: 0,
+        nextMoveTime: 0,
+        nextSwitchMazeTime: 0,
+        shieldExpireTime: 0,
+        protectionExpireTime: 0,
+        vulnerableTime: 0,
+        moveInfo: { day: 0, move: 0 },
+        status: "Inactive",
+        nftContract: player.contract,
+        tokenId: player.tokenId,
+      };
+      setPlayerData(updatedPlayerData); // Update state
+      onSelectPlayer(updatedPlayerData); 
+    } else {
+      // Otherwise, set all playerData
+      setPlayerData(data2);
+      onSelectPlayer(data2);
+    }
+
+    
+  } catch (error) {
+    console.error('Error fetching contracts:', error);
+  }
 
   }
-  const handlePlayerClick = (player) => {
+  const handlePlayerClick = async (player) => {
     setSelectedPlayer(player);
-    fetchPlayerData(player);
-    // onSelectPlayer(player); // Pass selected player data back to parent
+    console.log(selectedPlayer);
+    await fetchPlayerData(player,'shape-sepolia');
+
+     // Pass selected player data back to parent
   };
 
   return (
@@ -123,7 +171,7 @@ const PlayerSelect = ({ onSelectPlayer,config }) => {
             <div className={styles.playerinfo_bottom}>
                DOTS: {playerData.dots}
                <br></br>
-               MOVES: {playerData.moveInfo.move}
+               MOVES: {playerData?.moveInfo?.move} / TODO
                <br></br>
                <div className={styles.fineprint}> [MOVE COUNT RESETS UTC 0:00]</div>
               
@@ -136,7 +184,8 @@ const PlayerSelect = ({ onSelectPlayer,config }) => {
       {/* Bottom Bar: Progress Bar */}
 
         <div className={styles.bottom}>
-                <ProgressBar startval={40} endval={100} myval={80} mylevel={2}></ProgressBar>
+          {/* TODO */}
+                <ProgressBar startval={0} endval={40} myval={playerData.dots} mylevel={playerData.level}></ProgressBar>
         </div>
 
     </div>

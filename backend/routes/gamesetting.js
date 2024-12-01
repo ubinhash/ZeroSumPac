@@ -22,6 +22,7 @@ const CONTRACTS = {
 
 // ABI of your contract
 const GAME_ABI = require('./GameABI.json');
+const MAZE_ABI = require('./MazeABI.json');
 
 const web3Mainnet = new Web3(process.env.RPC_MAINNET);
 const web3Sepolia = new Web3(process.env.RPC_SEPOLIA);
@@ -64,8 +65,8 @@ router.get('/getConfig', async (req, res) => {
             dailyMoves.push(moves);
     
         }
-        console.log( dotsRequired)
-        console.log(dailyMoves)
+        // console.log( dotsRequired)
+        // console.log(dailyMoves)
         const formatBigIntArray = (arr) => arr.map(value => value.toString());
         const eatPercentageKey = 8;
         const eatPercentage = await game.methods.getConfigUint(eatPercentageKey).call();
@@ -90,11 +91,234 @@ router.get('/getContracts', async (req, res) => {
     res.send(CONTRACTS[network]);
 });
 
+router.get('/getDotConsumed', async (req, res) => {
+    const { network = "shape-sepolia",maze_number = 0 } = req.query;
+
+    const gameContractAddress = CONTRACTS[network]?.GAME;
+    const mazeContractAddress = CONTRACTS[network]?.MAZE;
+
+    if (!gameContractAddress || !mazeContractAddress) {
+        return res.status(500).json({ error: `Contract not found for GAME or MAZE on ${network}` });
+    }
+
+    const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
+    
+    try {
+        // Instantiate the contracts
+        const gameContract = new web3.eth.Contract(GAME_ABI, gameContractAddress);
+        const mazeContract = new web3.eth.Contract(MAZE_ABI, mazeContractAddress);
+
+        // Fetch values from the Game contract
+        const level3DotsLocked = await gameContract.methods.level3DotsLocked().call();
+        const level4DotsLocked = await gameContract.methods.level4DotsLocked().call();
+        const totalDotsConsumed = await mazeContract.methods.total_dots_consumed().call();
+        const totalDotsInMaze = await mazeContract.methods.total_dots_in_mazes().call();
+        const mazeDotsConsumed = await mazeContract.methods.maze_dots_consumed(maze_number).call();
+
+        // Send response with fetched values
+        res.send({
+            mazeDotsConsumed: mazeDotsConsumed.toString(),
+            level3DotsLocked: level3DotsLocked.toString(),
+            level4DotsLocked: level4DotsLocked.toString(),
+            totalDotsConsumed: totalDotsConsumed.toString(),
+            totalDotsInMaze: totalDotsInMaze.toString(),
+        });
+
+    } catch (error) {
+        console.error('Error fetching game and maze info:', error.message);
+        res.status(500).json({ error: 'Failed to fetch game and maze info', details: error.message });
+    }
+});
+
+const getMazeUnlockRequirements = async (mazeContract) => {
+    const mazeUnlockRequirements = [];
+    
+    try {
+        // Fetch the arrays of mint required and dots required
+      
+        // Construct requirements for mazes 0-4 (based on mint required)
+        for (let i = 0; i < 5; i++) {
+            const mintRequiredValue = await mazeContract.methods.MAZE_UNLOCK_MINT_REQUIRED(i).call();
+            mazeUnlockRequirements.push(`Unlockable after ${mintRequiredValue} PAC is minted`);
+        }
+
+        // Construct requirements for mazes 5-8 (based on dots required)
+        for (let i = 5; i < 9; i++) {
+            const dotsRequiredValue = await mazeContract.methods.MAZE_UNLOCK_DOTS_REQUIRED(i).call();
+            mazeUnlockRequirements.push(`Unlockable after ${dotsRequiredValue} dots are consumed in total`);
+        }
+    } catch (error) {
+        console.error('Error fetching maze unlock requirements:', error.message);
+    }
+
+    return mazeUnlockRequirements;
+};
+
+router.get('/getMazeUnlock', async (req, res) => {
+    const { network = "shape-sepolia" } = req.query;
+  
+
+    const mazeContractAddress = CONTRACTS[network]?.MAZE;
+
+    if (!mazeContractAddress) {
+        return res.status(500).json({ error: `Contract not found for MAZE on ${network}` });
+    }
+
+    const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
+    
+    try {
+        // Instantiate the Maze contract
+        const mazeContract = new web3.eth.Contract(MAZE_ABI, mazeContractAddress);
+
+        // Fetch maze unlock statuses
+        const mazeUnlockedStatuses = [];
+        for (let i = 0; i < 10; i++) { // Total Mazes = 10
+            const mazeUnlocked = await mazeContract.methods.maze_unlocked(i).call();
+            mazeUnlockedStatuses.push(mazeUnlocked);
+        }
+
+        const mazeUnlockRequirements = await getMazeUnlockRequirements(mazeContract);
+        // Send response with the maze unlock statuses
+        res.send({
+            mazeUnlockedStatuses, // Array of booleans for each maze (0 to 9)
+            mazeUnlockRequirements 
+        });
+
+    } catch (error) {
+        console.error('Error fetching maze unlock statuses:', error.message);
+        res.status(500).json({ error: 'Failed to fetch maze unlock statuses', details: error.message });
+    }
+});
+
+router.get('/getPlayerId', async (req, res) => {
+    const { network = "shape-sepolia", contract, tokenid } = req.query;
+
+    if (!contract || !tokenid) {
+        return res.status(400).json({ error: "Missing contractAddress or tokenId parameter" });
+    }
+    const gameContractAddress = CONTRACTS[network]?.GAME; // Adjust if the mapping is in a different contract
+    if (!gameContractAddress) {
+        return res.status(500).json({ error: `Contract not found for GAME on ${network}` });
+    }
+
+    const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
+
+    try {
+        // Instantiate the contract
+        const gameContract = new web3.eth.Contract(GAME_ABI, gameContractAddress);
+
+        // Call the mapping with the provided parameters
+        const playerId = await gameContract.methods.nft_to_playerid(contract, tokenid).call();
+
+        // Send the result
+        res.send({ playerId: playerId.toString() });
+    } catch (error) {
+        console.error('Error fetching playerId from nft_to_playerid:', error.message);
+        res.status(500).json({ error: 'Failed to fetch playerId', details: error.message });
+    }
+});
+
+router.get('/getMaxStride', async (req, res) => {
+    const { network = "shape-sepolia",playerid } = req.query;
+
+    // Validate input
+    if (!playerid) {
+        return res.status(400).json({ error: "Missing playerId parameter" });
+    }
+
+    // Get the appropriate Maze contract address
+    const mazeContractAddress = CONTRACTS[network]?.MAZE;
+    if (!mazeContractAddress) {
+        return res.status(500).json({ error: `Contract not found for MAZE on ${network}` });
+    }
+
+    const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
+
+    try {
+        // Instantiate the Maze contract
+        const mazeContract = new web3.eth.Contract(MAZE_ABI, mazeContractAddress);
+
+        // Call the _getMaxStride function with the given playerId
+        const maxStride = await mazeContract.methods._getMaxStride(playerid).call();
+
+        // Send the response as a string
+        res.send({ maxStride: maxStride.toString() });
+    } catch (error) {
+        console.error('Error fetching maxStride from Maze contract:', error.message);
+        res.status(500).json({ error: 'Failed to fetch maxStride', details: error.message });
+    }
+});
+
+
+router.get('/getPlayerInfo', async (req, res) => {
+    const { network = "shape-sepolia", playerid } = req.query;
+
+    // Validate input
+    if (!playerid) {
+        return res.status(400).json({ error: "Missing playerid parameter" });
+    }
+
+    const gameContractAddress = CONTRACTS[network]?.GAME;
+    if (!gameContractAddress) {
+        return res.status(500).json({ error: `Contract not found for GAME on ${network}` });
+    }
+
+    const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
+
+    try {
+        // Instantiate the Game contract
+        const gameContract = new web3.eth.Contract(GAME_ABI, gameContractAddress);
+
+        // Fetch player information from the contract
+        const playerInfo = await gameContract.methods.players(playerid).call();
+        const statusMapping = {
+            "0": "Inactive",
+            "1": "Active",
+            "2": "LockedIn",
+            "3": "Forfeit",
+            "4": "Eliminated"
+        };
+
+        // Convert BigInt values to strings
+        const formattedPlayerInfo = {
+            playerid:playerid,
+            playerPosition: {
+                x: playerInfo.playerposition.x.toString(),
+                y: playerInfo.playerposition.y.toString(),
+                maze: playerInfo.playerposition.maze.toString(),
+            },
+            dots: playerInfo.dots.toString(),
+            level: playerInfo.level.toString(),
+            nextMoveTime: playerInfo.nextMoveTime.toString(),
+            nextSwitchMazeTime: playerInfo.nextSwitchMazeTime.toString(),
+            shieldExpireTime: playerInfo.shieldExpireTime.toString(),
+            protectionExpireTime: playerInfo.protectionExpireTime.toString(),
+            vulnerableTime: playerInfo.vulnerableTime.toString(),
+            nftContract: playerInfo.nftContract,
+            tokenId: playerInfo.tokenId.toString(),
+            moveInfo: {
+                day: playerInfo.moveInfo.day.toString(),
+                move: playerInfo.moveInfo.move.toString(),
+            },
+            statusCode: playerInfo.status.toString(), // Assuming it's a BigInt or number
+            status:statusMapping[playerInfo.status.toString()] 
+        };
+
+        // Send the formatted response
+        res.json(formattedPlayerInfo);
+    } catch (error) {
+        console.error('Error fetching player info:', error.message);
+        res.status(500).json({ error: 'Failed to fetch player info', details: error.message });
+    }
+});
+
+
+
 //Function to get player info (player location, dots ranks etc)
-//function to get isCurrentMazeUnlockedForPlayer returns array[]
-//GET PLAYER MAX STRIDE
-//function to get dotlocked in for lvl3, lv4 total 
-//dot consumed for maze
+//function to get isCurrentMazeUnlockedForPlayer returns array[] DONE
+//GET PLAYER MAX STRIDE DONE
+//function to get dotlocked in for lvl3, lv4 total  DONE
+//dot consumed for maze DONE
 
 
 // function to get ranking
