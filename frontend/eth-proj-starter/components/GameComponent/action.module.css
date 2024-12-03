@@ -1,0 +1,88 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background-color: #ffffff;
+    height:100%;
+    width: 100%;
+  }
+
+  .infoText {
+    color: #ffffff; /* Neutral gray for information */
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    line-height: 1.6;
+    border: 2px solid #000000; /* Blue border for info */
+    padding: 1rem;
+    border-radius: 3px;
+    background-color: #000000; /* Light blue background */
+  }
+  .warningText {
+    color: #d9534f; /* Red for warning text */
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    text-align: center;
+    line-height: 1.6;
+    border: 2px solid #d9534f;
+    padding: 1rem;
+    border-radius: 3px;
+    background-color: #fff0f0; /* Light red background */
+  }
+  
+  .actionButton {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 3px;
+    background-color: #f97108b1; /* Blue button */
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-family: inherit;
+  }
+  
+  .actionButton:disabled {
+    background-color: #ccc; /* Gray when disabled */
+    cursor: not-allowed;
+  }
+  
+  .actionButton:hover:not(:disabled) {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05);
+  }
+  
+  .actionButton:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+  
+  .red{
+    color:#efaf78;
+  }
+
+  .inputWrapper {
+    margin: 1rem 0;
+    text-align: center;
+    width: 100%;
+  }
+  
+
+  .inputField {
+    font-size: 1.1rem;
+    padding: 0.6rem;
+    margin-top: 0.5rem;
+    width: 50%;
+    text-align: center;
+    border-radius: 3px;
+    border: 2px solid #000000;
+    font-family: inherit;
+  }
+
+  .inputField:focus{
+    border: 1px solid #000000;
+  }
+  
+  

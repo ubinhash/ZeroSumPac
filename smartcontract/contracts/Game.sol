@@ -195,13 +195,13 @@ contract Game is Ownable {
 
     function movePlayerTo(uint256 playerid,uint8 maze, uint8 x, uint8 y) payable external ownsNFT(playerid){
         require(GAME_ENDED==Ending.Not_Ended,"Game Ended");
-        require(players[playerid].nextMoveTime < block.timestamp,"Please wait until nextMoveTime");
+        require(players[playerid].nextMoveTime < block.timestamp,"Wait");
         uint8 currx = players[playerid].playerposition.x;
         uint8 curry = players[playerid].playerposition.y;
         if(players[playerid].playerposition.maze != maze){ //are you switching to a different maze
             //checking penality and reset relevant timestamps
-            require(mazeContract.hasplayer(maze,x,y)==0,"You can travel to a occupied grid when you switch maze");
-            require(block.timestamp>players[playerid].nextSwitchMazeTime || msg.value >=config[ConfigKey.MAZE_SWITCH_PENALTY] , "Need to pay the penalty if want to switch maze before time is up");
+            require(mazeContract.hasplayer(maze,x,y)==0,"Occupied");
+            require(block.timestamp>players[playerid].nextSwitchMazeTime || msg.value >=config[ConfigKey.MAZE_SWITCH_PENALTY] , "Penalty");
             players[playerid].nextMoveTime = block.timestamp + config[ConfigKey.FIRST_ENTRANCE_MOVE_INTERVAL];
             players[playerid].nextSwitchMazeTime = block.timestamp + config[ConfigKey.MAZE_SWITCH_INTERVAL];
             _movePlayerHelper(maze,x,y,playerid,true);
@@ -218,7 +218,7 @@ contract Game is Ownable {
                 uint256 otherplayerid=mazeContract.hasplayer(maze,x,y);
                 uint256 dotdelta=(players[otherplayerid].dots* config[ConfigKey.EAT_PERCENTAGE] + 99) / 100;
 
-                require(players[playerid].level>=players[otherplayerid].level,"Can't attack higher ranked");
+                require(players[playerid].level>=players[otherplayerid].level,"Higher ranked");
                 require(block.timestamp>players[otherplayerid].shieldExpireTime|| block.timestamp<players[otherplayerid].vulnerableTime,"Shielded");
                 require(block.timestamp>players[otherplayerid].protectionExpireTime|| block.timestamp<players[otherplayerid].vulnerableTime,"Protected");
                 //check level
@@ -284,7 +284,7 @@ contract Game is Ownable {
         // Ensure the attacker and victim are adjacent
         // Check if the victim's shield and protectionhas expired
         require(victim.dots>=4);
-        require(mazeContract._isSurrounded(x_victim, y_victim, maze_victim), "Not Surrounded");
+        require(mazeContract._isSurrounded(x_victim, y_victim, maze_victim), "No");
         require(maze_victim==maze_player && Helper.isAdjacent(x_victim, y_victim, x_player, y_player), "No");
         require((block.timestamp > victim.shieldExpireTime && block.timestamp > victim.protectionExpireTime)|| block.timestamp<victim.vulnerableTime, "Can't Attack");
         
@@ -363,7 +363,7 @@ contract Game is Ownable {
     function _removePlayerFromBoard(uint256 playerid)internal{
  
         //Set the maze to empty; TOCHECK
-        mazeContract.hasplayer(players[playerid].playerposition.maze,players[playerid].playerposition.x,players[playerid].playerposition.y);
+        mazeContract.setplayer(players[playerid].playerposition.maze,players[playerid].playerposition.x,players[playerid].playerposition.y,0);
         uint8 largenumber=255;
         players[playerid].playerposition.x=largenumber;
         players[playerid].playerposition.y=largenumber;

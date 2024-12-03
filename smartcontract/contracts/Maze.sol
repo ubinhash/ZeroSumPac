@@ -136,6 +136,9 @@ contract Maze is Ownable{
             return 1;
         }
     }
+    function setplayer(uint8 maze, uint8 x, uint8 y ,uint256 playerid) external onlyAllowedOperator {
+        hasplayer[maze][x][y]=playerid;
+    }
     function _movePlayerInMaze(uint8 maze, uint8 x, uint8 y,uint8 oldmaze,uint8 oldx,uint8 oldy,uint256 playerid,bool ignorestride) external onlyAllowedOperator returns(uint256){
         require(mazes[maze][x][y]!=CellState.HasObstacle,"Obstacle");
         require(x>=0 && x <GRID_SIZE && y>=0 && y<GRID_SIZE,"Boundary");
