@@ -226,6 +226,7 @@ contract Game is Ownable {
                 //eat pac
                 //swap positions and dot change for both
                 players[otherplayerid].protectionExpireTime=block.timestamp+config[ConfigKey.PROTECTION_INTERVAL]; //victim is now immune for the next protection interval
+                players[otherplayerid].vulnerableTime=0; //switch this off to prevent infinite attack
                  _changeDot(playerid,int256(dotdelta));
                  _changeDot(otherplayerid,-int256(dotdelta));
                 _movePlayerHelper(maze,x,y,playerid,false);

@@ -146,7 +146,10 @@ contract Maze is Ownable{
 
         require(ignorestride || (Helper.distance(x,y,oldx,oldy)<=_getMaxStride(playerid) && Helper.distance(x,y,oldx,oldy)>0),"distance is zero or greater than max stride");
 
-        hasplayer[oldmaze][oldx][oldy]=0;
+        // Clear old position if it's not a swap, if it's a swap the old position will be occupied by another player
+        if(hasplayer[oldmaze][oldx][oldy]==playerid){
+            hasplayer[oldmaze][oldx][oldy]=0;
+        }
         hasplayer[maze][x][y]=playerid;
 
         //TODO SET IN OTHER CONTRACTS ABOUT PLAYER INFORMATION
