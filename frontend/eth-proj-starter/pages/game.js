@@ -12,6 +12,8 @@ import PopupMessage from '../components/GameComponent/popup.js';
 import webconfig from '../components/config/config.js';
 import Rankings from '../components/GameComponent/ranking.js';
 import Logs from '../components/GameComponent/logs.js';
+import LockInPage from '../components/GameComponent/action-lockin.js';
+import ForfeitPage from '../components/GameComponent/action-forfeit.js';
 
 const CountdownShield = ({ shieldExpireTime, protectionExpireTime, vulnerableTime }) => {
     const [status, setStatus] = useState("");
@@ -72,6 +74,7 @@ export default function Game() {
   const [popupMsg,setPopupMsg]=useState("")
   const [totalMaze,setTotalMaze] = useState(10);
   const [mazeUnlocked,setMazeUnlocked]=useState(Array(totalMaze).fill(false));
+  const [mazeUnlockRequirements,setMazeUnlockedRequirements]=useState(Array(totalMaze).fill(""));
   const [unlockedInfo,setunlockedInfo]=useState("There are total of 10 Mazes. They will gradually unlock as mint status and game progresses.");
   // const [playerId,setPlayerId] =useState(1);
   const [playerData, setPlayerData] = useState({
@@ -141,8 +144,30 @@ export default function Game() {
     }
   };
 
+  const fetchMazeUnlocked = async () => {
+    try {
+      // const response = await fetch(`http://localhost:3002/getContracts`);
+      const response = await fetch(`${webconfig.apiBaseUrl}/getMazeUnlock`);
+      
+      const data = await response.json();
+
+      // Update the contracts state with the fetched data
+      console.log(data.mazeUnlockedStatuses)
+      if(data.mazeUnlockedStatuses){
+        setMazeUnlocked(data.mazeUnlockedStatuses);
+      }
+      if(data.mazeUnlockRequirements){
+        setMazeUnlockedRequirements(data.mazeUnlockRequirements);
+      }
+    } catch (error) {
+      console.error('Error fetching contracts:', error);
+    }
+  }
+
+
   useEffect(() => {
     fetchContracts();
+    fetchMazeUnlocked();
   }, []);
 
   const handlePositionSelection = (x, y, selected_playerid,playerinfo) => {
@@ -202,6 +227,13 @@ export default function Game() {
                                     <path d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 8V7a3 3 0 016 0v3H9zm3 4a2 2 0 110 4 2 2 0 010-4z" />
                                 </svg>
                             )}
+                             {mazeUnlocked[mazeNumber] && (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                               
+                               <rect x="5" y="11" width="14" height="10" rx="2" ry="2" ></rect>
+                                <path d="M8 11V7a4 4 0 0 1 8 0"></path>
+                              </svg>
+                            )}
                         </span>
                     </button>
                 ))}
@@ -233,8 +265,10 @@ export default function Game() {
       {display === "maze" && <MyMaze currplayerid={playerData.playerid} playerData={playerData} mazeId={currmaze} onSelect={handlePositionSelection} setTriggerMazeUpdate={setTriggerMazeUpdate}></MyMaze>} 
       {display === "log" && <Logs currplayerid={playerData.playerid}></Logs>} {/* Replace with your actual Log component */}
       {display === "ranking" && <Rankings></Rankings>} {/* Replace with your actual Ranking component */}
-      {display === "forfeit" && <h1>Forfeit</h1>} {/* Replace with your actual Log component */}
-      {display === "lockin" && <h1>lockin</h1>} {/* Replace with your actual Ranking component */}
+      {display === "forfeit" && <ForfeitPage contracts={contracts}  playerData={playerData} setPopupMsg={setPopupMsg} ></ForfeitPage>} {/* Replace with your actual Log component */}
+      {display === "lockin" && <LockInPage contracts={contracts}  playerData={playerData} setPopupMsg={setPopupMsg} minlevel={config.MIN_LOCK_IN_LV}></LockInPage>} {/* Replace with your actual Ranking component */}
+      {display === "laws" && <h1>laws</h1>} {/* Replace with your actual Ranking component */}
+      {display === "shield" && <h1>shield</h1>} {/* Replace with your actual Ranking component */}
       </div>
 
       <div className={`${styles.section} ${styles.section3}`}>
@@ -270,7 +304,7 @@ export default function Game() {
             {/* Fixed-size buttons */}
 
                 
-            <button className={styles.actionButton}>
+            <button className={styles.actionButton} onClick={() => handleOptionSelect('shield')}>
                 SHIELD
                 <span className={styles.unlockText}>[Unlock at level {config.MIN_SHIELD_LV}]</span>
             </button>

@@ -62,7 +62,21 @@ function logDisplay(logs) {
                 string: `Player ${attackerplayerid} Robbed Player ${victimplayerid}`,
                 playerid: [attackerplayerid, victimplayerid]
             });
+        } else if (log.event_signature === "PlayerStatusChanged") {
+            const [statuscode, playerid] = log.event_params;
+            const statusMapping = {
+                "0": "Inactive",
+                "1": "Active",
+                "2": "LockedIn",
+                "3": "Forfeit",
+                "4": "Eliminated"
+            };
+            logsDisplay.push({
+                string: `Player ${playerid} Status Changed:  ${statusMapping[statuscode.toString()]}`,
+                playerid: [playerid]
+            });
         }
+
     });
 
     return logsDisplay;
@@ -90,6 +104,38 @@ router.get('/logs', async (req, res) => {
 
         const parsedData = result.rows; // `rows` contains the query results as an array of objects
         res.json(logDisplay(parsedData));
+
+    } catch (error) {
+        console.error('Error executing query:', error.message);
+        res.status(500).json({ error: 'Error fetching logs' });
+    } finally {
+        // Disconnect from the database
+        await client.end();
+    }
+});
+
+router.get('/rawlogs', async (req, res) => {
+    const {network="shape-sepolia" } = req.query;
+    const connectionString=DB[network].connectionString;
+    const dbname=DB[network].dbname;
+    const client = new Client({ connectionString });
+
+    try {
+        // Connect to the database
+        await client.connect();
+        console.log('Connected to PostgreSQL');
+
+
+        const query = `
+            SELECT *
+            FROM ${dbname}
+            ORDER BY block_number DESC, transaction_index DESC, log_index DESC;
+        `;
+        const result = await client.query(query);
+
+
+        const parsedData = result.rows; // `rows` contains the query results as an array of objects
+        res.json(parsedData);
 
     } catch (error) {
         console.error('Error executing query:', error.message);
