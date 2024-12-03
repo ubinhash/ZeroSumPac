@@ -37,7 +37,7 @@ const Rankings = () => {
     const fetchDotInfo = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3002/getDotConsumed?maze=0"
+          `${webconfig.apiBaseUrl}/getDotConsumed?maze=0`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch dot information");

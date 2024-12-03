@@ -12,6 +12,56 @@ import PopupMessage from '../components/GameComponent/popup.js';
 import webconfig from '../components/config/config.js';
 import Rankings from '../components/GameComponent/ranking.js';
 import Logs from '../components/GameComponent/logs.js';
+
+const CountdownShield = ({ shieldExpireTime, protectionExpireTime, vulnerableTime }) => {
+    const [status, setStatus] = useState("");
+
+    const computeShield = () => {
+        const currentTime = Date.now() / 1000; // Current time in seconds
+
+        if (currentTime < vulnerableTime) {
+            // Check if shield will be in effect after vulnerable time expires
+            if (Math.max(shieldExpireTime, protectionExpireTime) > vulnerableTime) {
+                const timeUntilVulnerableExpires = vulnerableTime - currentTime;
+                const minutes = Math.floor(timeUntilVulnerableExpires / 60);
+                const seconds = Math.ceil(timeUntilVulnerableExpires % 60);
+                return `Attackable (vulnerable time expires in ${minutes} min ${seconds} sec)`;
+            }
+        }
+
+        if (currentTime < shieldExpireTime || currentTime < protectionExpireTime) {
+            // Player is shielded
+            const shieldEndTime = Math.max(shieldExpireTime, protectionExpireTime);
+            const timeLeft = shieldEndTime - currentTime;
+
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = Math.ceil(timeLeft % 60);
+
+            if (protectionExpireTime > shieldExpireTime) {
+                return `Protected (for the next ${hours} hr ${minutes} min ${seconds} sec)`;
+            } else {
+                return `Shielded (for the next ${hours} hr ${minutes} min ${seconds} sec)`;
+            }
+        }
+
+        // Player is not shielded
+        return "Attackable";
+    };
+
+    useEffect(() => {
+        // Update the status every second
+        const interval = setInterval(() => {
+            setStatus(computeShield());
+        }, 1000);
+
+        return () => clearInterval(interval); // Cleanup interval on component unmount
+    }, [shieldExpireTime, protectionExpireTime, vulnerableTime]);
+
+    return <div>{status}</div>;
+};
+
+
 export default function Game() {
 
   const mainStyle = {
@@ -68,7 +118,7 @@ export default function Game() {
   
   const [display,setDisplay] = useState('maze')
   const [currmaze, setCurrMaze] = useState(0); // State to store selected maze
-  const [mazePositionSelected, setMazePositionSelected] = useState({ x: null, y: null, selected_playerid: null });
+  const [mazePositionSelected, setMazePositionSelected] = useState({ x: null, y: null, selected_playerid: null , playerinfo:null});
   const [triggerMazeUpdate, setTriggerMazeUpdate] = useState(() => () => {});
   const [triggerPlayerUpdate, setTriggerPlayerUpdate] = useState(() => () => {});
 
@@ -95,25 +145,37 @@ export default function Game() {
     fetchContracts();
   }, []);
 
-  const handlePositionSelection = (x, y, selected_playerid) => {
-    setMazePositionSelected({ x, y, selected_playerid});
+  const handlePositionSelection = (x, y, selected_playerid,playerinfo) => {
+    console.log("position selection",playerinfo)
+    setMazePositionSelected({ x, y, selected_playerid,playerinfo});
   };
 
   const handleMazeSelect = (mazeNumber) => {
     setDisplay('maze');
     setCurrMaze(mazeNumber); // Update state with selected maze number
-    console.log(`Selected Maze: ${mazeNumber}`); // Optional: For debugging
+
   };
   const handleOptionSelect =(option) =>{
     setDisplay(option);
   }
   const onSelectPlayer =(playerdata) =>{
     setPlayerData(playerdata);
-    console.log("printing",playerdata.playerid);
+
   }
-  useEffect(() => {
-    console.log("Trigger function updated:", triggerMazeUpdate);
-  }, [triggerMazeUpdate]);
+
+  const computeMove = (moveInfo) => {
+    const currentDay = Math.floor(Date.now() /86400/1000);
+    console.log("current day", currentDay)
+    const day=moveInfo.day;
+    const move=moveInfo.move;
+    if(day<currentDay){
+      return 0
+    }
+    else{
+      return move;
+    }
+
+};
 
   return (
     <Layout home>
@@ -183,11 +245,24 @@ export default function Game() {
         <div className={styles.menuMiddle}>
             {/* Scrollable text content */}
        
-            ({mazePositionSelected.x}, {mazePositionSelected.y})
+            You selected ({mazePositionSelected.x}, {mazePositionSelected.y})
+            <br></br>
+        
+            {mazePositionSelected.playerinfo && <>
+              ------------<br></br>
+              Player # {mazePositionSelected.selected_playerid} <br></br>
+              Dots: {mazePositionSelected.playerinfo.dots}<br></br>
+              Level: {mazePositionSelected.playerinfo.level}<br></br>
+              Moves: {computeMove(mazePositionSelected.playerinfo.moveInfo)}<br></br>
+              <CountdownShield
+                shieldExpireTime={mazePositionSelected.playerinfo.shieldExpireTime}
+                protectionExpireTime={mazePositionSelected.playerinfo.protectionExpireTime}
+                vulnerableTime={mazePositionSelected.playerinfo.vulnerableTime}
+              /><br></br>
+              -------------
+            </>}
             <br></br>
             {contracts.GAME}
-            <br></br>
-            {playerData.playerid}
             <br></br>
             {displayMsg}
         </div>

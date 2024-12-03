@@ -79,12 +79,12 @@ const EnterPlayerButton = ({ contracts,currplayerid,playerData ,selected_positio
     }, 3000); // 3000 ms = 3 seconds
 
     }
-    if(isPrepareError){
-      setDisplayMsg(`You can't move there`);
-    }
-    else{
-      setDisplayMsg(``);
-    }
+    // if(isPrepareError){
+    //   setDisplayMsg(`You can't enter there`);
+    // }
+    // else{
+    //   setDisplayMsg(``);
+    // }
    
 
   }, [isLoading,isSuccess,isPrepareError]); 

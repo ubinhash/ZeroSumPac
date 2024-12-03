@@ -144,6 +144,23 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate}) => {
       console.error('Error fetching maze data:', error);
     }
   };
+
+  const fetchPlayerData = async (playerid,network) =>{
+    try {
+      if (playerid == 0) {
+        return null
+      } else {
+        const response2 = await fetch(`${webconfig.apiBaseUrl}/getPlayerInfo?playerid=${playerid}&network=${network}`);
+        console.log("playerinfo",`${webconfig.apiBaseUrl}/getPlayerInfo?playerid=${playerid}&network=${network}`)
+        const data2 = await response2.json();
+        return data2;
+      }
+
+    } catch (error) {
+      console.error('Error fetching contracts:', error);
+    }
+
+  }
   
 
   useEffect(() => {
@@ -191,10 +208,11 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate}) => {
     setHoverX(rowIndex);
     setHoverY(colIndex);
   };
-  const handleSelect = (rowIndex, colIndex) => {
+  const handleSelect = async (rowIndex, colIndex) => {
     setSelectedX(rowIndex);
     setSelectedY(colIndex);
-    onSelect(rowIndex,colIndex,maze[rowIndex][colIndex].hasPlayer);
+    const selectedPlayerData=await fetchPlayerData(maze[rowIndex][colIndex].hasPlayer,'shape-sepolia' );
+    onSelect(rowIndex,colIndex,maze[rowIndex][colIndex].hasPlayer,selectedPlayerData);
   };
 
   return (

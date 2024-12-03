@@ -49,7 +49,7 @@ export const shapeSepolia = {
   },
   rpcUrls: {
     public: { http: ['https://sepolia.shape.network'] },
-    default: { http: ['https://sepolia.shape.network'] },
+    default: { http: ['https://shape-sepolia.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk'] },
   },
   blockExplorers: {
     etherscan: { name: 'ShapeSepoliaScan', url: 'https://explorer-sepolia.shape.network' },
@@ -58,7 +58,7 @@ export const shapeSepolia = {
 } 
 
 const { chains, publicClient  } = configureChains(
-  [mainnet,shapeMainnet,shapeSepolia],
+  [shapeSepolia,shapeMainnet],
   [
     alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY , priority:0 }),
     publicProvider({ priority: 1 }),

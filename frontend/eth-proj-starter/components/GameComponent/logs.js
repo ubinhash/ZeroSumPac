@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./logs.module.css";
-
+import webconfig from '../config/config.js';
 const Logs = ({ currplayerid }) => {
   const [logs, setLogs] = useState([]);
   const [filteredLogs, setFilteredLogs] = useState([]);
@@ -10,7 +10,7 @@ const Logs = ({ currplayerid }) => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await fetch("http://localhost:3002/logs");
+        const response = await fetch(`${webconfig.apiBaseUrl}/logs`);
         if (!response.ok) {
           throw new Error("Failed to fetch logs");
         }
