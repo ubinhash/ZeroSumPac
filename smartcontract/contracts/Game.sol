@@ -123,12 +123,15 @@ contract Game is Ownable {
         DAILY_MOVES_FOR_LEVELS[level] = value;
     }
 
-    modifier ownsNFT(uint256 playerid) {
-        // IERC721 nft = IERC721(players[playerid].nftContract);
-        // uint256 tokenId=players[playerid].tokenId;
-        require(IERC721(players[playerid].nftContract).ownerOf(players[playerid].tokenId)==msg.sender);
-        _;
+    // modifier ownsNFT(uint256 playerid) {
+    //     // IERC721 nft = IERC721(players[playerid].nftContract);
+    //     // uint256 tokenId=players[playerid].tokenId;
+    //     require(IERC721(players[playerid].nftContract).ownerOf(players[playerid].tokenId)==msg.sender);
+    //     _;
 
+    // }
+    function ownsNft(uint256 playerid,address addr) public view returns (bool){
+        return IERC721(players[playerid].nftContract).ownerOf(players[playerid].tokenId)==addr;
     }
 
     function setRewardContract(address _contract) external onlyOwner {
@@ -161,7 +164,7 @@ contract Game is Ownable {
     // Register an NFT for the game (for the first time, don't call move player to because it checks certain conditions)
     function enterGame(address nftContract, uint256 tokenId,uint8 maze, uint8 x, uint8 y) external {
         IERC721 nft = IERC721(nftContract);
-        require(GAME_ENDED==Ending.Not_Ended,"Game Ended");
+        require(GAME_ENDED==Ending.Not_Ended && !eliminationModeOn,"No");
         require(allowedNFTContracts[nftContract], "Not Invited");
         require(nft.ownerOf(tokenId) == msg.sender, "Not Owner");
         require(nft_to_playerid[nftContract][tokenId]==0, "Registered");
@@ -193,9 +196,10 @@ contract Game is Ownable {
         next_player_id+=1;
     }
 
-    function movePlayerTo(uint256 playerid,uint8 maze, uint8 x, uint8 y) payable external ownsNFT(playerid){
+    function movePlayerTo(uint256 playerid,uint8 maze, uint8 x, uint8 y) payable external {
         require(GAME_ENDED==Ending.Not_Ended,"Game Ended");
         require(players[playerid].nextMoveTime < block.timestamp,"Wait");
+        require(ownsNft(playerid,msg.sender));
         uint8 currx = players[playerid].playerposition.x;
         uint8 curry = players[playerid].playerposition.y;
         if(players[playerid].playerposition.maze != maze){ //are you switching to a different maze
@@ -263,9 +267,9 @@ contract Game is Ownable {
     }
 
 
-    function rob(uint256 attacker_playerid, uint256 victim_playerid) external ownsNFT(attacker_playerid) {
+    function rob(uint256 attacker_playerid, uint256 victim_playerid) external  {
         require(GAME_ENDED == Ending.Not_Ended, "Game Ended");
-
+        require(ownsNft(attacker_playerid,msg.sender));
         // Retrieve players' positions
         Player storage attacker = players[attacker_playerid];
         Player storage victim = players[victim_playerid];
@@ -343,8 +347,9 @@ contract Game is Ownable {
         }
 
     }
-    function buyShield(uint256 playerid, uint256 shieldhours) external payable ownsNFT(playerid){
+    function buyShield(uint256 playerid, uint256 shieldhours) external payable {
         require(msg.value>=config[ConfigKey.SHIELD_PRICE]*shieldhours, "Not enough ETH");
+        require(ownsNft(playerid,msg.sender));
         _addShieldTime(playerid,shieldhours*3600);
     }
 
@@ -432,7 +437,8 @@ contract Game is Ownable {
         emit DotChanged(dotdelta, playerid);
     }
 
-    function lockIn(uint256 playerid) external ownsNFT(playerid){
+    function lockIn(uint256 playerid) external {
+        require(ownsNft(playerid,msg.sender));
         require(GAME_ENDED==Ending.Not_Ended);
         require(players[playerid].status==PlayerStatus.Active, "N1");
         require(players[playerid].level>=config[ConfigKey.MIN_LOCK_IN_LV], "M1");
@@ -456,7 +462,8 @@ contract Game is Ownable {
     }
 
     //please be careful, playerid is NOT tokenid
-    function forfeit(uint256 playerid,uint256 destination_playerid) external ownsNFT(playerid){
+    function forfeit(uint256 playerid,uint256 destination_playerid) external{
+        require(ownsNft(playerid,msg.sender));
         require(GAME_ENDED==Ending.Not_Ended,"Inactive");
         require(playerid!=destination_playerid);
         require(players[playerid].status==PlayerStatus.Active && players[destination_playerid].status==PlayerStatus.Active,"NA");
@@ -482,6 +489,9 @@ contract Game is Ownable {
        if(GAME_ENDED==Ending.Paused){
             GAME_ENDED=Ending.Not_Ended;
        }
+    }
+    function playerActive(uint256 playerid) external view returns(bool){
+        return players[playerid].status==PlayerStatus.Active;
     }
 
     function withdraw() external onlyOwner {

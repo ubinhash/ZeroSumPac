@@ -10,6 +10,7 @@ module.exports = buildModule("Game", (m) => {
   const zsp = m.contract("ZeroSumPac");
   const game = m.contract("Game");
   const maze = m.contract("Maze");
+  const reward = m.contract("Reward");
   const gameequip = m.contract("GameEquip");
   
   m.call(maze,"setOperator",[zsp,true],{ id: "a1"})
@@ -20,6 +21,7 @@ module.exports = buildModule("Game", (m) => {
   m.call(game,"setMazeContract",[maze],{ id: "a6"})
   m.call(game,"setOperator",[gameequip,true],{ id: "a7"})
   m.call(zsp,"setMazeContract",[maze],{ id: "a8"})
+  m.call(zsp,"setOperator",[reward,true],{ id: "a9"})
 
   m.call(maze,"unlockMaze",[0,true],{ id: "b"})
   m.call(zsp,"ownerMint",["0x384C2BbE16A3560cc15E3AC43cf3c9FFEA3dd42F",5],{id:"c"})

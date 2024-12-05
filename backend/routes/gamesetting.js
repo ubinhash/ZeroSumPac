@@ -22,6 +22,7 @@ const CONTRACTS = {
 
 // ABI of your contract
 const GAME_ABI = require('./GameABI.json');
+const GAMEEQUIP_ABI = require('./GameEquipABI.json');
 const MAZE_ABI = require('./MazeABI.json');
 
 const web3Mainnet = new Web3(process.env.RPC_MAINNET);
@@ -58,7 +59,7 @@ router.get('/getConfig', async (req, res) => {
         const dotsRequired = [];
         const dailyMoves = [];
 
-        for (let i = 0; i < 5; i++) { // Assuming you want levels 0-4
+        for (let i = 0; i < 6; i++) { // Assuming you want levels 0-4
             const dots = await game.methods.DOTS_REQUIRED_FOR_LEVELS(i).call();
             const moves = await game.methods.DAILY_MOVES_FOR_LEVELS(i).call();
             dotsRequired.push(dots);
@@ -147,6 +148,9 @@ const getMazeUnlockRequirements = async (mazeContract) => {
             const dotsRequiredValue = await mazeContract.methods.MAZE_UNLOCK_DOTS_REQUIRED(i).call();
             mazeUnlockRequirements.push(`Unlockable after ${dotsRequiredValue} dots are consumed in total`);
         }
+
+        mazeUnlockRequirements.push(`Unlockable after your player equip a shapecraft key`);
+
     } catch (error) {
         console.error('Error fetching maze unlock requirements:', error.message);
     }
@@ -309,6 +313,97 @@ router.get('/getPlayerInfo', async (req, res) => {
     } catch (error) {
         console.error('Error fetching player info:', error.message);
         res.status(500).json({ error: 'Failed to fetch player info', details: error.message });
+    }
+});
+
+router.get('/getTopVoted', async (req, res) => {
+    const { network = "shape-sepolia",playerid=0 } = req.query;
+
+
+
+    // Get the appropriate Maze contract address
+    const gameEquipContractAddress = CONTRACTS[network]?.GAME_EQUIP;
+    if (!gameEquipContractAddress) {
+        return res.status(500).json({ error: `Contract not found for Game Equip on ${network}` });
+    }
+
+    const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
+
+    try {
+        // Instantiate the Maze contract
+        const gameEquipContract = new web3.eth.Contract(GAMEEQUIP_ABI, gameEquipContractAddress);
+        const today=    Math.floor(Date.now() / 1000 /86400);
+        const tommorow=    Math.floor(Date.now() / 1000 /86400)+1;
+
+        // Call the _getMaxStride function with the given playerId
+        const governer = await gameEquipContract.methods.topVotedPlayer(today).call();
+        const topVotedPlayer = await gameEquipContract.methods.topVotedPlayer(tommorow).call();
+        const topVotedCount = await gameEquipContract.methods.topVotedCount(tommorow).call();
+        const playerVotedCount = await gameEquipContract.methods.votes(tommorow,playerid).call();
+        const playerVoted = await gameEquipContract.methods.voted(tommorow,playerid).call();
+        // Send the response as a string
+        res.send({ governer:governer.toString(),topVotedPlayer:topVotedPlayer.toString(),topVotedCount:topVotedCount.toString() ,playerVotedCount:playerVotedCount.toString(),playerVoted:playerVoted});
+    } catch (error) {
+        console.error('Error fetching top voted from contract:', error.message);
+        res.status(500).json({ error: 'Failed to fetch top voted', details: error.message });
+    }
+});
+
+router.get('/keyUsed', async (req, res) => {
+    const { network = "shape-sepolia",tokenid } = req.query;
+        // Validate input
+    if (!tokenid) {
+        return res.status(400).json({ error: "Missing tokenid parameter" });
+    }
+
+
+    // Get the appropriate Maze contract address
+    const gameEquipContractAddress = CONTRACTS[network]?.GAME_EQUIP;
+    if (!gameEquipContractAddress) {
+        return res.status(500).json({ error: `Contract not found for Game Equip on ${network}` });
+    }
+
+    const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
+
+    try {
+        // Instantiate the Maze contract
+        const gameEquipContract = new web3.eth.Contract(GAMEEQUIP_ABI, gameEquipContractAddress);
+        const used = await gameEquipContract.methods.keysUsed(tokenid).call();
+
+        // Send the response as a string
+        res.send({used:used});
+    } catch (error) {
+        console.error('Error fetching top voted from contract:', error.message);
+        res.status(500).json({ error: 'Failed to fetch top voted', details: error.message });
+    }
+});
+
+router.get('/eyesUsed', async (req, res) => {
+    const { network = "shape-sepolia",tokenid } = req.query;
+        // Validate input
+    if (!tokenid) {
+        return res.status(400).json({ error: "Missing tokenid parameter" });
+    }
+
+
+    // Get the appropriate Maze contract address
+    const gameEquipContractAddress = CONTRACTS[network]?.GAME_EQUIP;
+    if (!gameEquipContractAddress) {
+        return res.status(500).json({ error: `Contract not found for Game Equip on ${network}` });
+    }
+
+    const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
+
+    try {
+        // Instantiate the Maze contract
+        const gameEquipContract = new web3.eth.Contract(GAMEEQUIP_ABI, gameEquipContractAddress);
+        const eyesInfo = await gameEquipContract.methods.eyesInfo(tokenid).call();
+
+        // Send the response as a string
+        res.send({used:eyesInfo.isEquipped,playerId: eyesInfo.playerId.toString(),equipTime: eyesInfo.equipTime.toString()});
+    } catch (error) {
+        console.error('Error fetching top voted from contract:', error.message);
+        res.status(500).json({ error: 'Failed to fetch top voted', details: error.message });
     }
 });
 

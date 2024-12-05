@@ -167,10 +167,13 @@ contract GameEquip is  IERC1155Receiver,Ownable {
         uint256 nextday=block.timestamp/86400 +1;
         require(electionOpen,"election not open");
         require(!voted[nextday][myplayerid],"voted");
+        require(gameContract.playerActive(playerid) && gameContract.playerActive(myplayerid) ,"Inactive player");
+        require(gameContract.ownsNft(myplayerid,msg.sender),"No NFT");
          voted[nextday][myplayerid]=true;
          votes[nextday][playerid]+=1 ;
          if(votes[nextday][playerid]>topVotedCount[nextday]){
-            topVotedCount[nextday]=playerid;
+            topVotedPlayer[nextday]=playerid;
+            topVotedCount[nextday]=votes[nextday][playerid];
          }
       }
 
@@ -178,9 +181,12 @@ contract GameEquip is  IERC1155Receiver,Ownable {
 
             uint256 currentday=block.timestamp/86400;
             require(!gameContract.eliminationModeOn(),"Can't alter params when elimination mode is on");
-            require(gameContract._getPlayerIdAddress(playerid)==msg.sender);
+            // require(gameContract._getPlayerIdAddress(playerid)==msg.sender);
             require(percentage>=0 && percentage<=100);
             require(!parameterSet[currentday],"You can only adjust once per day");
+            require(gameContract.playerActive(playerid) ,"Inactive player");
+            require(gameContract.ownsNft(playerid,msg.sender),"No NFT");
+
             parameterSet[currentday]=true;
             gameContract.setConfigUint(Game.ConfigKey.EAT_PERCENTAGE, percentage);
 
