@@ -80,7 +80,7 @@ const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position
 
     }
     if(isPrepareError){
-      setDisplayMsg(`Please select a valid square to move`);
+      setDisplayMsg(`Please select a valid square`);
     }
     else{
       setDisplayMsg(``);
@@ -97,8 +97,8 @@ const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position
       <button  className={styles.actionButton}  disabled={!write || isLoading || isPrepareError} onClick={() => write?.()}>{isLoading ? 'Moving' : 'Move'}
 
       <span className={styles.unlockText}>Move to adjacent squares</span>
-      {isSuccess && <p>Player moved successfully!</p>}
-      {isPrepareError && <p style={{ color: 'red' ,fontSize:"5px"}}>Error: {prepareError?.message}</p>}
+      {/* {isSuccess && <p>Player moved successfully!</p>}
+      {isPrepareError && <p style={{ color: 'red' ,fontSize:"5px"}}>Error: {prepareError?.message}</p>} */}
       </button>
 
 

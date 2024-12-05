@@ -14,20 +14,23 @@ import Rankings from '../components/GameComponent/ranking.js';
 import Logs from '../components/GameComponent/logs.js';
 import LockInPage from '../components/GameComponent/action-lockin.js';
 import ForfeitPage from '../components/GameComponent/action-forfeit.js';
-
-const CountdownShield = ({ shieldExpireTime, protectionExpireTime, vulnerableTime }) => {
+import Laws from '../components/GameComponent/action-law.js';
+const CountdownShield = ({ shieldExpireTime, protectionExpireTime, vulnerableTime,mylevel,theirlevel }) => {
     const [status, setStatus] = useState("");
 
     const computeShield = () => {
         const currentTime = Date.now() / 1000; // Current time in seconds
-
+        var warningtext="";
+        if(mylevel<theirlevel){
+          warningtext=" (The player has higher level)"
+        }
         if (currentTime < vulnerableTime) {
             // Check if shield will be in effect after vulnerable time expires
             if (Math.max(shieldExpireTime, protectionExpireTime) > vulnerableTime) {
                 const timeUntilVulnerableExpires = vulnerableTime - currentTime;
                 const minutes = Math.floor(timeUntilVulnerableExpires / 60);
                 const seconds = Math.ceil(timeUntilVulnerableExpires % 60);
-                return `Attackable (vulnerable time expires in ${minutes} min ${seconds} sec)`;
+                return `Not Shielded (vulnerable time expires in ${minutes} min ${seconds} sec)`;
             }
         }
 
@@ -48,7 +51,7 @@ const CountdownShield = ({ shieldExpireTime, protectionExpireTime, vulnerableTim
         }
 
         // Player is not shielded
-        return "Attackable";
+        return "Not Shielded" + warningtext;
     };
 
     useEffect(() => {
@@ -79,7 +82,7 @@ export default function Game() {
   // const [playerId,setPlayerId] =useState(1);
   const [playerData, setPlayerData] = useState({
     playerid:0,
-    playerposition: { x: 0, y: 0, maze: 0 },
+    playerPosition: { x: 0, y: 0, maze: 0 },
     dots: 0,
     level: 0,
     nextMoveTime: 0,
@@ -96,19 +99,36 @@ export default function Game() {
  
 
   const [config,setconfig] = useState({
-    FIRST_ENTRANCE_MOVE_INTERVAL: 60,
-    MOVE_INTERVAL: 10,
-    PROTECTION_INTERVAL: 43200,
-    MAX_SHIELD_INTERVAL: 86400,
-    MAZE_SWITCH_INTERVAL: 604800,
-    MAZE_SWITCH_PENALTY: 0,
-    SHIELD_PRICE: 0,
-    MIN_LOCK_IN_LV: 3,
-    MIN_SHIELD_LV: 3,
-    EAT_PERCENTAGE: 10,
-    ROB_PERCENTAGE: 10,
-    VULNERABLE_INTERVAL: 600,
+    "config": {
+    "FIRST_ENTRANCE_MOVE_INTERVAL": 60,
+    "MOVE_INTERVAL": 10,
+    "PROTECTION_INTERVAL": 43200,
+    "MAX_SHIELD_INTERVAL": 86400,
+    "MAZE_SWITCH_INTERVAL": 604800,
+    "MAZE_SWITCH_PENALTY": "1000000000000000",
+    "SHIELD_PRICE": "50000000000000",
+    "MIN_LOCK_IN_LV": 3,
+    "MIN_SHIELD_LV": 3,
+    "EAT_PERCENTAGE": "3",
+    "ROB_PERCENTAGE": 10,
+    "VULNERABLE_INTERVAL": 600
+  },
+  "dotsRequired": [
+    "0",
+    "0",
+    "40",
+    "200",
+    "500"
+  ],
+  "dailyMoves": [
+    "0",
+    "10",
+    "15",
+    "20",
+    "25"
+  ]
   });
+  //TODO set this
 
   const [contracts, setContracts] = useState({
     GAME: '',
@@ -143,6 +163,21 @@ export default function Game() {
       console.error('Error fetching contracts:', error);
     }
   };
+  const fetchConfig = async () => {
+    try {
+      // const response = await fetch(`http://localhost:3002/getContracts`);
+      const response = await fetch(`${webconfig.apiBaseUrl}/getConfig`);
+      
+      const data = await response.json();
+
+      // Update the contracts state with the fetched data
+      if(data){
+        setconfig(data);
+      }
+    } catch (error) {
+      console.error('Error fetching contracts:', error);
+    }
+  };
 
   const fetchMazeUnlocked = async () => {
     try {
@@ -168,6 +203,7 @@ export default function Game() {
   useEffect(() => {
     fetchContracts();
     fetchMazeUnlocked();
+    fetchConfig();
   }, []);
 
   const handlePositionSelection = (x, y, selected_playerid,playerinfo) => {
@@ -262,18 +298,20 @@ export default function Game() {
         </div>
     </div>
       <div className={`${styles.section} ${styles.section2}`}>
-      {display === "maze" && <MyMaze currplayerid={playerData.playerid} playerData={playerData} mazeId={currmaze} onSelect={handlePositionSelection} setTriggerMazeUpdate={setTriggerMazeUpdate}></MyMaze>} 
+      {display === "maze" && <MyMaze currplayerid={playerData.playerid} playerData={playerData} mazeId={currmaze} onSelect={handlePositionSelection} setTriggerMazeUpdate={setTriggerMazeUpdate} unlocked={mazeUnlocked[currmaze]} unlockRequirement={mazeUnlockRequirements[currmaze]} isspecial={currmaze==totalMaze-1}></MyMaze>} 
       {display === "log" && <Logs currplayerid={playerData.playerid}></Logs>} {/* Replace with your actual Log component */}
       {display === "ranking" && <Rankings></Rankings>} {/* Replace with your actual Ranking component */}
       {display === "forfeit" && <ForfeitPage contracts={contracts}  playerData={playerData} setPopupMsg={setPopupMsg} ></ForfeitPage>} {/* Replace with your actual Log component */}
-      {display === "lockin" && <LockInPage contracts={contracts}  playerData={playerData} setPopupMsg={setPopupMsg} minlevel={config.MIN_LOCK_IN_LV}></LockInPage>} {/* Replace with your actual Ranking component */}
-      {display === "laws" && <h1>laws</h1>} {/* Replace with your actual Ranking component */}
+      {display === "lockin" && <LockInPage contracts={contracts}  playerData={playerData} setPopupMsg={setPopupMsg} minlevel={config.config.MIN_LOCK_IN_LV}></LockInPage>} {/* Replace with your actual Ranking component */}
+      {display === "laws" && <Laws contracts={contracts} currplayerid={playerData.playerid} setPopupMsg={setPopupMsg} ></Laws>} {/* Replace with your actual Ranking component */}
       {display === "shield" && <h1>shield</h1>} {/* Replace with your actual Ranking component */}
+      {display === "eyes" && <h1>eyes</h1>} {/* Replace with your actual Ranking component */}
+      {display === "keys" && <h1>keys</h1>} {/* Replace with your actual Ranking component */}
       </div>
 
       <div className={`${styles.section} ${styles.section3}`}>
         <div className={styles.menuTop}>
-            <PlayerSelect onSelectPlayer={onSelectPlayer} setTriggerPlayerUpdate={setTriggerPlayerUpdate}></PlayerSelect>
+            <PlayerSelect onSelectPlayer={onSelectPlayer} config={config} setTriggerPlayerUpdate={setTriggerPlayerUpdate} handleOptionSelect={handleOptionSelect}></PlayerSelect>
             {/* Content for the top section */}
         </div>
         <div className={styles.menuMiddle}>
@@ -292,6 +330,8 @@ export default function Game() {
                 shieldExpireTime={mazePositionSelected.playerinfo.shieldExpireTime}
                 protectionExpireTime={mazePositionSelected.playerinfo.protectionExpireTime}
                 vulnerableTime={mazePositionSelected.playerinfo.vulnerableTime}
+                mylevel={playerData.level}
+                theirlevel={mazePositionSelected.playerinfo.level}
               /><br></br>
               -------------
             </>}
@@ -306,7 +346,7 @@ export default function Game() {
                 
             <button className={styles.actionButton} onClick={() => handleOptionSelect('shield')}>
                 SHIELD
-                <span className={styles.unlockText}>[Unlock at level {config.MIN_SHIELD_LV}]</span>
+                <span className={styles.unlockText}>[Unlock at level {config.config.MIN_SHIELD_LV}]</span>
             </button>
             {/* <button className={styles.actionButton}>
                 ROB

@@ -1,0 +1,155 @@
+.container {
+    width: 100%;
+    height: 100%;
+    /* padding: 20px; */
+    box-sizing: border-box;
+    overflow: scroll; /* Avoid unnecessary scrollbars */
+  display: flex;
+    background-color: white;
+    font-size: 16px;
+    flex-direction: column;
+
+  }
+  
+  .topSection {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    padding:15px 0px;
+    
+    /* margin-bottom: 10px; */
+    border-bottom: 2px solid black;
+    flex-shrink: 0; /* Prevent shrinking */
+    background-color: rgb(247, 188, 116);
+    
+  }
+
+
+  .bottomSection {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+
+
+  }
+  
+  .section {
+    flex: 1;
+
+    padding: 0px;
+
+  }
+  .section_left{
+    border-right:2px solid black;
+  }
+  
+.sectionTitle{
+    font-size: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    border-bottom: 2px solid black;
+    background-color: bisque;
+    padding:5px 20px;
+}
+.titleinfo{
+    font-size: 15px;
+    color:#666;
+}
+.sectionContent{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+    padding:20px;
+}
+  
+  .lawText {
+    margin-bottom: 10px;
+  }
+  
+  .inputField {
+    background: none;
+    border: 2px solid #444;
+    border-radius: 4px;
+    padding: 10px 15px;
+    color: #000000;
+    font-size: 16px;
+    outline: none;
+    width: 80%;
+    max-width: 300px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    margin-bottom: 10px;
+    margin-top:10px;
+    text-align: center;
+    font-family: inherit;
+  }
+  .shortinput{
+    width:80px;
+  }
+
+  
+  .inputField:focus {
+    border-color: #888;
+    box-shadow: 0 0 8px rgba(136, 136, 136, 0.5);
+  }
+  
+  .inputField::placeholder {
+    color: #666;
+  }
+  .inputField:disabled{
+    background-color: #ececec;
+    color:#666
+  }
+  
+  .actionButton {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 3px;
+    background-color: #f97108b1; /* Blue button */
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-family: inherit;
+  }
+  
+  .actionButton:disabled {
+    background-color: #ccc; /* Gray when disabled */
+    cursor: not-allowed;
+  }
+  
+  .actionButton:hover:not(:disabled) {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05);
+  }
+  
+  .actionButton:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+  
+  .infotext {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .leadingCandidate {
+    margin-top: 20px;
+  }
+  .highlight{
+    color:rgb(240, 73, 43)
+  }
+  .leadingCandidate{
+    width: 100%;
+
+  }
+  .leadingCandidate p{
+    font-size: 12px;
+  }

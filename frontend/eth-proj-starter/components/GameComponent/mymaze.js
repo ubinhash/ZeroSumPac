@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from './maze.module.css'; // Import the CSS module
 import webconfig from '../config/config.js';
 
-const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate}) => {
+const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,unlockRequirement,isspecial}) => {
   const [zoom, setZoom] = useState(1); // Default zoom level
   const [maze, setMaze] = useState([]); // Initialize maze state // information to get from backend
   const [gridSize,setGridSize]=useState(20) // information to get from backend
@@ -173,8 +173,6 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate}) => {
         hasPlayer:0,          //  playerid in the cell, 0=no one
         obstacleImage: null,               //0 - none, 1.pngwhat obstacle are there
       }))
-      
-      
     );
     setObstacles(mazeData);
     setMaze(mazeData);
@@ -203,6 +201,10 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate}) => {
   const zoomOut = () => {
     setZoom(prevZoom => Math.max(prevZoom / 1.2, 1/1.2)); // Minimum zoom level (example: 1x zoom)
   };
+  const refresh =() =>{
+    fetchAndPopulateMaze(mazeId, maze);
+    fetchDotInfo(mazeId);
+  }
 
   const handleHover = (rowIndex, colIndex) => {
     setHoverX(rowIndex);
@@ -218,9 +220,16 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate}) => {
   return (
     <div className={styles.mazeWrapper}>
       {/* Zoom buttons with fixed position */}
+      {unlockRequirement&&!unlocked && 
+      <div className={styles.centerInfo}>    
+            {unlockRequirement} 
+           {isspecial && <button>Equip</button>}
+      </div>}
       <div className={styles.zoomButtons}>
         <button className={styles.squarebutton} onClick={zoomIn}>+</button>
         <button className={styles.squarebutton} onClick={zoomOut}>-</button>
+        <button className={`${styles.squarebutton} ${styles.longbutton}`} onClick={refresh}>Refresh</button>
+    
       </div>
 
       <div className={styles.mazeSection}>

@@ -145,7 +145,32 @@
 .progressLabels {
     display: flex;
     justify-content: space-between;
-    margin-top: 5px;
-    font-size: 14px;
+    font-size: 15px;
     padding:5px 10px;
+    color:white;
+    background-color: rgb(104, 130, 101);
+}
+
+.maxstride{
+  border-top: 2px solid black;
+  text-align: center;
+  font-size: 14px;
+  padding:5px 5px;
+  display: flex;
+  justify-content: space-between;
+
+  
+}
+.maxstride button{
+  background-color: black;
+  color:white;
+  border:none;
+
+ cursor: pointer;
+ font-size: 15px;
+ font-family: inherit;
+}
+.icons{
+  width:20px;
+  height:20px;
 }

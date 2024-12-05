@@ -26,9 +26,26 @@ const ProgressBar = ({ startval, endval, myval,mylevel }) => {
         </div>
     );
 };
+const computeMove = (moveInfo) => {
+  const currentDay = Math.floor(Date.now() /86400/1000);
+  console.log("current day", currentDay)
+  const day=moveInfo.day;
+  const move=moveInfo.move;
+  if(day<currentDay){
+    return 0
+  }
+  else{
+    return move;
+  }
+
+};
+
+const computeMaxMove =(config,level) =>{
+  return config.dailyMoves[level];
+}
 
 
-const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate }) => {
+const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate,handleOptionSelect }) => {
   // Example player data (replace with actual data from your source)
   const { address } = useAccount();
   const [players,setplayers] = useState([
@@ -46,7 +63,7 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate }) => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [playerData, setPlayerData] = useState({
     playerid:0,
-    playerposition: { x: 0, y: 0, maze: 0 },
+    playerPosition: { x: 0, y: 0, maze: 0 },
     dots: 0,
     level: 0,
     nextMoveTime: 0,
@@ -59,6 +76,7 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate }) => {
     moveInfo: { day: 0, move: 0 },
     status: "Please Connect Wallet",
   });
+  const [maxStride,setMaxStride]=useState(0);
 
   useEffect(() => {
     if (address) {
@@ -83,16 +101,14 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate }) => {
       const response = await fetch(`${webconfig.apiBaseUrl}/getPacByOwner?owner=${owner}&network=${network}`);
       
       const data = await response.json();
-  
-      // Update the players state with the fetched data
-      console.log("bad bad")
-      console.log(response);
-      console.log("bad bad end")
-      setplayers(data);
+      if(data){
+        setplayers(data);
+      }
     } catch (error) {
       console.error('Error fetching contracts:', error);
     }
   };
+
   
   const fetchPlayerData = async (player,network) =>{
     try {
@@ -102,11 +118,14 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate }) => {
     const response2 = await fetch(`${webconfig.apiBaseUrl}/getPlayerInfo?playerid=${playerid}&network=${network}`);
     const data2 = await response2.json();
 
+    const response3 = await fetch(`${webconfig.apiBaseUrl}/getMaxStride?playerid=${playerid}&network=${network}`);
+    const data3 = await response3.json();
+
     if (playerid == 0) {
       // Set only nftContract and tokenId for playerData
       const updatedPlayerData = {
         playerid:0,
-        playerposition: { x: 0, y: 0, maze: 0 },
+        playerPosition: { x: 0, y: 0, maze: 0 },
         dots: 0,
         level: 0,
         nextMoveTime: 0,
@@ -125,6 +144,8 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate }) => {
       // Otherwise, set all playerData
       setPlayerData(data2);
       onSelectPlayer(data2);
+      setMaxStride(data3.maxStride);
+      console.log("playerdata",data2);
     }
 
     
@@ -165,13 +186,16 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate }) => {
         </div>
         <div className={styles.playerinfo}>
             <div className={styles.playerinfo_top}>
-                <label className={styles.leftLabel}>{playerData.status}</label>
-                <label className={styles.rightLabel}> Player #{playerData.playerid}</label>
+                <label className={styles.leftLabel}>{playerData.status}
+                   {playerData.status=="Active" && <span> ({playerData.playerPosition.maze},{playerData.playerPosition.x},{playerData.playerPosition.y})</span>} 
+                </label>
+
+                {playerData.playerid !=0 && <label className={styles.rightLabel}> Player #{playerData.playerid}</label>}
             </div>
             <div className={styles.playerinfo_bottom}>
                DOTS: {playerData.dots}
                <br></br>
-               MOVES: {playerData?.moveInfo?.move} / TODO
+               MOVES: {computeMove(playerData?.moveInfo)} / {computeMaxMove(config,playerData.level)}
                <br></br>
                <div className={styles.fineprint}> [MOVE COUNT RESETS UTC 0:00]</div>
               
@@ -185,8 +209,13 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate }) => {
 
         <div className={styles.bottom}>
           {/* TODO */}
-                <ProgressBar startval={0} endval={40} myval={playerData.dots} mylevel={playerData.level}></ProgressBar>
-        </div>
+                <ProgressBar startval={config.dotsRequired[playerData.level]}  endval={config.dotsRequired[parseInt(playerData.level)+1]} myval={playerData.dots} mylevel={playerData.level}></ProgressBar>
+                <div className={styles.maxstride}> 
+                    <div> <img src="/icons/eyes.png" className={styles.icons}/></div> 
+                    Max Stride : {maxStride}/2 
+                    <button onClick={() => handleOptionSelect('eyes')}>+</button>
+              </div>
+         </div>
 
     </div>
   );

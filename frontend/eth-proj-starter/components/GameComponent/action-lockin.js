@@ -49,7 +49,7 @@ const LockInPage = ({contracts, playerData,setPopupMsg,minlevel}) => {
         
  
         {playerData.playerid === 0 ? (
-            <div className={styles.infoText}>Please select a player on the upper right</div>
+            <div className={styles.infoText}>Please select a player on the upper right and join the game first</div>
             ) : (
             <>
                 {playerData.level >= minlevel ? (

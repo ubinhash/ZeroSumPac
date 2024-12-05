@@ -28,11 +28,22 @@
     width: 30px;
     height: 30px;
     margin-right:3px;
+    font-family: inherit;
+    border-right:2.5px solid black;
+    border-bottom:2.5px solid black;
   }
+  .longbutton{
+
+    width: 80px;
+  }
+  
   .squarebutton:hover{
     background-color:rgb(252, 246, 245);
   }
-  
+  .squarebutton:active{
+    border: 2px solid black;
+  }
+
   .mazeSection {
     /* background-color: blue; */
     width: 100%;
@@ -199,4 +210,19 @@
     background-color: transparent;
     border: 1px solid transparent;
 
+  }
+
+  .centerInfo {
+    position: absolute; /* Position relative to the parent */
+    top: 50%; /* Move to the vertical center of the parent */
+    left: 50%; /* Move to the horizontal center */
+    width: 80%;
+    transform: translate(-50%, -50%); /* Adjust for the element's dimensions */
+    background-color: #007bff; /* Example color */
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    border-radius: 8px; /* Optional styling */
+    z-index: 1000; /* Ensures it appears above other content */
+    font-size: 30px;
   }
