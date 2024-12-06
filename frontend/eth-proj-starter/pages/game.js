@@ -15,6 +15,9 @@ import Logs from '../components/GameComponent/logs.js';
 import LockInPage from '../components/GameComponent/action-lockin.js';
 import ForfeitPage from '../components/GameComponent/action-forfeit.js';
 import Laws from '../components/GameComponent/action-law.js';
+import EquipEyes from '../components/GameComponent/equip-eyes.js';
+import EquipKeys from '../components/GameComponent/equip-keys.js';
+import EquipShield from '../components/GameComponent/equip-shield.js';
 const CountdownShield = ({ shieldExpireTime, protectionExpireTime, vulnerableTime,mylevel,theirlevel }) => {
     const [status, setStatus] = useState("");
 
@@ -69,9 +72,7 @@ const CountdownShield = ({ shieldExpireTime, protectionExpireTime, vulnerableTim
 
 export default function Game() {
 
-  const mainStyle = {
 
-  };
   //INFO TO BE FILLED IN FROM BACKEND;
   const [displayMsg,setDisplayMsg]=useState("Hello")
   const [popupMsg,setPopupMsg]=useState("")
@@ -109,7 +110,7 @@ export default function Game() {
     "SHIELD_PRICE": "50000000000000",
     "MIN_LOCK_IN_LV": 3,
     "MIN_SHIELD_LV": 3,
-    "EAT_PERCENTAGE": "3",
+    "EAT_PERCENTAGE": 10,
     "ROB_PERCENTAGE": 10,
     "VULNERABLE_INTERVAL": 600
   },
@@ -135,6 +136,7 @@ export default function Game() {
     MAZE: '',
     GAME_EQUIP: '',
     ZSP: '',
+    OTOM:'',
   });
   
   
@@ -158,6 +160,7 @@ export default function Game() {
         MAZE: data.MAZE,
         GAME_EQUIP: data.GAME_EQUIP,
         ZSP: data.ZSP,
+        OTOM:data.OTOM,
       });
     } catch (error) {
       console.error('Error fetching contracts:', error);
@@ -179,10 +182,10 @@ export default function Game() {
     }
   };
 
-  const fetchMazeUnlocked = async () => {
+  const fetchMazeUnlocked = async (playerid) => {
     try {
       // const response = await fetch(`http://localhost:3002/getContracts`);
-      const response = await fetch(`${webconfig.apiBaseUrl}/getMazeUnlock`);
+      const response = await fetch(`${webconfig.apiBaseUrl}/getMazeUnlock?playerid=${playerid}`);
       
       const data = await response.json();
 
@@ -202,9 +205,12 @@ export default function Game() {
 
   useEffect(() => {
     fetchContracts();
-    fetchMazeUnlocked();
     fetchConfig();
   }, []);
+
+  useEffect(() => {
+    fetchMazeUnlocked(playerData.playerid);
+  }, [playerData.playerid]);
 
   const handlePositionSelection = (x, y, selected_playerid,playerinfo) => {
     console.log("position selection",playerinfo)
@@ -298,15 +304,15 @@ export default function Game() {
         </div>
     </div>
       <div className={`${styles.section} ${styles.section2}`}>
-      {display === "maze" && <MyMaze currplayerid={playerData.playerid} playerData={playerData} mazeId={currmaze} onSelect={handlePositionSelection} setTriggerMazeUpdate={setTriggerMazeUpdate} unlocked={mazeUnlocked[currmaze]} unlockRequirement={mazeUnlockRequirements[currmaze]} isspecial={currmaze==totalMaze-1}></MyMaze>} 
+      {display === "maze" && <MyMaze currplayerid={playerData.playerid} playerData={playerData} mazeId={currmaze} onSelect={handlePositionSelection} setTriggerMazeUpdate={setTriggerMazeUpdate} handleOptionSelect={handleOptionSelect} unlocked={mazeUnlocked[currmaze]} unlockRequirement={mazeUnlockRequirements[currmaze]} isspecial={currmaze==totalMaze-1}></MyMaze>} 
       {display === "log" && <Logs currplayerid={playerData.playerid}></Logs>} {/* Replace with your actual Log component */}
       {display === "ranking" && <Rankings></Rankings>} {/* Replace with your actual Ranking component */}
       {display === "forfeit" && <ForfeitPage contracts={contracts}  playerData={playerData} setPopupMsg={setPopupMsg} ></ForfeitPage>} {/* Replace with your actual Log component */}
       {display === "lockin" && <LockInPage contracts={contracts}  playerData={playerData} setPopupMsg={setPopupMsg} minlevel={config.config.MIN_LOCK_IN_LV}></LockInPage>} {/* Replace with your actual Ranking component */}
-      {display === "laws" && <Laws contracts={contracts} currplayerid={playerData.playerid} setPopupMsg={setPopupMsg} ></Laws>} {/* Replace with your actual Ranking component */}
-      {display === "shield" && <h1>shield</h1>} {/* Replace with your actual Ranking component */}
-      {display === "eyes" && <h1>eyes</h1>} {/* Replace with your actual Ranking component */}
-      {display === "keys" && <h1>keys</h1>} {/* Replace with your actual Ranking component */}
+      {display === "laws" && <Laws contracts={contracts} eat_percentage={config.config.EAT_PERCENTAGE} currplayerid={playerData.playerid} setPopupMsg={setPopupMsg} ></Laws>} {/* Replace with your actual Ranking component */}
+      {display === "shield" && <EquipShield contracts={contracts} currplayerid={playerData.playerid} playerData={playerData}  setPopupMsg={setPopupMsg} ></EquipShield>} {/* Replace with your actual Ranking component */}
+      {display === "eyes" && <EquipEyes contracts={contracts} currplayerid={playerData.playerid}  setPopupMsg={setPopupMsg} ></EquipEyes>} {/* Replace with your actual Ranking component */}
+      {display === "keys" && <EquipKeys contracts={contracts} currplayerid={playerData.playerid}  setPopupMsg={setPopupMsg} ></EquipKeys>} {/* Replace with your actual Ranking component */}
       </div>
 
       <div className={`${styles.section} ${styles.section3}`}>

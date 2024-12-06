@@ -13,6 +13,7 @@ contract Reward is  IERC721Receiver,Ownable {
     mapping(address => uint256) public oneofone_claimed;
     uint256 public whitelist_count = 0;
     uint256 public constant MAX_WHITELIST = 10;
+    uint256 public specialTokenId=0;
 
 
     mapping(address => bool) public allowedOperators;
@@ -33,7 +34,9 @@ contract Reward is  IERC721Receiver,Ownable {
     function setOperator(address _operator,bool allowed) external onlyOwner {
         allowedOperators[_operator]=allowed;
     }
-
+    function setSpecialTokenId(uint256 tokenId) external onlyOwner{
+        specialTokenId=tokenId;
+    }
      function onERC721Received(
         address operator,
         address from,
@@ -59,18 +62,17 @@ contract Reward is  IERC721Receiver,Ownable {
     }
 
     function ClaimNFTOneOne  (uint256 tokenId) external{
-        require(tokenId>=1 && tokenId<=MAX_WHITELIST,"Token is not 1/1");
-        require(zspContract.ownerOf(0) == address(this), "NFT not owned by contract");
+        require(tokenId!=specialTokenId,"Token is not 1/1");
+        require(zspContract.ownerOf(tokenId) == address(this), "NFT not owned by contract");
         require(oneofone_whitelist[msg.sender] - oneofone_claimed[msg.sender]>0,"no whitelist left");
         zspContract.safeTransferFrom(address(this), msg.sender, tokenId);
 
     }
 
     function claimNFTSpecial () external{
-        uint256 tokenId=0;
-        require(zspContract.ownerOf(0) == address(this), "NFT not owned by contract");
+        require(zspContract.ownerOf(specialTokenId) == address(this), "NFT not owned by contract");
         require(special_claim == msg.sender);
-        zspContract.safeTransferFrom(address(this), msg.sender, tokenId);
+        zspContract.safeTransferFrom(address(this), msg.sender, specialTokenId);
     }
 
 

@@ -119,6 +119,7 @@ contract GameEquip is  IERC1155Receiver,Ownable {
         require(eyesToken.ownerOf(eyesTokenId) == msg.sender, "Not Owner");
         require(!eyesInfo[eyesTokenId].isEquipped,"Eyes has been used");
         require(!playerEquippedEyes[playerid],"You already equipped an eye");
+        require(gameContract.playerActive(playerid),"Inactive");
         eyesInfo[eyesTokenId].isEquipped=true;
         eyesInfo[eyesTokenId].equipTime=block.timestamp;
         eyesInfo[eyesTokenId].playerId=playerid;
@@ -128,6 +129,7 @@ contract GameEquip is  IERC1155Receiver,Ownable {
         //you must wait for a day before unequiping
         require(eyesToken.ownerOf(eyesTokenId) == msg.sender, "Not Owner");
         require(eyesInfo[eyesTokenId].equipTime + 86400 < block.timestamp,"You must wait a day");
+        
         eyesInfo[eyesTokenId].isEquipped=false;
         playerEquippedEyes[eyesInfo[eyesTokenId].playerId]=false;
         eyesInfo[eyesTokenId].playerId=0;
@@ -139,9 +141,9 @@ contract GameEquip is  IERC1155Receiver,Ownable {
     function equipKeys(uint256 playerid,uint256 keysTokenId) external{
         // check if it has been equipped
         require(keysToken.ownerOf(keysTokenId) == msg.sender, "Not Owner");
-        require(!keysUsed[playerid],"Keys has been used");
+        require(!keysUsed[keysTokenId],"Keys has been used");
         require(!playerEquippedKeys[playerid],"You already equipped a key");
-
+        require(gameContract.playerActive(playerid),"Inactive");
         playerEquippedKeys[playerid]=true;
         keysUsed[keysTokenId]=true;
     }
@@ -154,7 +156,7 @@ contract GameEquip is  IERC1155Receiver,Ownable {
        mapping (uint256 => mapping(uint256 => uint256)) public votes;   //day -> playerid->votecount
        mapping (uint256 => mapping(uint256 => bool)) public voted;   // 
        mapping(uint256 => bool) public parameterSet;   // 
-       bool electionOpen;
+       bool electionOpen = true;
       modifier isGoverner(uint256 playerid) {
             uint256 currentday=block.timestamp/86400;
             require(topVotedPlayer[currentday]==playerid);

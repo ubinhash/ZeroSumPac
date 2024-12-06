@@ -11,7 +11,8 @@ const CONTRACTS = {
         GAME: process.env.GAME_SEPOLIA ,    // Replace with actual Sepolia PAC contract address
         MAZE : process.env.MAZE_SEPOLIA ,
         GAME_EQUIP:process.env.GAME_EQUIP_SEPOLIA,
-        ZSP:process.env.ZSP_SEPOLIA
+        ZSP:process.env.ZSP_SEPOLIA,
+        OTOM:"0xc709F59f1356230025d4fdFDCeD92341A14FF2F8",
     }
 };
 
@@ -69,7 +70,7 @@ router.get('/getConfig', async (req, res) => {
         // console.log( dotsRequired)
         // console.log(dailyMoves)
         const formatBigIntArray = (arr) => arr.map(value => value.toString());
-        const eatPercentageKey = 8;
+        const eatPercentageKey = 9;
         const eatPercentage = await game.methods.getConfigUint(eatPercentageKey).call();
         res.send({
             config: {
@@ -159,7 +160,7 @@ const getMazeUnlockRequirements = async (mazeContract) => {
 };
 
 router.get('/getMazeUnlock', async (req, res) => {
-    const { network = "shape-sepolia" } = req.query;
+    const { network = "shape-sepolia",playerid=0 } = req.query;
   
 
     const mazeContractAddress = CONTRACTS[network]?.MAZE;
@@ -177,7 +178,7 @@ router.get('/getMazeUnlock', async (req, res) => {
         // Fetch maze unlock statuses
         const mazeUnlockedStatuses = [];
         for (let i = 0; i < 10; i++) { // Total Mazes = 10
-            const mazeUnlocked = await mazeContract.methods.maze_unlocked(i).call();
+            const mazeUnlocked = await mazeContract.methods._isMazeUnlocked(i,playerid).call();
             mazeUnlockedStatuses.push(mazeUnlocked);
         }
 

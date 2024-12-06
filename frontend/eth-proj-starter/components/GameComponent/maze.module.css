@@ -218,7 +218,7 @@
     left: 50%; /* Move to the horizontal center */
     width: 80%;
     transform: translate(-50%, -50%); /* Adjust for the element's dimensions */
-    background-color: #007bff; /* Example color */
+    background-color: #000000; /* Example color */
     color: white;
     padding: 10px 20px;
     text-align: center;

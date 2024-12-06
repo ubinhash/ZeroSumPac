@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Maze.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 contract ZeroSumPac is ERC721Enumerable, Ownable {
     uint256 public nextTokenId;
     mapping(address => bool) public approvedMintContracts;
@@ -15,7 +16,9 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
     // Pass msg.sender to Ownable's constructor
     constructor() ERC721("ZSP", "ZSP") Ownable(msg.sender) {}
     uint256 maxSupply = 666; // TBD
+    uint256 whitelistPrice = 0.015 ether; //TBD
     uint256 mintPrice = 0.015 ether; //TBD
+    uint256 public maxPublicPerTransaction = 4;
 
     struct MintWindows {
         uint256 whitelistStartTime;
@@ -29,6 +32,7 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
 
 
     mapping(uint256 => bool) public specialTrait;
+    string public _baseTokenURI;
 
     Maze public mazeContract;
     mapping(address => bool) public allowedOperators;
@@ -64,6 +68,12 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
     function adjustMintPrice(uint256 price) external onlyOwner{
         mintPrice=price;
     }
+    function adjustWhitelistPrice(uint256 price) external onlyOwner{
+        whitelistPrice=price;
+    }
+     function adjustMaxPublic(uint256 amount) external onlyOwner{
+        maxPublicPerTransaction=amount;
+    }
      function setWhitelistMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
         whitelistMerkleRoot = _merkleRoot;
     }
@@ -80,7 +90,7 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
                 block.timestamp <= mintWindows.whitelistEndTime,
             "Whitelist mint not active"
         );
-        require(msg.value*amount>=mintPrice,"Insufficient Fund");
+        require(msg.value*amount>=whitelistPrice,"Insufficient Fund");
         require(
             whitelistMinted[msg.sender] + amount <= maxAllowed,
             "Exceeds whitelist allowance"
@@ -97,6 +107,7 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
 
     function publicMint(uint256 amount) external payable hasStock(amount){
         require(msg.value*amount>=mintPrice,"Insufficient Fund");
+        require(amount<maxPublicPerTransaction,"Mint too many");
         require(
             block.timestamp >= mintWindows.publicMintStartTime &&
                 block.timestamp <= mintWindows.publicMintEndTime,
@@ -132,6 +143,25 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
 
     function setSpecial(uint256 tokenId,bool isSpecial) public onlyAllowedOperator{
          specialTrait[tokenId]=isSpecial;
+    }
+
+    
+
+    function setBaseURI(string memory baseURI) external onlyOwner {
+        _baseTokenURI = baseURI;
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return _baseTokenURI;
+    }
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        require(tokenId<totalSupply(), "token does not exist");
+
+        if (specialTrait[tokenId]) {
+            return string(abi.encodePacked(_baseTokenURI, Strings.toString(tokenId), "-special"));
+        }
+
+        return string(abi.encodePacked(_baseTokenURI, Strings.toString(tokenId)));
     }
 
       function withdraw() external onlyOwner {

@@ -1,0 +1,128 @@
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    overflow:scroll;
+}
+
+.title {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.loading {
+    text-align: center;
+    font-size: 16px;
+    color: #777;
+}
+
+.error {
+    text-align: center;
+    font-size: 16px;
+    color: red;
+}
+
+.nftList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 500px;
+    overflow: scroll;
+}
+
+.nftItem {
+    font-size: 16px;
+    color: #333;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    border: 2px solid black;
+    margin-bottom: 3px;
+    display: flex;
+    
+}
+
+.nftItem:hover {
+    background-color: #f0f0f0;
+}
+
+.nftItem.selected {
+    background-color: #f8c9af;
+    color: rgb(0, 0, 0);
+}
+
+
+
+.submitButton {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+    font-family: inherit;
+}
+
+.submitButton:hover {
+    background-color: #0056b3;
+}
+.submitButton:disabled{
+    color:rgb(226, 226, 226);
+    background-color: grey;
+    cursor: not-allowed;
+}
+
+.infoText {
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+    padding-bottom: 5px;
+
+}
+
+.hightlight{
+    color:orangered;
+}
+
+.infoText2 {
+    color: #ffffff; /* Neutral gray for information */
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    line-height: 1.6;
+    border: 2px solid #000000; /* Blue border for info */
+    padding: 1rem;
+    border-radius: 3px;
+    background-color: #000000; /* Light blue background */
+    margin:20px;
+
+  }
+  .OTOMnftItem {
+    padding:0px;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    
+}
+  .nftimage{
+    max-width: 100px;
+    max-height: 100px;
+    border-right:2px solid black;
+  }
+  .nfttime{
+    padding-right: 20px;
+    color:orange;
+  }

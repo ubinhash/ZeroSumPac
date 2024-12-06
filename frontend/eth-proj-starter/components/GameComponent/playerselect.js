@@ -74,10 +74,27 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate,handleOpti
     nftContract: "",
     tokenId: 0,
     moveInfo: { day: 0, move: 0 },
-    status: "Please Connect Wallet",
+    status: "Connect Wallet & Select Player",
   });
   const [maxStride,setMaxStride]=useState(0);
 
+  const resetPlayerData =() =>{
+    setPlayerData({
+      playerid:0,
+      playerPosition: { x: 0, y: 0, maze: 0 },
+      dots: 0,
+      level: 0,
+      nextMoveTime: 0,
+      nextSwitchMazeTime: 0,
+      shieldExpireTime: 0,
+      protectionExpireTime: 0,
+      vulnerableTime: 0,
+      nftContract: "",
+      tokenId: 0,
+      moveInfo: { day: 0, move: 0 },
+      status: "Please Connect Wallet",
+    })
+  }
   useEffect(() => {
     if (address) {
       const network = 'shape-sepolia'; // Or dynamically set the network based on user's selection
@@ -90,6 +107,7 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate,handleOpti
       if(selectedPlayer){
         fetchPlayerData(selectedPlayer, 'shape-sepolia');
       }
+      
     });
   }, [address, selectedPlayer, setTriggerPlayerUpdate]); // Add `selectedPlayer` to the dependency array
   
@@ -99,11 +117,19 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate,handleOpti
     try {
       // Assuming webconfig.apiBaseUrl is already set correctly
       const response = await fetch(`${webconfig.apiBaseUrl}/getPacByOwner?owner=${owner}&network=${network}`);
-      
+      if (!response.ok) throw new Error('Failed to fetch NFT data');
       const data = await response.json();
       if(data){
         setplayers(data);
       }
+    //   if (data && data.length > 0) {
+    //     setplayers(data);
+    //     setSelectedPlayer(data[0]); // Set the first player as the default selected player
+    //     await fetchPlayerData(data[0], network); // Fetch data for the default player
+    // } else {
+    //     setplayers([]);
+    //     resetPlayerData();
+    // }
     } catch (error) {
       console.error('Error fetching contracts:', error);
     }
@@ -120,6 +146,9 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate,handleOpti
 
     const response3 = await fetch(`${webconfig.apiBaseUrl}/getMaxStride?playerid=${playerid}&network=${network}`);
     const data3 = await response3.json();
+    if (!response.ok) throw new Error('Failed to fetch player data');
+    if (!response2.ok) throw new Error('Failed to fetch player data');
+    if (!response3.ok) throw new Error('Failed to fetch player data');
 
     if (playerid == 0) {
       // Set only nftContract and tokenId for playerData
@@ -155,9 +184,14 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate,handleOpti
 
   }
   const handlePlayerClick = async (player) => {
-    setSelectedPlayer(player);
-    console.log(selectedPlayer);
-    await fetchPlayerData(player,'shape-sepolia');
+    if(!player){
+        resetPlayerData();
+      
+    }
+    else{
+      setSelectedPlayer(player);
+      await fetchPlayerData(player,'shape-sepolia');
+    }
 
      // Pass selected player data back to parent
   };

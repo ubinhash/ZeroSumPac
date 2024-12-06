@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styles from './maze.module.css'; // Import the CSS module
+import styles2 from './action.module.css'; // Import the CSS module
 import webconfig from '../config/config.js';
 
-const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,unlockRequirement,isspecial}) => {
+const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,unlockRequirement,isspecial, handleOptionSelect}) => {
   const [zoom, setZoom] = useState(1); // Default zoom level
   const [maze, setMaze] = useState([]); // Initialize maze state // information to get from backend
   const [gridSize,setGridSize]=useState(20) // information to get from backend
@@ -223,7 +224,8 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
       {unlockRequirement&&!unlocked && 
       <div className={styles.centerInfo}>    
             {unlockRequirement} 
-           {isspecial && <button>Equip</button>}
+            <br></br>
+           {isspecial && <button className={styles2.actionButton} onClick={() => handleOptionSelect('keys')}>Equip</button>}
       </div>}
       <div className={styles.zoomButtons}>
         <button className={styles.squarebutton} onClick={zoomIn}>+</button>

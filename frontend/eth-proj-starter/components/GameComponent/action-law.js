@@ -3,8 +3,8 @@ import styles from "./action-laws.module.css";
 import gameEquipABI from '../abi/game-equip-abi.js';
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
 import webconfig from '../config/config.js';
-const Laws = ({contracts,currplayerid,setPopupMsg}) => {
-  const [currentRate, setCurrentRate] = useState(10);
+const Laws = ({contracts,eat_percentage,currplayerid,setPopupMsg}) => {
+  const [currentRate, setCurrentRate] = useState(eat_percentage);
 
   const [votePlayerId, setVotePlayerId] = useState(null);
   const [governer,setGoverner]=useState(0);
@@ -55,6 +55,8 @@ const Laws = ({contracts,currplayerid,setPopupMsg}) => {
         console.error("Error fetching dot information:", err.message);
       }
     };
+
+
 
     fetchVoteInfo();
   }, [currplayerid]);
