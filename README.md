@@ -21,13 +21,20 @@ Inspired by the Go, Pac-Man, and Diplomacy, this is an original multi-player "bo
 
 # GAMEPLAY EXPLAINED
 
+## Mechanism
+
+## Levels, Endings and Reward
+
+
+
+
 # Documentation
 
 ## Smart Contract
 
 Due to contract size constraint and for re-usability concern, we broke up the game into modules and link them together.
 
-1. Game Contract:  
+### 1. Game Contract:  
 
 Contains main game configuration and most logistics of the game such as ending conditions etc. 
 
@@ -48,7 +55,7 @@ Below are some main functions that player will interact with
 `lockin` : Exit the game and preserve all dots. (Available after lvl 3)
 
 
-2. Maze Contract :
+### 2. Maze Contract :
 
 This is a helper contract of game for storing the maze info and player locations, contains helper functions for making movement in the maze. 
 
@@ -59,7 +66,7 @@ NFT contract will interact with the maze contract to unlock maze, when certain m
 Player do not make write action to this contract directly.
 
 
-3. Game Equip Contract
+### 3. Game Equip Contract
 
 This is a helper contract of game for letting players "equip" other NFTs, such as the eyes, the keys and OTOM.
 
@@ -91,14 +98,16 @@ The middle-class will probably pray hope for a governer that will set EAT_PERCEN
 Things can turn upside down overnight when a new "governer" got elected and make drastic change to the parameter. We're excited to see what to come.
 
 
-4. Reward Contract
+### 4. Reward Contract
 
 This is a contract to store nft reward and for user to claim nft rewards. Game contract will call this contract to add user to add trait, or add user to the claim whitelist when condition is triggered. 
 
 For this very first season of the game, we have prepared the following level reward.
 
 Lv 3 Player: Special NFT Trait
+
 Lv 4 Player: 1/1 NFT (Max 10)
+
 Lv 5 Player: Custom NFT (Our artist will craft it upon request)
 
 For details please check out the rules page.
@@ -106,7 +115,7 @@ For details please check out the rules page.
 We expect to make adjustment to this contract everytime we run a new season based on the prize we/future collaborator plans to offer.
 
 
-5. NFT Contract
+### 5. NFT Contract
 
 This is the contract for our collection. This collection is designed specifically for this hackathon.
 
@@ -132,15 +141,21 @@ We are using express.js for backend to read from contract and parse the indexed 
 Install relevant npm packages, set the following variables in .env
 
 `ALCHEMY_API_KEY` : Your Alchemy API Key
+
 `RPC_SEPOLIA/RPC_MAINNET`  : RPC URL
+
 `GAME_SEPOLIA/GAME_MAINNET` : Game Contract 
+
 `GAME_EQUIP_SEPOLIA/GAME_EQUIP_MAINNET` : Game-Equip Contract 
+
 `MAZE_SEPOLIA` : Maze Contract
+
 `ZSP_SEPOLIA` : Our Zero-Sum-Pact Nft Contract 
 
 With additional parameters to connect to our database server .
 
 `DB_CONNECTION_STRING` : database connection string
+
 `DB_NAME`: defined in gamesate.js for now
 
 Then use `node index.js` to run the backend server.
@@ -151,17 +166,21 @@ Put relevant NGINX config in `/etc/nginx/sites-available/api.zerosumpact.xyz`
 Start NGINX to serve it over https
 
 `sudo ln -s /etc/nginx/sites-available/api.zerosumpact.xyz /etc/nginx/sites-enabled/`
+
 `sudo nginx -t`
+
 `sudo systemctl restart nginx`
 
 
 ## Data Indexing
 
-Displaying a large "board" with all player position in real time requires indexing all the movement events.
+Displaying a large "board/maze" with all player position in real time requires indexing all the movement events.
 
-We're using goldsky's mirror pipeline to stream event log directly to the database and parse it from there, it's probably more straightforward and cost-effective solution compare to subgraph as we will expect frequent queries of board status.
+We're using goldsky's mirror pipeline to stream event log directly to the database and parse it from there, it's probably more straightforward and cost-effective solution compare to subgraph as we will expect very frequent queries of board status.
 
-Use `goldsky pipeline apply config.yaml` to deploy a pipeline
+Use `goldsky pipeline apply config.yaml` to deploy a pipeline.
+
+Note: Goldsky's contract decode tool is currently buggy at parsing signed int into database so (it was treated as unsigned), so we needed to do some custom ajustment in reading the data to accomodate that. This may cause some minor display issue when they fix their bug.
 
 # Tools and Library Used
 
@@ -169,7 +188,8 @@ Use `goldsky pipeline apply config.yaml` to deploy a pipeline
 - Hardhat
 - Wagmi + Rainbowkit library for wallet connection
 - Express.js for backend
-- Goldsky for indexing (?)
+- Goldsky for indexing
+- Postgres for database
 - Next.js for frontend
 
 
@@ -182,8 +202,17 @@ Use `goldsky pipeline apply config.yaml` to deploy a pipeline
 
 
 
-### Final Thoughts
+## Final Thoughts
 
-Many people wrongly assume that classic board games, especially online ones, are boring and lack interaction. But form my personal observation, they can be surprisingly social and fosters friendship, and even marriage.  The fact that the game itself is not so action-packed actually encourages player to chat and connect with one another while they're waiting for others to move. We hope that our game will help to bond the shape community together.
+This game is designed like a mini social experiment to allow hundres of player to participate asynchonously. If all player are "selfish actors" and all traverse locally optimal path, they won't be able to break free from the "equilibirum" state where all player basically gets the average amount of dots, which is less than what's required to get to a level with reward. In order level up, player will realize they have to collaborate with others, make deals/sacrifices, collaborate to surround other "prey" that out there alone , and the first set of players to realize that will level up and unlock shield which gives them a huge advantage in game.
 
-It's a bit challenging at first to craft a balanced board game where hundreds of player on different timezone can play together on the same "board". It's designed such that even when someone started late, they should have a chance to work with others and catch up. We hope the players will have fun at what we built, there're lot of potential strategy that player can try out for the game and we're excited to see what end will the world come to.
+People on web3 have limited time and attention, I don't want to build a game that requires too much grinding. I want this game to fit into those little pockets of free time in a day -- easy to pick up, easy to put down. And this will help the game become part of people's daily routine. 
+
+It's also a less action-packed strategy game where player can only make very limited moves in game, but we expect more activity and discussion to happen outside of the game and we hope that our game will help to bond the shape community together. 
+
+
+Many assumed that classic board games, especially online ones, are boring and lack interaction. But form my personal observation, they can be surprisingly social and fosters friendship, and even marriage.  The fact that the game itself is not so action-packed actually encourages player to chat and connect with one another while they're waiting for others to move. We hope that our game will help to bond the shape community together.
+
+It's a bit challenging at first to craft a balanced board game where hundreds of player on different timezone can play together on the same "board". It's designed such that even when someone started late, they should have a chance to work with others and catch up.
+
+ We hope the players will have fun at what we built, there're lot of potential strategy that player can try out for the game and we're excited to see what end will the world come to.
