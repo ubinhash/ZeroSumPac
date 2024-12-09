@@ -5,6 +5,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Maze.sol";
+import "./Reward.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 contract ZeroSumPac is ERC721Enumerable, Ownable {
@@ -15,10 +16,11 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
 
     // Pass msg.sender to Ownable's constructor
     constructor() ERC721("ZSP", "ZSP") Ownable(msg.sender) {}
-    uint256 maxSupply = 666; // TBD
-    uint256 whitelistPrice = 0.015 ether; //TBD
-    uint256 mintPrice = 0.015 ether; //TBD
+    uint256 public maxSupply = 666; // TBD
+    uint256 public whitelistPrice = 0.015 ether; //TBD
+    uint256 public mintPrice = 0.015 ether; //TBD
     uint256 public maxPublicPerTransaction = 4;
+    uint256 public rewardPercentage=10;
 
     struct MintWindows {
         uint256 whitelistStartTime;
@@ -35,6 +37,7 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
     string public _baseTokenURI;
 
     Maze public mazeContract;
+    Reward public rewardContract;
     mapping(address => bool) public allowedOperators;
     
 
@@ -49,6 +52,16 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
     function setMazeContract(address _contract) external onlyOwner {
         mazeContract =Maze(_contract);
     }
+     function setRewardContract(address _contract) external onlyOwner {
+        rewardContract =Reward(_contract);
+    }
+
+    function setRewardPercentage(uint256 _rewardPercentage) external {
+        // Add appropriate access control (e.g., onlyOwner)
+        require(_rewardPercentage <= 100, "Percentage cannot exceed 100");
+        rewardPercentage = _rewardPercentage;
+    }
+
 
 
     modifier hasStock(uint256 amount) {
@@ -100,6 +113,7 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
             MerkleProof.verify(merkleProof, whitelistMerkleRoot, leaf),
             "Invalid Merkle proof"
         );
+        _sendReward(msg.value);
 
         whitelistMinted[msg.sender] += amount;
         _batchMint(msg.sender, amount);
@@ -113,8 +127,14 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
                 block.timestamp <= mintWindows.publicMintEndTime,
             "Public mint not active"
         );
+        _sendReward(msg.value);
         _batchMint(msg.sender,amount);
         
+
+    }
+    function _sendReward(uint256 totalAmount) internal {
+        uint256 rewardAmount = (totalAmount * rewardPercentage) / 100;
+        rewardContract.depositReward{value: rewardAmount}();
     }
    function setMintWindows(
         uint256 _whitelistStartTime,
