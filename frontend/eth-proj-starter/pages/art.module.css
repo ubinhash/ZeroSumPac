@@ -6,6 +6,7 @@
     overflow-y: auto; /* Makes the grid scrollable vertically */
     scroll-snap-type: y mandatory; /* Enable vertical scroll snapping */
     height: 100%;
+ 
   }
   
   .section {
@@ -19,13 +20,245 @@
   
   .section1 {
     background-color: #f1f1f1;
+    background-color: #ffffff;
+
   }
   
   .section2 {
-    background-color: #e1e1e1;
+    background-color: #000000;
+    color:white;
+
   }
   
   .section3 {
-    background-color: #d1d1d1;
+    background-color: #ffffff;
+
   }
   
+
+  .section1_left {
+    flex: 1; /* Take up 50% of width */
+    padding: 20px;
+    box-sizing: border-box;
+    padding-left: 40px;
+  }
+  
+  .section1_right {
+    flex: 1; /* Take up 50% of width */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 5px; 
+    padding: 20px;
+  }
+  
+  .section1_title {
+    font-size: 8vh;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  
+  .section1_wallOfText {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  .section1_wallOfText .section1_question {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .section1_wallOfText ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+  
+  .section1_image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 5px solid black;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+
+  }
+  .highlight{
+    color:orange;
+  }
+  .highlight2{
+    color:rgb(237, 112, 112);
+  }
+  .highlight3{
+    color:rgb(108, 148, 65);
+  }
+  .highlight4{
+   font-weight: bold;
+  }
+
+  .section1_card {
+    perspective: 1000px; /* Enables 3D effect */
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Ensures square aspect ratio */
+    position: relative;
+  }
+  
+  .section1_cardContent {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d; /* Enable 3D space */
+    transition: transform 0.5s ease-in; /* Smooth flip animation */
+  }
+  
+  .section1_card:hover .section1_cardContent {
+    transform: rotateY(180deg); 
+  }
+  
+  .section1_front,
+  .section1_back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Hide back when front is visible */
+    border: 3px solid black; /* Border around the card */
+    border-radius: 50%; /* Circular shape */
+    overflow: hidden;
+  }
+
+  
+  /* Back side styles */
+  .section1_back {
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: rotateY(180deg);
+    border-radius: 50%; /* Matches the front's circular shape */
+    font-size: 14px; /* Adjust text size */
+    text-align: center;
+  }
+
+  .section2_left {
+    width: 60%; /* 50% of container width */
+    padding: 10px 30px; /* Optional, for spacing */
+    overflow-y: scroll; /* Make the text section scrollable */
+    height: 90%; /* Ensure it takes full height */
+    font-size: 14px;
+    border:2px dashed rgb(255, 255, 255);
+    margin:10px 20px;
+    border-radius: 5px;
+
+  }
+  
+  /* Right side (titles) */
+  .section2_right {
+    width: 40%; /* 50% of container width */
+    padding-left: 20px; /* Optional, for spacing */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically center the text */
+    text-align: center; /* Center align the titles */
+  }
+  
+  /* Style for titles */
+  .section2_right div{
+    margin: 10px 0;
+    font-size: 8vh;
+    text-align: left;
+
+  }
+  
+  /* Optional: Add smooth scroll behavior */
+  .section2_left {
+    scroll-behavior: smooth;
+  }
+  .section2_right_bottom{
+    display: flex;
+
+    /* align-items: center;
+    justify-content: center; */
+
+  }
+  .section2_image{
+    max-width: 250px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: 5px solid black;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    margin-left:20%;
+  }
+
+  .section3_left {
+    width: 50%;
+    padding: 20px 50px;
+    box-sizing: border-box;
+  }
+  
+  .section3_title {
+    font-size: 5vh;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .section3_text {
+    margin-top: 30px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  .section3_right {
+    width: 50%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0px;
+    padding-top: 50px;
+  }
+  
+  .section3_imageContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0px;
+   
+    width:auto;
+
+  }
+  
+  .section3_imageItem {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .section3_imageItem img {
+    width: 70%;
+    height: auto;
+    border-radius: 10px;
+    border: 3px solid #000; /* Optional border for the images */
+    aspect-ratio: 1/1;
+  }
+  
+  .section3_imageTitle {
+    margin-top: 10px;
+    font-size: 1rem;
+    font-weight: normal;
+    color: #444;
+
+  }
+
+  .section3_more {
+    width:100%;
+    margin-top: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+  }
+  .section3_fineprint{
+    color:grey;
+    font-size: 10px;
+  }
