@@ -7,18 +7,36 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
   const [zoom, setZoom] = useState(1); // Default zoom level
   const [maze, setMaze] = useState([]); // Initialize maze state // information to get from backend
   const [gridSize,setGridSize]=useState(20) // information to get from backend
+  const [eliminationMode,setEliminationMode]=useState(false);
   const [dotInfo, setDotInfo] = useState({
     maze_dot_consumed: 0,
     total_dot_in_maze: 0,
     total_dot_consumed: 0,
     total_dots: 0
   });
+  const [playeridToTokenId,setplayeridToTokenId]=useState({})
+
+  const hints = [
+    'Elimination Mode will begin when all dots are consumed',
+    'Select a position on board, then click "move" to send a transaction',
+    'There are multiple possible endings for this game, with different reward',
+    'Higher level player may prefer to end the game before elimination mode',
+    'Governer may change the game parameter -> [Laws]',
+    'Collaborate with others to rob a high level player',
+    'Shapecraft keys and eyes have special use case in game',
+  ];
+  const [currentHintIndex, setCurrentHintIndex] = useState(0);
+  const handleHintClick = () => {
+    // Move to the next hint, wrap around to the first hint when at the end
+    setCurrentHintIndex((prevIndex) => (prevIndex + 1) % hints.length);
+  };
 
   const [hoverX, setHoverX] = useState(null);
   const [hoverY, setHoverY] = useState(null);
   const [selectedRow, setSelectedX] = useState(null);
   const [selectedCol, setSelectedY] = useState(null);
 
+  const [specialMazeUnlocked,setSpecialMazeUnlocked]=useState(false)
 
   const setObstacles =(mazeData) => {
     if(mazeId%2==0){
@@ -162,6 +180,45 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
     }
 
   }
+  const fetchSpecialMazeUnlocked = async (playerid) => {
+    try {
+      // const response = await fetch(`http://localhost:3002/getContracts`);
+      const response = await fetch(`${webconfig.apiBaseUrl}/getSpecialMazeUnlock?playerid=${playerid}`);
+      
+      const data = await response.json();
+
+      setSpecialMazeUnlocked(data.mazeUnlocked);
+      console.log("specialmaze",data.mazeUnlocked)
+
+    } catch (error) {
+      console.error('Error fetching contracts:', error);
+    }
+  }
+
+  const fetchPlayeridToTokenId = async () => {
+        try {
+            const response = await fetch(`${webconfig.apiBaseUrl}/playerid_to_tokenid`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch data");
+            }
+
+            const data = await response.json();
+            console.log(data,"playeridtokenid")
+            setplayeridToTokenId(data); // Update state with fetched data
+        } catch (error) {
+            console.error("Error fetching playeridToTokenId:", error.message);
+        }
+    };
+    useEffect(() => {
+      fetchPlayeridToTokenId();
+  }, []);
+
+
+  useEffect(() => {
+    if(isspecial){
+      fetchSpecialMazeUnlocked(currplayerid);
+    }
+  }, [currplayerid]);
   
 
   useEffect(() => {
@@ -221,8 +278,10 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
   return (
     <div className={styles.mazeWrapper}>
       {/* Zoom buttons with fixed position */}
-      {unlockRequirement&&!unlocked && 
+      { ((unlockRequirement && !unlocked) && (!isspecial || (isspecial && !specialMazeUnlocked)))  && 
+     
       <div className={styles.centerInfo}>    
+       {specialMazeUnlocked}
             {unlockRequirement} 
             <br></br>
            {isspecial && <button className={styles2.actionButton} onClick={() => handleOptionSelect('keys')}>Equip</button>}
@@ -231,6 +290,9 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
         <button className={styles.squarebutton} onClick={zoomIn}>+</button>
         <button className={styles.squarebutton} onClick={zoomOut}>-</button>
         <button className={`${styles.squarebutton} ${styles.longbutton}`} onClick={refresh}>Refresh</button>
+        <div  className={styles.fineprint} onClick={handleHintClick}  >
+          {hints[currentHintIndex]}
+        </div>
     
       </div>
 
@@ -270,7 +332,7 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
                  
                     {( cell?.hasPlayer !== 0) && (
                       <img
-                        src={cell.hasPlayer == currplayerid ? "/icons/pacs/mypac.png" : "/icons/pacs/plainpac.png"}
+                        src={cell.hasPlayer == currplayerid ? "/icons/pacs/mypac.png" : `/icons/pacs/avatar/${playeridToTokenId[cell.hasPlayer]%10 ||"pac"}.jpg`}
                         alt="Player Icon"
                         className={styles.cellImage}
                       />

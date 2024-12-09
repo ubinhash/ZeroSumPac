@@ -4,7 +4,7 @@ import webconfig from '../config/config.js';
 import { useAccount } from 'wagmi';  
 import gameEquipABI from '../abi/game-equip-abi.js';
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
-const EquipEyes = ({ contracts,currplayerid, network ='shape-sepolia',setPopupMsg}) => {
+const EquipEyes = ({ contracts,currplayerid, network ='shape-sepolia',setPopupMsg,onEquipSuccess}) => {
     const { address } = useAccount();
     const [nfts, setNfts] = useState([]);
     const [selectedTokenId, setSelectedTokenId] = useState(null);
@@ -89,11 +89,9 @@ const EquipEyes = ({ contracts,currplayerid, network ='shape-sepolia',setPopupMs
           setPopupMsg(`Waiting for transaction to confirm`);
         }
         if(isSuccess){
-          setPopupMsg(`Move Success!`);
+          setPopupMsg(`Equip Success!`);
         }
     
-
-       
     
       }, [isLoading,isSuccess,isPrepareError]); 
 

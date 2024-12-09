@@ -47,7 +47,7 @@ const EquipShield = ({ contracts,currplayerid, playerData, network ='shape-sepol
     const { address } = useAccount();
     const [nfts, setNfts] = useState([]);
     const [selectedTokenId, setSelectedTokenId] = useState(null);
-    const [selectedTokenUsed,setSelectedTokenUsed]=useState(false);
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -135,31 +135,7 @@ const EquipShield = ({ contracts,currplayerid, playerData, network ='shape-sepol
         }
     }, [address, contracts, network]);
 
-    useEffect(() => { 
 
-        const fetchTokenUsed = async (selectedTokenId) => {
-            setLoading(true);
-            try {
-                const response = await fetch(`${webconfig.apiBaseUrl}/eyesUsed?tokenid=${selectedTokenId}&network=${network}`);
-
-                if (!response.ok) throw new Error('Failed to fetch NFT data');
-                const data = await response.json();
-                setSelectedTokenUsed(data.used);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        if(selectedTokenId==null){
-            setSelectedTokenUsed(false);
-        }
-        else{
-            fetchTokenUsed(selectedTokenId);
-        }
-        //fetch if token is used
-
-    },[selectedTokenId]);
 
     const handleSelection = (tokenId) => {
         setSelectedTokenId(tokenId === selectedTokenId ? null : tokenId);
@@ -241,7 +217,7 @@ const EquipShield = ({ contracts,currplayerid, playerData, network ='shape-sepol
                     </ul>
                 </>
             )}
-            {selectedTokenUsed && <div className={styles.infoText}>The selected token has been used</div>}
+    
 
             <button className={styles.submitButton} disabled={!write2 || isLoading2 || isPrepareError2}
                     onClick={() => write2?.()}>

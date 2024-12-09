@@ -59,7 +59,7 @@ const EquipKeys = ({ contracts,currplayerid, network ='shape-sepolia',setPopupMs
         const fetchTokenUsed = async (selectedTokenId) => {
             setLoading(true);
             try {
-                const response = await fetch(`${webconfig.apiBaseUrl}/eyesUsed?tokenid=${selectedTokenId}&network=${network}`);
+                const response = await fetch(`${webconfig.apiBaseUrl}/keyUsed?tokenid=${selectedTokenId}&network=${network}`);
 
                 if (!response.ok) throw new Error('Failed to fetch NFT data');
                 const data = await response.json();

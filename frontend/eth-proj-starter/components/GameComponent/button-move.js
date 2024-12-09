@@ -2,6 +2,43 @@ import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from
 import gameABI from '../abi/game-abi.js';
 import styles from './button.module.css'; // Import the CSS module
 import React, { useState, useEffect } from "react";
+const CountdownMove = ({ nextMoveTime }) => {
+  const [status, setStatus] = useState("");
+
+  const computeTime = () => {
+      const currentTime = Date.now() / 1000; // Current time in seconds
+
+
+
+      if (currentTime < nextMoveTime) {
+          // Player is shielded
+          const timeLeft = nextMoveTime  - currentTime;
+
+          const hours = Math.floor(timeLeft / 3600);
+          const minutes = Math.floor((timeLeft % 3600) / 60);
+          const seconds = Math.ceil(timeLeft % 60);
+
+
+          return `Cooldown (${hours} hr ${minutes} min ${seconds} sec)`;
+
+      }
+
+      // Player is not shielded
+      return "Move to adjacent squares";
+  };
+
+  useEffect(() => {
+      // Update the status every second
+      const interval = setInterval(() => {
+          setStatus(computeTime());
+      }, 1000);
+
+      return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, [nextMoveTime]);
+
+  return <span>{status}</span>;
+};
+
 const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position,currmaze,setDisplayMsg,setPopupMsg,onMoveSuccess}) => {
   // Dummy arguments for movePlayerTo
   const playerid = currplayerid; // TO BE CHANGED TODO
@@ -15,6 +52,7 @@ const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position
     config: config_move,
     error: prepareError,
     isError: isPrepareError,
+    refetch: refetchPrepare,
   } = usePrepareContractWrite({
     address: contracts.GAME, // Address for your GAME contract
     abi: gameABI, // ABI of the contract
@@ -77,7 +115,11 @@ const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position
     setTimeout(() => {
         onMoveSuccess();
     }, 3000); // 3000 ms = 3 seconds
+    setTimeout(() => {
+      refetchPrepare?.();
+  }, 11000); // 11 second
 
+    
     }
     if(isPrepareError){
       setDisplayMsg(`Please select a valid square`);
@@ -96,7 +138,7 @@ const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position
 
       <button  className={styles.actionButton}  disabled={!write || isLoading || isPrepareError} onClick={() => write?.()}>{isLoading ? 'Moving' : 'Move'}
 
-      <span className={styles.unlockText}>Move to adjacent squares</span>
+      <span className={styles.unlockText}><CountdownMove nextMoveTime={playerData.nextMoveTime}></CountdownMove></span>
       {/* {isSuccess && <p>Player moved successfully!</p>}
       {isPrepareError && <p style={{ color: 'red' ,fontSize:"5px"}}>Error: {prepareError?.message}</p>} */}
       </button>

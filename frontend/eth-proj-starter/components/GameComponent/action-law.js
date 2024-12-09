@@ -13,7 +13,21 @@ const Laws = ({contracts,eat_percentage,currplayerid,setPopupMsg}) => {
   const [playerVotedCount,setPlayerVotedCount]=useState(0);
   const [playerVoted,setPlayerVoted]=useState(false);
   const isGovernor=currplayerid!=0 && currplayerid==governer;
-  const handleRateChange = (e) => setCurrentRate(e.target.value);
+  const handleRateChange = (e) => {
+    const value = e.target.value;
+  
+    // Allow empty string to clear input
+    if (value === "") {
+      setCurrentRate("");
+      return;
+    }
+  
+    // Convert to a number and validate it's an integer within range
+    const parsedValue = parseInt(value, 10);
+    if (!isNaN(parsedValue) && parsedValue >= 0 && parsedValue <= 100) {
+      setCurrentRate(parsedValue);
+    }
+  };
   const handleVoteChange = (e) => setVotePlayerId(e.target.value);
 
   const {
@@ -36,26 +50,46 @@ const Laws = ({contracts,eat_percentage,currplayerid,setPopupMsg}) => {
     hash: data?.hash,
   });
 
-  useEffect(() => {
-    const fetchVoteInfo = async () => {
-      try {
-        const response = await fetch(
-          `${webconfig.apiBaseUrl}/getTopVoted?playerid=${currplayerid}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch information");
-        }
-        const data = await response.json();
-        setGoverner(data.governer);
-        setTopVotedPlayer(data.topVotedPlayer);
-        setTopVotedCount(data.topVotedCount);
-        setPlayerVoted(data.playerVoted);
-        setPlayerVotedCount(data.playerVotedCount)
-      } catch (err) {
-        console.error("Error fetching dot information:", err.message);
-      }
-    };
+  const {
+    config: config_change,
+    error: prepareError2,
+    isError: isPrepareError2,
+  } = usePrepareContractWrite({
+    address: contracts.GAME_EQUIP, // Address for your GAME contract
+    abi: gameEquipABI, // ABI of the contract
+    functionName: 'setEat', // Function name
+    args: [currentRate,currplayerid], // Arguments for the function
 
+  });
+
+  // Contract write hook
+  const { data:data2, write:write2 } = useContractWrite(config_change);
+
+  // Wait for transaction to complete
+  const { isLoading:isLoading2, isSuccess:isSuccess2 } = useWaitForTransaction({
+    hash: data2?.hash,
+  });
+
+  const fetchVoteInfo = async () => {
+    try {
+      const response = await fetch(
+        `${webconfig.apiBaseUrl}/getTopVoted?playerid=${currplayerid}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch information");
+      }
+      const data = await response.json();
+      setGoverner(data.governer);
+      setTopVotedPlayer(data.topVotedPlayer);
+      setTopVotedCount(data.topVotedCount);
+      setPlayerVoted(data.playerVoted);
+      setPlayerVotedCount(data.playerVotedCount)
+    } catch (err) {
+      console.error("Error fetching dot information:", err.message);
+    }
+  };
+
+  useEffect(() => {
 
 
     fetchVoteInfo();
@@ -67,7 +101,17 @@ const Laws = ({contracts,eat_percentage,currplayerid,setPopupMsg}) => {
     }
     if(isSuccess){
       setPopupMsg(`Vote Success!`);
+      fetchVoteInfo();
     }
+
+    if (isLoading2) {
+      setPopupMsg(`Waiting for transaction to confirm`);
+    }
+    if(isSuccess2){
+      setPopupMsg(`Vote Success!`);
+
+    }
+    
 }, [isLoading,isSuccess,isPrepareError]); 
 
 
@@ -101,7 +145,8 @@ const Laws = ({contracts,eat_percentage,currplayerid,setPopupMsg}) => {
             </p>
 
   
-              <button className={styles.actionButton}>Change</button>
+              <button className={styles.actionButton}  disabled={!write2 || isLoading2 || isPrepareError2}
+                    onClick={() => write2?.()}>Change</button>
               <div className={styles.infotext}>Governer can make changes once per day</div>
             </div>
         </div>

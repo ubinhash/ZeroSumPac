@@ -226,3 +226,16 @@
     z-index: 1000; /* Ensures it appears above other content */
     font-size: 30px;
   }
+  .fineprint{
+    display: flex;
+    font-size: 10px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    border-radius: 3px;
+    margin-left: auto;
+    color:white;
+    padding:0px 10px;;
+    cursor: pointer;
+  }

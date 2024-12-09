@@ -2,6 +2,7 @@ import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from
 import gameABI from '../abi/game-abi.js';
 import styles from './action.module.css'; // Import the CSS module
 import React, { useState, useEffect } from "react";
+
 const ForfeitPage = ({contracts, playerData,setPopupMsg}) => {
     const [forfeitTo, setForfeitTo] = useState();
   // Prepare the contract write
