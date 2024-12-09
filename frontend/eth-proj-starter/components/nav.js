@@ -51,7 +51,13 @@ export default function NavBar({ backgroundColor = '#ffffff50' ,children}) {
                 <span className={styles.circle}></span> Play
               </Link>
         </div>
-        <div className={styles.cell}>MINT</div>
+        <div className={`${styles.cell} ${router.pathname === '/mint' ? styles.active : ''}`}>
+            <Link style={{ textDecoration: 'none',color:"inherit" }} className={styles.link} exact href="/mint" 
+                onClick={handleClick}>
+                <span className={styles.circle}></span> Mint
+              </Link>
+        </div>
+        {/* <div className={styles.cell}>MINT</div> */}
    
         <div className={styles.walletcell}>
        <CustomConnectButton></CustomConnectButton>
@@ -76,7 +82,15 @@ export default function NavBar({ backgroundColor = '#ffffff50' ,children}) {
         />
         </Link>
       </div>
-      <div className={styles.fixed}></div>
+      <div className={`${styles.fixed} ${styles.credit}`}>
+        <div>
+            Dev = Ubinhash
+        </div>
+        <div>
+            K. Nami = Artist
+        </div>
+        
+      </div>
       <div className={`${styles.fixed} ${styles.center}`}>
     
           <img src="/icons/artist.png" className={styles.cornerIcon2}

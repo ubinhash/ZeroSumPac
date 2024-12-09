@@ -70,6 +70,8 @@ const CountdownShield = ({ shieldExpireTime, protectionExpireTime, vulnerableTim
 };
 
 
+
+
 export default function Game() {
 
 
@@ -81,6 +83,7 @@ export default function Game() {
   const [mazeUnlockRequirements,setMazeUnlockedRequirements]=useState(Array(totalMaze).fill(""));
   const [unlockedInfo,setunlockedInfo]=useState("There are total of 10 Mazes. They will gradually unlock as mint status and game progresses.");
   // const [playerId,setPlayerId] =useState(1);
+  const [loadingMaze,setLoadingMaze]=useState(false);
   const [playerData, setPlayerData] = useState({
     playerid:0,
     playerPosition: { x: 0, y: 0, maze: 0 },
@@ -183,6 +186,7 @@ export default function Game() {
   };
 
   const fetchMazeUnlocked = async (playerid) => {
+    setLoadingMaze(true);
     try {
       // const response = await fetch(`http://localhost:3002/getContracts`);
       const response = await fetch(`${webconfig.apiBaseUrl}/getMazeUnlock?playerid=${playerid}`);
@@ -199,18 +203,21 @@ export default function Game() {
       }
     } catch (error) {
       console.error('Error fetching contracts:', error);
+    } finally{
+      setLoadingMaze(false);
     }
+  
   }
+
+  
 
 
   useEffect(() => {
     fetchContracts();
     fetchConfig();
+    fetchMazeUnlocked(0);
   }, []);
 
-  useEffect(() => {
-    fetchMazeUnlocked(playerData.playerid);
-  }, [playerData.playerid]);
 
   const handlePositionSelection = (x, y, selected_playerid,playerinfo) => {
     console.log("position selection",playerinfo)
@@ -291,7 +298,11 @@ export default function Game() {
                 </button>
             </div>
             <div className={styles.mazeInfo}>
-               {unlockedInfo}
+            {loadingMaze ? (
+                <>Loading Maze Unlock Status...</> // Show loading message
+              ) : (
+                <>{unlockedInfo}</> // Show fetched maze status
+              )}
             </div>
             {/* Add as many buttons as needed */}
         </div>
@@ -304,7 +315,7 @@ export default function Game() {
         </div>
     </div>
       <div className={`${styles.section} ${styles.section2}`}>
-      {display === "maze" && <MyMaze currplayerid={playerData.playerid} playerData={playerData} mazeId={currmaze} onSelect={handlePositionSelection} setTriggerMazeUpdate={setTriggerMazeUpdate} handleOptionSelect={handleOptionSelect} unlocked={mazeUnlocked[currmaze]} unlockRequirement={mazeUnlockRequirements[currmaze]} isspecial={currmaze==totalMaze-1}></MyMaze>} 
+      {display === "maze" && <MyMaze currplayerid={playerData.playerid} playerData={playerData} mazeId={currmaze} onSelect={handlePositionSelection} setTriggerMazeUpdate={setTriggerMazeUpdate} handleOptionSelect={handleOptionSelect} unlocked={mazeUnlocked[currmaze]} unlockRequirement={mazeUnlockRequirements[currmaze]} isspecial={currmaze==totalMaze-1} ></MyMaze>} 
       {display === "log" && <Logs currplayerid={playerData.playerid}></Logs>} {/* Replace with your actual Log component */}
       {display === "ranking" && <Rankings></Rankings>} {/* Replace with your actual Ranking component */}
       {display === "forfeit" && <ForfeitPage contracts={contracts}  playerData={playerData} setPopupMsg={setPopupMsg} ></ForfeitPage>} {/* Replace with your actual Log component */}

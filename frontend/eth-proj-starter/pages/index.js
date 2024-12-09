@@ -29,11 +29,11 @@ export default function Home() {
             </div>
             <div className={styles.leftBottom}>
               <div className={styles.description}>
-              <b>nft =&gt;</b> art on the scars of wars <br></br>
+              <b>Nft =&gt;</b> Art on the scars of wars <br></br>
               <div className={styles.seperator}></div>
-              <b>game(nft) =&gt;</b> a semi-collabrative strategy game where all players coordinate and compete for limited resources on a shared board. Inspired by Go and Pac-man.
+              <b>Game(nft) =&gt;</b> Inspired by Go and Pac-man & Diplomacy. We built a semi-collabrative strategy game where all players coordinate and compete for limited resources on a shared board. 
               <div className={styles.seperator}></div>
-              <b>game.append(shapers)=&gt;</b> welcome to join our world 
+              <b>Game.append(shapers)=&gt;</b> Welcome to join our world 
               <span onClick={toggleFinePrint} style={{ color: 'black', textDecoration: 'none', cursor: 'pointer' }}> 
               &nbsp;&gt;&gt;&gt;
               </span>

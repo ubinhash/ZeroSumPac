@@ -30,7 +30,7 @@ export const shapeMainnet = {
   },
   rpcUrls: {
     public: { http: ['https://mainnet.shape.network'] },
-    default: { http: ['https://mainnet.shape.network'] },
+    default: { http: ['https://shape-mainnet.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk'] },
   },
   blockExplorers: {
     etherscan: { name: 'ShapeScan', url: 'https://shapescan.xyz' },
@@ -49,6 +49,8 @@ export const shapeSepolia = {
   },
   rpcUrls: {
     public: { http: ['https://sepolia.shape.network'] },
+    // public: { http: ['https://shape-sepolia.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk'] },
+    // default: { http: ['https://sepolia.shape.network'] },
     default: { http: ['https://shape-sepolia.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk'] },
   },
   blockExplorers: {

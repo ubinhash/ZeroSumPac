@@ -3,7 +3,7 @@ const config = {
     apiBaseUrl: 'http://localhost:3002',
     // apiBaseUrl:'http://34.70.30.213:3002'
         // apiBaseUrl:'https://34.70.30.213:3003'
-        // apiBaseUrl:'https://api.zerosumpact.xyz'
+      //   apiBaseUrl:'https://api.zerosumpact.xyz'
   };
   
   export default config;
