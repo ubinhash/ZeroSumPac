@@ -195,6 +195,38 @@ router.get('/getMazeUnlock', async (req, res) => {
     }
 });
 
+router.get('/getSpecialMazeUnlock', async (req, res) => {
+    const { network = "shape-sepolia",playerid=0 } = req.query;
+  
+
+    const mazeContractAddress = CONTRACTS[network]?.MAZE;
+
+    if (!mazeContractAddress) {
+        return res.status(500).json({ error: `Contract not found for MAZE on ${network}` });
+    }
+
+    const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
+    
+    try {
+        // Instantiate the Maze contract
+        const mazeContract = new web3.eth.Contract(MAZE_ABI, mazeContractAddress);
+
+        // Fetch maze unlock statuses
+
+        const mazeUnlocked = await mazeContract.methods._isMazeUnlocked(9,playerid).call();
+
+    
+        // Send response with the maze unlock statuses
+        res.send({
+            mazeUnlocked
+        });
+
+    } catch (error) {
+        console.error('Error fetching maze unlock statuses:', error.message);
+        res.status(500).json({ error: 'Failed to fetch maze unlock statuses', details: error.message });
+    }
+});
+
 router.get('/getPlayerId', async (req, res) => {
     const { network = "shape-sepolia", contract, tokenid } = req.query;
 

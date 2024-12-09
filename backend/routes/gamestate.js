@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 const { Client } = require('pg');
+const { Pool } = require('pg');
 require('dotenv').config();
 
 
@@ -82,16 +83,26 @@ function logDisplay(logs) {
     return logsDisplay;
 }
 
+const pools = {};
+
+// Initialize pools for each network
+Object.keys(DB).forEach((network) => {
+    pools[network] = new Pool({
+        connectionString: DB[network].connectionString,
+    });
+});
+
 router.get('/logs', async (req, res) => {
     const {network="shape-sepolia" } = req.query;
-    const connectionString=DB[network].connectionString;
+    // const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
-    const client = new Client({ connectionString });
+    // const client = new Client({ connectionString });
+    const client= pools[network]; 
 
     try {
         // Connect to the database
-        await client.connect();
-        console.log('Connected to PostgreSQL');
+        // await client.connect();
+        // console.log('Connected to PostgreSQL');
 
 
         const query = `
@@ -108,22 +119,20 @@ router.get('/logs', async (req, res) => {
     } catch (error) {
         console.error('Error executing query:', error.message);
         res.status(500).json({ error: 'Error fetching logs' });
-    } finally {
-        // Disconnect from the database
-        await client.end();
-    }
+    } 
 });
 
 router.get('/rawlogs', async (req, res) => {
     const {network="shape-sepolia" } = req.query;
     const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
-    const client = new Client({ connectionString });
+    const client= pools[network]; 
+    // const client = new Client({ connectionString });
 
     try {
         // Connect to the database
-        await client.connect();
-        console.log('Connected to PostgreSQL');
+        // await client.connect();
+        // console.log('Connected to PostgreSQL');
 
 
         const query = `
@@ -142,7 +151,7 @@ router.get('/rawlogs', async (req, res) => {
         res.status(500).json({ error: 'Error fetching logs' });
     } finally {
         // Disconnect from the database
-        await client.end();
+        // await client.end();
     }
 });
 
@@ -165,12 +174,13 @@ router.get('/player_locations', async (req, res) => {
     console.log(maze_number,req.query)
     const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
-    const client = new Client({ connectionString });
+    // const client = new Client({ connectionString });
+    const client= pools[network]; 
     const gridsize=getGridSize();
     try {
         // Connect to the database
-        await client.connect();
-        console.log('Connected to PostgreSQL');
+        // await client.connect();
+        // console.log('Connected to PostgreSQL');
 
 
         const query = `
@@ -212,7 +222,7 @@ router.get('/player_locations', async (req, res) => {
         res.status(500).json({ error: 'Error fetching logs' });
     } finally {
         // Disconnect from the database
-        await client.end();
+        // await client.end();
     }
 });
 
@@ -220,12 +230,13 @@ router.get('/dot_locations', async (req, res) => {
     const {maze_number = 0,network="shape-sepolia" } = req.query;
     const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
-    const client = new Client({ connectionString });
+    // const client = new Client({ connectionString });
+    const client= pools[network]; 
     const gridsize=getGridSize();
     try {
         // Connect to the database
-        await client.connect();
-        console.log('Connected to PostgreSQL');
+        // await client.connect();
+        // console.log('Connected to PostgreSQL');
 
 
 
@@ -257,7 +268,7 @@ router.get('/dot_locations', async (req, res) => {
         res.status(500).json({ error: 'Error fetching logs' });
     } finally {
         // Disconnect from the database
-        await client.end();
+        // await client.end();
     }
 });
 
@@ -266,12 +277,13 @@ router.get('/rankings', async (req, res) => {
     const {network="shape-sepolia" } = req.query;
     const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
-    const client = new Client({ connectionString });
+    // const client = new Client({ connectionString });
+    const client= pools[network]; 
     const gridsize=getGridSize();
     try {
         // Connect to the database
-        await client.connect();
-        console.log('Connected to PostgreSQL');
+        // await client.connect();
+        // console.log('Connected to PostgreSQL');
 
 
         const query = `
@@ -314,9 +326,46 @@ router.get('/rankings', async (req, res) => {
         res.status(500).json({ error: 'Error fetching logs' });
     } finally {
         // Disconnect from the database
-        await client.end();
+        // await client.end();
     }
 });
+
+router.get('/playerid_to_tokenid', async (req, res) => {
+    const { network = "shape-sepolia" } = req.query;
+    const connectionString = DB[network].connectionString;
+    const dbname = DB[network].dbname;
+    const client = pools[network]; // Use connection pool for performance
+    
+    try {
+        const query = `
+            SELECT event_params
+            FROM ${dbname}
+            WHERE event_signature = 'NFTRegistered'
+            ORDER BY block_number, transaction_index, log_index;
+        `;
+
+        const result = await client.query(query);
+
+        // Create a mapping from playerid to tokenId
+        const playerToTokenId = {};
+
+        result.rows.forEach(row => {
+            const [nftContract, tokenId, owner, playerId] = row.event_params; // Adjust based on your database schema
+            
+            // Store the mapping from playerId to tokenId
+            playerToTokenId[playerId.toString()] = tokenId;
+        });
+
+        res.json(playerToTokenId);
+
+    } catch (error) {
+        console.error('Error executing query:', error.message);
+        res.status(500).json({ error: 'Error fetching NFTRegistered logs' });
+    } finally {
+        // No need to end client if using connection pool
+    }
+});
+
 
 module.exports = router;
 
