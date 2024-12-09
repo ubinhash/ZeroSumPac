@@ -1,0 +1,129 @@
+.container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+  }
+  
+  .left, .right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+  }
+  
+  .left {
+    width: 40%;
+    height: 100%;
+    margin-left: 50px; 
+
+  }
+  
+  .topImage {
+    width: 80%;
+    aspect-ratio: 1/1; /* Adjust ratio as needed */
+    /* background-color: #ccc; Placeholder for image */
+    margin-bottom: 5px;
+  }
+  
+  .bottomImages {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+  }
+  
+  .bottomImage {
+    width: 32%; /* Adjust for spacing */
+    aspect-ratio: 1 / 1; /* Square images */
+  
+  }
+  
+  .right {
+    width: 60%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .title {
+    font-size: 60px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .quantitySelector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .quantityButton {
+    width: 60px;
+    height: 60px;
+    font-size: 40px;
+    text-align: center;
+    background-color: #000000;
+    color:white;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  
+  .quantityInput {
+    width: 250px;
+    height: 60px;
+    text-align: center;
+    font-size: 1rem;
+    border: 2px solid #000000;
+    margin: 0;
+    font-size: 30px;
+    font-family: inherit;
+
+  }
+  
+  .textSection {
+    display: flex;
+    justify-content: space-between;
+    width: 380px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+  
+  .leftText, .rightText {
+    padding: 0 10px;
+  }
+  
+  .mintButton {
+    padding: 10px 20px;
+    font-size: 40px;
+    text-align: center;
+    background-color: #000000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    font-family: inherit;
+  }
+  .mintButton:disabled{
+    background-color: grey;
+    cursor: not-allowed;
+  }
+  
+  .iconsRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px; /* Adjust spacing */
+    gap: 5px; /* Space between icons */
+  }
+  
+  .icon {
+    width: 30px; /* Adjust size as needed */
+    height: 30px;
+    object-fit: contain;
+  }
+  .pricetag{
+    font-size: 15px;
+  }
