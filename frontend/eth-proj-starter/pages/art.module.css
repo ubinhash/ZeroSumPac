@@ -50,6 +50,13 @@
     grid-template-rows: repeat(3, 1fr);
     gap: 5px; 
     padding: 20px;
+
+
+    /*hard-coded trick to ensure the parent's height  TODO*/ 
+    aspect-ratio: 1 / 1;
+    max-height: 100%;
+    max-width: calc(100vh - 120px);
+
   }
   
   .section1_title {
@@ -74,12 +81,12 @@
   }
   
   .section1_image {
-    width: 100%;
-    height: 100%;
+
     border-radius: 50%;
     border: 5px solid black;
     object-fit: cover;
     aspect-ratio: 1 / 1;
+    
 
   }
   .highlight{
@@ -98,6 +105,7 @@
   .section1_card {
     perspective: 1000px; /* Enables 3D effect */
     width: 100%;
+    height:100%;
     aspect-ratio: 1 / 1; /* Ensures square aspect ratio */
     position: relative;
   }
@@ -106,6 +114,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
+
     transform-style: preserve-3d; /* Enable 3D space */
     transition: transform 0.5s ease-in; /* Smooth flip animation */
   }

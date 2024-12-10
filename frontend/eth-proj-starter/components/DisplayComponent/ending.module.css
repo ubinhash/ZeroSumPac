@@ -1,0 +1,48 @@
+.endingBlock {
+    margin-bottom: 0px;
+  }
+  
+  .ending{
+    border:2.5px solid black;
+    border-bottom:5px solid black;
+    border-right:5px solid black;
+    border-top-left-radius: 3px;
+    color:black;
+    font-size: 14px;
+    padding:10px;
+
+  }
+  .ending1 {
+    background-color: rgb(255, 232 ,232);
+
+
+    
+
+  }
+  
+  .ending2 {
+    background-color: rgb(255, 255, 227);
+  }
+  
+  .ending3 {
+    background-color: rgb(231, 254, 203);
+
+  }
+  
+  .indentedBlock {
+    margin-left: 20px;
+    background-color: #f8f8f8;
+    padding: 10px;
+
+    border-left: 2px solid black;
+    border-right: 5px solid black;
+    border-bottom: 5px solid black; /* Add your desired border-bottom */
+  }
+
+  .ending_title{
+    font-size:18px;
+    font-weight: bold;
+  }
+  .ending_description{
+    color:rgb(80, 80, 80);
+  }

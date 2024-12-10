@@ -94,7 +94,7 @@ export default function Home() {
           <h1 className={styles.section3_title}>One On One & Rarity</h1>
           <div className={styles.section3_text}>
  
-          <li>There are 666 NFT in total, 66 will be animated.</li>
+          <li>There are 555 NFT in total, 66 will be animated.</li>
 
           <li>There’s a rare <span className={styles.highlight}>“revolving trait” </span>solely <span className={styles.highlight4}> earnable from game.</span></li>
 

@@ -1,31 +1,56 @@
 /* scrollSnap.module.css */
-.grid {
-    display: grid;
-    grid-template-columns: 1fr; /* Single column grid */
-    grid-auto-rows: 100%; /* Each child takes full viewport height */
-    overflow-y: auto; /* Makes the grid scrollable vertically */
-    scroll-snap-type: y mandatory; /* Enable vertical scroll snapping */
-    height: 100%;
+
+  .grid{
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-  
   .section {
-    scroll-snap-align: start; /* Snap the section to the start */
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 2rem;
     width: 100%; /* Ensure each section fills the grid's width */
+    font-size: 14px;
   }
   
   .section1 {
-    background-color: #f1f1f1;
+    /* background-color: #f1f1f1; */
+    width: 50%;
+
+
   }
   
-  .section2 {
-    background-color: #e1e1e1;
+
+  .faq {
+    margin-top: 20px;
   }
   
-  .section3 {
-    background-color: #d1d1d1;
+  .faq h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
   }
   
+  .faq ul {
+    list-style-type: none; /* Remove default bullets */
+    padding-left: 20px;
+  }
+  
+  .faq ul li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+
+
+  .icon{
+    width:18px;
+    height:18px;
+    margin-right: 10px;
+  }
+  
+  .levels li {
+    margin-bottom: 15px;
+  }
