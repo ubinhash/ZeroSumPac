@@ -89,6 +89,7 @@ contract GameEquip is  IERC1155Receiver,Ownable {
             !compareStrings(otomDatabase.getMoleculeByTokenId(tokenId).bond.bondType,"singleton"),
             "Must be Molecule"
         );
+        require(gameContract.playerActive(playerid),"Inactive");
     
 
         otomToken.safeTransferFrom(msg.sender, address(this), tokenId, 1, "");

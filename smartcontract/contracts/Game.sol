@@ -60,7 +60,7 @@ contract Game is Ownable {
         config[ConfigKey.MOVE_INTERVAL] = 10;
         config[ConfigKey.PROTECTION_INTERVAL] = 43200;
         config[ConfigKey.MAX_SHIELD_INTERVAL] = 86400;
-        config[ConfigKey.MAZE_SWITCH_INTERVAL] = 604800;
+        config[ConfigKey.MAZE_SWITCH_INTERVAL] = 259200;
         config[ConfigKey.MAZE_SWITCH_PENALTY] = 0.001 ether;
         config[ConfigKey.SHIELD_PRICE] = 0.00005 ether;
         config[ConfigKey.MIN_LOCK_IN_LV] = 3;
@@ -81,7 +81,7 @@ contract Game is Ownable {
     mapping(uint256 => Player) public players;
     uint256 public level3DotsLocked;
     uint256 public level4DotsLocked;
-    uint256 public endingThreshold = 5001; 
+    // uint256 public endingThreshold = 5001; 
     Ending public GAME_ENDED = Ending.Not_Ended; // 0 = not ended
 
     // uint256 public FIRST_ENTRANCE_MOVE_INTERVAL=60; //freeze for 1 minutes when you first enter the game or switch maze
@@ -111,7 +111,7 @@ contract Game is Ownable {
     }
     mapping(ConfigKey => uint256) private config;
 
-    uint256[] public DOTS_REQUIRED_FOR_LEVELS = [0, 0, 40, 200, 500, 5001];
+    uint256[] public DOTS_REQUIRED_FOR_LEVELS = [0, 0, 21, 90, 189, 1891];
     uint256[] public DAILY_MOVES_FOR_LEVELS = [0,10,15,20,25,30];
     bool public eliminationModeOn=false;
     
@@ -402,6 +402,7 @@ contract Game is Ownable {
         }
     }
     function _checkGameEnded() internal{
+        uint256 endingThreshold = mazeContract.total_dots_in_mazes()/2;
         if(level3DotsLocked>endingThreshold){
             GAME_ENDED = Ending.Ending1_CoGovernance;
             emit GameEnded(1);
