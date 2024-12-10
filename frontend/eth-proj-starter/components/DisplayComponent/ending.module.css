@@ -46,3 +46,12 @@
   .ending_description{
     color:rgb(80, 80, 80);
   }
+  .example_button{
+    background-color: black;
+    color:white;
+    border: none;
+    padding:5px 10px;
+    margin-top: 5px;
+    font-family: inherit;
+    cursor: pointer;
+  }

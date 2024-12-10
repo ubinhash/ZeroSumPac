@@ -63,7 +63,7 @@ const MintComponent = ({setPopupMsg}) => {
   const [totalprice,setTotalPrice]=useState(price*quantity);
   const maxAmount = 4; // Maximum allowed quantity
   const [currentSupply,setCurrentSuuply] = useState(0); // Current minted supply
-  const totalSupply = 666; // Total supply available
+  const totalSupply = 555; // Total supply available
   const [contracts, setContracts] = useState({
     GAME: '',
     MAZE: '',

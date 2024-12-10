@@ -1,7 +1,13 @@
-import React from 'react';
-import styles from './ending.module.css';
 
+import styles from './ending.module.css';
+import React, { useState, useEffect } from "react";
 const EndingComponent = () => {
+const [showExamples, setShowExamples] = useState({ ending1: false, ending2: false, ending3: false });
+
+  const toggleExample = (ending) => {
+    setShowExamples((prev) => ({ ...prev, [ending]: !prev[ending] }));
+  };
+
     return (
         <div>
           {/* Ending1 */}
@@ -28,6 +34,16 @@ const EndingComponent = () => {
             <div className={`${styles.ending2} ${styles.ending}`}>
                 <div className={styles.ending_title}>ENDING 2 : “Oligarchy” - The Privileged Few </div>
                 <div className={styles.ending_description}>     Players that locked-in at lv4 collectively holds &gt;=50% of the Dots in total.  (Max 10 Players)</div>
+                <button onClick={() => toggleExample('ending2')} className={styles.example_button}>
+                    {showExamples.ending2 ? 'Hide Example' : 'Show Example'}
+                </button>
+                {showExamples.ending2 && (
+                    <div className={styles.example}>
+                    <p><b>Example 1:</b> 10 player locked in, each holds 200 dots.  10*200 = 2000 &gt; 50% of dot supply</p>
+                    <p><b>Example 2:</b> 3 players locked in, 1 holds 1000 dots, 1 holds 500, I holds 600.  1000+500+600 = 2100 &gt; 50% of dot supply</p>
+                    <p>• If players satisfies the criteria did not lock-in, the game continues.</p>
+                    </div>
+                )}
             </div>
             <div className={styles.indentedBlock}>
                 <b>Reward</b>
@@ -44,6 +60,16 @@ const EndingComponent = () => {
           <div className={`${styles.ending3} ${styles.ending}`}>
                 <div className={styles.ending_title}>ENDING 3 : “CO-GOVERNENCE” - Success Of The Commons</div>
                 <div className={styles.ending_description}>Players that locked in at lv3 collectively holds &gt;=50% of Dots in total.  (Max 21 Players)</div>
+                <button onClick={() => toggleExample('ending3')} className={styles.example_button}>
+                    {showExamples.ending3 ? 'Hide Example' : 'Show Example'}
+                </button>
+                {showExamples.ending3 && (
+                    <div className={styles.example}>
+                     <p><b>Example 1:</b> 20 player locked in, each holds 100 dots.  20*100 = 2000 &gt; 50% of dot supply</p>
+                        <p><b>Example 2:</b> 14 players locked in, each hold 150 dots 14*150 &gt; 50% of dot supply</p>
+                        <p>• If players satisfies the criteria did not lock-in, the game continues.</p>
+                    </div>
+                )}
             </div>
             <div className={styles.indentedBlock}>
                 <b>Reward</b>
