@@ -53,7 +53,7 @@ function logDisplay(logs) {
             const [attackerplayerid, victimplayerid, dotdelta] = log.event_params;
 
             logsDisplay.push({
-                string: `Player ${attackerplayerid} Attacked Player ${victimplayerid}, Dot Change: ${dotdelta > 0 ? "+" : ""}${dotdelta}`,
+                string: `Player ${attackerplayerid} Attacked Player ${victimplayerid} and obtained ${dotdelta > 0 ? "+" : ""}${dotdelta} dots`,
                 playerid: [attackerplayerid, victimplayerid]
             });
         } else if (log.event_signature === "PlayerRobbed") {

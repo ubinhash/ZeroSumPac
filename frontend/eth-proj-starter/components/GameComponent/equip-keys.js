@@ -147,6 +147,7 @@ const EquipKeys = ({ contracts,currplayerid, network ='shape-sepolia',setPopupMs
                     onClick={() => write?.()}>
                 {isLoading ? 'Equiping' : `Equip Key for Player ${currplayerid}`}
             </button>
+            <div className={styles.fineprint}>Shapecraft KEY Contract: {contracts.EYE}</div>
         </div>
     );
 };

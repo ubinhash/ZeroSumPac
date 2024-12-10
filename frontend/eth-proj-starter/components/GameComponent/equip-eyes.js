@@ -147,6 +147,7 @@ const EquipEyes = ({ contracts,currplayerid, network ='shape-sepolia',setPopupMs
                     onClick={() => write?.()}>
                 {isLoading ? 'Equiping' : `Equip Eyes for Player ${currplayerid}`}
             </button>
+            <div className={styles.fineprint}> EYE Contract: {contracts.EYE}</div>
         </div>
     );
 };

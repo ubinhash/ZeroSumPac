@@ -6,6 +6,9 @@ const { Web3 } = require('web3');
 const CONTRACTS = {
     'shape-mainnet': {
         GAME: "TODO",
+        OTOM:"0x2f9810789aebBB6cdC6c0332948fF3B6D11121E3",
+        EYE:"0xF3851e1b7824BD920350E6Fe9B890bb76d01C9f7",
+        KEY:"0x05aA491820662b131d285757E5DA4b74BD0F0e5F",
     },
     'shape-sepolia': {
         GAME: process.env.GAME_SEPOLIA ,    // Replace with actual Sepolia PAC contract address
@@ -13,6 +16,8 @@ const CONTRACTS = {
         GAME_EQUIP:process.env.GAME_EQUIP_SEPOLIA,
         ZSP:process.env.ZSP_SEPOLIA,
         OTOM:"0xc709F59f1356230025d4fdFDCeD92341A14FF2F8",
+        EYE:"0xAA394da7d62E502a7E3dA7e11d21A74c277143d5",
+        KEY:"0x01eB5CF188ba7d075FDf7eDF2BB8426b17CA3320",
     }
 };
 
@@ -59,6 +64,7 @@ router.get('/getConfig', async (req, res) => {
     try {
         const dotsRequired = [];
         const dailyMoves = [];
+        var eliminationModeOn=false;
 
         for (let i = 0; i < 6; i++) { // Assuming you want levels 0-4
             const dots = await game.methods.DOTS_REQUIRED_FOR_LEVELS(i).call();
@@ -67,6 +73,7 @@ router.get('/getConfig', async (req, res) => {
             dailyMoves.push(moves);
     
         }
+        eliminationModeOn=await game.methods.eliminationModeOn().call();
         // console.log( dotsRequired)
         // console.log(dailyMoves)
         const formatBigIntArray = (arr) => arr.map(value => value.toString());
@@ -78,7 +85,8 @@ router.get('/getConfig', async (req, res) => {
                 EAT_PERCENTAGE: eatPercentage.toString() // Override the static value
             },
             dotsRequired: formatBigIntArray(dotsRequired),
-            dailyMoves: formatBigIntArray(dailyMoves)
+            dailyMoves: formatBigIntArray(dailyMoves),
+            eliminationModeOn:eliminationModeOn,
         });
     } catch (error) {
         console.error('Error fetching game config:', error.message);

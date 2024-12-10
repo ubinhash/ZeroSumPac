@@ -3,11 +3,10 @@ import styles from './maze.module.css'; // Import the CSS module
 import styles2 from './action.module.css'; // Import the CSS module
 import webconfig from '../config/config.js';
 
-const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,unlockRequirement,isspecial, handleOptionSelect}) => {
+const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,unlockRequirement,isspecial, handleOptionSelect,eliminationModeOn}) => {
   const [zoom, setZoom] = useState(1); // Default zoom level
   const [maze, setMaze] = useState([]); // Initialize maze state // information to get from backend
   const [gridSize,setGridSize]=useState(20) // information to get from backend
-  const [eliminationMode,setEliminationMode]=useState(false);
   const [dotInfo, setDotInfo] = useState({
     maze_dot_consumed: 0,
     total_dot_in_maze: 0,
@@ -290,6 +289,7 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
         <button className={styles.squarebutton} onClick={zoomIn}>+</button>
         <button className={styles.squarebutton} onClick={zoomOut}>-</button>
         <button className={`${styles.squarebutton} ${styles.longbutton}`} onClick={refresh}>Refresh</button>
+       {eliminationModeOn && <div className={styles.fineprint} >Elimination Mode: {eliminationModeOn.toString()}</div>}
         <div  className={styles.fineprint} onClick={handleHintClick}  >
           {hints[currentHintIndex]}
         </div>

@@ -96,7 +96,7 @@ const EnterPlayerButton = ({ contracts,currplayerid,playerData ,selected_positio
 
       <button  className={styles.actionButton}  disabled={!write || isLoading || isPrepareError} onClick={() => write?.()}>{isLoading ? 'Entering' : 'Enter Game'}
 
-      <span className={styles.unlockText}>Enter NFT Game for the first time</span>
+      <span className={styles.unlockText}>Enter NFT in Game for the first time (60s cooldown)</span>
       {/* {playerData.tokenId} */}
       {/* {isSuccess && <p>Player moved successfully!</p>}
       {isPrepareError && <p style={{ color: 'red' ,fontSize:"5px"}}>Error: {prepareError?.message}</p>} */}
