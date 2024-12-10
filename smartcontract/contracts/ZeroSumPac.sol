@@ -16,7 +16,7 @@ contract ZeroSumPac is ERC721Enumerable, Ownable {
 
     // Pass msg.sender to Ownable's constructor
     constructor() ERC721("ZSP", "ZSP") Ownable(msg.sender) {}
-    uint256 public maxSupply = 666; // TBD
+    uint256 public maxSupply = 555; // TBD
     uint256 public whitelistPrice = 0.015 ether; //TBD
     uint256 public mintPrice = 0.015 ether; //TBD
     uint256 public maxPublicPerTransaction = 4;

@@ -21,9 +21,13 @@ contract Reward is  IERC721Receiver,Ownable {
 
     constructor() Ownable(msg.sender) {}
 
+  
     modifier onlyAllowedOperator() {
         require(allowedOperators[msg.sender], "Not an allowed operator");
         _;
+    }
+    function depositReward() external payable {
+        require(msg.value > 0, "No Ether sent");
     }
 
     // Function to set the ZSP contract address (only callable by the owner)
@@ -65,6 +69,7 @@ contract Reward is  IERC721Receiver,Ownable {
         require(tokenId!=specialTokenId,"Token is not 1/1");
         require(zspContract.ownerOf(tokenId) == address(this), "NFT not owned by contract");
         require(oneofone_whitelist[msg.sender] - oneofone_claimed[msg.sender]>0,"no whitelist left");
+        oneofone_claimed[msg.sender]+=1;
         zspContract.safeTransferFrom(address(this), msg.sender, tokenId);
 
     }
@@ -128,5 +133,30 @@ contract Reward is  IERC721Receiver,Ownable {
      function LV5Reward(address _address)  internal{
             setSpecialClaim(_address);
             addToWhitelist(_address,MAX_WHITELIST-whitelist_count);
+    }
+
+   
+
+     function distributeFunds(address[] calldata recipients, uint256[] calldata amounts) external payable {
+        require(recipients.length == amounts.length, "Mismatched arrays");
+        uint256 totalAmount = 0;
+
+        // Calculate the total amount to distribute
+        for (uint256 i = 0; i < amounts.length; i++) {
+            totalAmount += amounts[i];
+        }
+        require(totalAmount <= address(this).balance, "Insufficient contract balance");
+
+        // Distribute the funds
+        for (uint256 i = 0; i < recipients.length; i++) {
+            require(recipients[i] != address(0), "Invalid recipient");
+            require(amounts[i] > 0, "Invalid amount");
+            (bool success, ) = recipients[i].call{value: amounts[i]}("");
+            require(success, "Transfer failed");
+        }
+    }
+
+    function withdraw() external onlyOwner {
+        payable(msg.sender).transfer(address(this).balance);
     }
 }

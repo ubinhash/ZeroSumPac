@@ -380,7 +380,7 @@ contract Game is Ownable {
         if(dots>=DOTS_REQUIRED_FOR_LEVELS[5]){
             players[playerid].level=5;
             GAME_ENDED = Ending.Ending3_Monoploy;
-            rewardContract.GiveReward(5,players[playerid].tokenId,players[playerid].nftContract);
+            rewardContract.GiveReward(_getPlayerIdAddress(playerid),4);
             emit GameEnded(3);
         }
         else if (dots>=DOTS_REQUIRED_FOR_LEVELS[4]){
@@ -448,7 +448,7 @@ contract Game is Ownable {
         uint256 level=players[playerid].level;
         if(level==3){
             level3DotsLocked+=dots;
-            rewardContract.GiveReward(_getPlayerIdAddress(playerid),3);
+            rewardContract.GiveReward(3,players[playerid].tokenId,players[playerid].nftContract);
         }
         if (level==4){
             level4DotsLocked+=dots;
