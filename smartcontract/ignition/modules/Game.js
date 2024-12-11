@@ -20,11 +20,22 @@ module.exports = buildModule("Game", (m) => {
   m.call(game,"setAllowedNFTContract",[zsp,true],{ id: "a5"})
   m.call(game,"setMazeContract",[maze],{ id: "a6"})
   m.call(game,"setOperator",[gameequip,true],{ id: "a7"})
+  m.call(game,"setRewardContract",[reward],{ id: "a7_2"})
+
   m.call(zsp,"setMazeContract",[maze],{ id: "a8"})
+  m.call(zsp,"setRewardContract",[reward],{ id: "a8_2"})
   m.call(zsp,"setOperator",[reward,true],{ id: "a9"})
+  m.call(zsp,"setApprovedMinter",[reward,true],{ id: "a9_2"})
+
+  m.call(reward,"setOperator",[game,true],{ id: "a10"})
+  m.call(reward,"setZSPContract",[zsp],{ id: "a11"})
+
 
   m.call(maze,"unlockMaze",[0,true],{ id: "b"})
   m.call(zsp,"ownerMint",["0x384C2BbE16A3560cc15E3AC43cf3c9FFEA3dd42F",5],{id:"c"})
+  m.call(zsp,"setMintWindows",[0,0,0,1796688000],"c2")
   m.call(game,"enterGame",[zsp,0,0,1,1],{ id: "d"})
+
+
   return { game };
 });

@@ -3,7 +3,7 @@
 
 ZERO SUM PACT is a project that brings together art, history, and strategy into an collabratvie on-chain experience.
 
-## 1. NFT Collection ZeroSumPac
+## Part 1 Overview. NFT Collection ZeroSumPac
 
 Crafted by half-Japanese artist @K.Nami, this collection is an reflection on the long lasting scars of war. Each trait is carefuly crafted facet of 
 war: shattered childhood, seperated family, inflation, greed and gluttony. 
@@ -12,20 +12,40 @@ Our design process began with the Shape Network's minimalistic black circle logo
 
 ![Sample NFT](screenshots/nft.png)
 
-##  On-Chain Strategy Game 
+## Part 2 Overview: On-Chain Strategy Game 
 
 Inspired by the Go, Pac-Man, and Diplomacy, this is an original multi-player "board game" designed by @ubinhash, allowing hundreds of players to compete asynchronously. It puts up players in a battle for scarce resources. The decision to compete, or collaborate, is in the player's hand.
 
-![Sample NFT](screenshots/game.png)
+![Sample Game](screenshots/game.png)
 
 
 # GAMEPLAY EXPLAINED
 
-## Mechanism
+We're building a browser-based collaborative strategy board game (ZeroSumPact), inspired by Go, Pacman and Dipomacy. Where hundred of player can compete in the same game asynchronously. We want this game to mimic a mini-society where resources act as a double-edged sword— it's is something that brings people together something that sparks conflict. 
+
+## Gameplay and Strategy
+
+> Player will compete for limited resource (dots) that is scattered around in a set of mazes. Player may "eat" others to obtain portions of their dots from lower level players. Lower level players may collaborate to "surround" a higher level player to rob and split its dots.
+
+> In the initial phase of game, player have limited move per day, they can hop across the mazes with some limitation, do some path-planning and collect dots from the maze efficiently. 
+
+> At the later stage of game when "dots" are getting depleted, that's where the competitive - collaborative play come in. Player will have the tendency to form "alliances" with other players, collaborate to rob the dots from other player and vote for governers.
+
+> At higher level player may unlock shield, and they may extend shield time by  burning OTOM. To ensure they game doesn't become stagnant, their shield will of turned off for a short period whenever they move.
+
+> There will be different ending conditions & reward such as 1/1 NFT from our collection, percentage mint fund will be distributed to players depending on the ending condition they triggered. People at different level will have  So player may form alliance to work toward that goal collectively based on what they are aiming form.
+
 
 ## Levels, Endings and Reward
 
+The game ends when players from a level dominates the resource.
 
+There are different rewards distribution for different endings, so players might be aiming for different endings based on their current standing. 
+
+![Sample Game](screenshots/ending.png)
+
+
+Please check out the https://www.zerosumpact.xyz/rules page for details
 
 
 # Documentation
@@ -114,6 +134,14 @@ For details please check out the rules page.
 
 We expect to make adjustment to this contract everytime we run a new season based on the prize we/future collaborator plans to offer.
 
+`mintAndStoreNFT` (owner only): we will invoke this when contract is deployed to store special nft in this contract for future reward.
+
+`GiveReward` (only allowed operator): game contract will invoke this function when player reached a levl with reward. Player will be added to corresponding whitelist or give special trait depending on their level.
+
+`ClaimNFTOneOne`: eligible players will be able to claim 1/1 NFT
+
+`ClaimNFTSpecial`: Max 1 eligible players will be able to claim the god-tier nft. 
+
 
 ### 5. NFT Contract
 
@@ -121,6 +149,9 @@ This is the contract for our collection. This collection is designed specificall
 
 It will interact with maze contract to unlock new mazes when mint surpass certain threshold. 
 
+`publicMint`/`whitelistMint` : allows user to mint the nft. The contract will automatically send `rewardPercentage` of fund to the reward contract. It will also check with maze contract to trigger maze unlock when threshold is met.
+
+`setSpecial` (only allowed operaters): the game contract will interact with this via the reward contract function to set certain nft to special as a in-game reward for locking-in at lv3.
 
 
 
@@ -131,7 +162,7 @@ We're using Next.js + wagmi + rainbowkit to for frontend.
 
 Install relevant npm packages, `npm run dev` to test it out on locally.
 
-edit frontend components/config/config.js to set backend api url if needed.
+edit frontend `components/config/config.js` to set backend api url if needed.
 
 
 ## Backend
@@ -156,9 +187,9 @@ With additional parameters to connect to our database server .
 
 `DB_CONNECTION_STRING` : database connection string
 
-`DB_NAME`: defined in gamesate.js for now
+`DB_NAME`: defined in gamesate.js for now, please edit this based on how you deploy your goldsky pipeline
 
-Then use `node index.js` to run the backend server.
+Then use `node index.js` to run the backend server on localhost or use `pm2 start index.js --name "my-backend"`
 
 Generate Cert files in  `/etc/letsencrypt/live/api.zerosumpact.xyz/`
 Put relevant NGINX config in `/etc/nginx/sites-available/api.zerosumpact.xyz`
@@ -176,11 +207,11 @@ Start NGINX to serve it over https
 
 Displaying a large "board/maze" with all player position in real time requires indexing all the movement events.
 
-We're using goldsky's mirror pipeline to stream event log directly to the database and parse it from there, it's probably more straightforward and cost-effective solution compare to subgraph as we will expect very frequent queries of board status.
+We're using goldsky's mirror pipeline to stream event log directly to our database server and parse it from there, it's probably more straightforward and cost-effective solution compare to subgraph as we will expect very frequent queries of board status.
 
 Use `goldsky pipeline apply config.yaml` to deploy a pipeline.
 
-Note: Goldsky's contract decode tool is currently buggy at parsing signed int into database so (it was treated as unsigned), so we needed to do some custom ajustment in reading the data to accomodate that. This may cause some minor display issue when they fix their bug.
+
 
 # Tools and Library Used
 
@@ -191,7 +222,8 @@ Note: Goldsky's contract decode tool is currently buggy at parsing signed int in
 - Goldsky for indexing
 - Postgres for database
 - Next.js for frontend
-
+- Nginx & pm2 for backend deployment
+- Vercel for frontend deployment
 
 ### Additional integration
 
@@ -200,19 +232,24 @@ Note: Goldsky's contract decode tool is currently buggy at parsing signed int in
 
 
 
+## NFT Launch Plan on Mainnet
+
+We plan to launch the NFT on mainnet later in January after further polishing and testing.
+
+Our current plan is to launch ~500 NFT at ~0.015 eth.
+
+We are open for feedback and suggestions regarding the mint price and quantity. Our goal is to avoid a single player owning an excessive number of NFT characters while ensuring that the mint price is balanced—neither too low (to maintain a meaningful reward pool and fund our team) nor too high (to remain accessible).
+
+We might need to adjust some game parameter if we edit the total quantity to ensure the game is balanced.
+
 
 
 ## Final Thoughts
 
-This game is designed like a mini social experiment to allow hundres of player to participate asynchonously. If all player are "selfish actors" and all traverse locally optimal path, they won't be able to break free from the "equilibirum" state where all player basically gets the average amount of dots, which is less than what's required to get to a level with reward. In order level up, player will realize they have to collaborate with others, make deals/sacrifices, collaborate to surround other "prey" that out there alone , and the first set of players to realize that will level up and unlock shield which gives them a huge advantage in game.
+This game is designed like a mini social experiment to allow hundres of player to participate asynchonously. If all player are "selfish actors" and all traverse locally optimal path, they won't be able to break free from the "equilibirum" state where all player basically gets the average amount of dots -- this is less than what's required to get to a level with reward.  In order level up, player will realize they have to collaborate with others, make deals/sacrifices, collaborate to surround other "prey" that out there alone , and the first set of players to realize that will level up and unlock shield which gives them a huge advantage in game.
 
 People on web3 have limited time and attention, I don't want to build a game that requires too much grinding. I want this game to fit into those little pockets of free time in a day -- easy to pick up, easy to put down. And this will help the game become part of people's daily routine. 
 
-It's also a less action-packed strategy game where player can only make very limited moves in game, but we expect more activity and discussion to happen outside of the game and we hope that our game will help to bond the shape community together. 
+It's a less action-packed game where players have limited moves per day. The fact that the game itself is not so action-packed actually encourages player to chat and connect with one another while they're waiting for others to move. we hope our game and art works in sychrony to bring the community together and help people reflect on the increasingly divided world we are living in.
 
-
-Many assumed that classic board games, especially online ones, are boring and lack interaction. But form my personal observation, they can be surprisingly social and fosters friendship, and even marriage.  The fact that the game itself is not so action-packed actually encourages player to chat and connect with one another while they're waiting for others to move. We hope that our game will help to bond the shape community together.
-
-It's a bit challenging at first to craft a balanced board game where hundreds of player on different timezone can play together on the same "board". It's designed such that even when someone started late, they should have a chance to work with others and catch up.
-
- We hope the players will have fun at what we built, there're lot of potential strategy that player can try out for the game and we're excited to see what end will the world come to.
+In the end, we hope the players will have fun at what we built, there're lot of potential strategy that player can try out for the game and we're excited to see what ending will the world come to!
