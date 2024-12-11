@@ -40,7 +40,7 @@ export default function Home() {
                 <span className={styles.icon}><img src="icons/rules/lv4.svg"></img></span> Lv4: Hold &gt;=189 dots (max 10 ppl lock-in, 20 achievable)
               </li>
               <li>
-                <span className={styles.icon}><img src="icons/rules/lvgod.svg"></img></span> Lv God: Hold &gt;=50% of dots (max 1 person)
+                <span className={styles.icon}><img src="icons/rules/lvgod.svg"></img></span> Lv God: Hold &gt; 50% of dots (max 1 person)
               </li>
             </ul>
 
@@ -54,7 +54,9 @@ export default function Home() {
               So when you reach lv 3 or above, you may “lock-in” your level to claim level reward. But you will not be able to play the game or level up once locked.
               </li>
             </ul>
-
+            <h2>Endings and Reward</h2>
+          <p>The game ends when players from a level dominates the resource.</p>
+          <p> There are different rewards distribution for different endings, so players might be aiming for different endings based on their current standing. </p>
             <EndingComponent></EndingComponent>
 
             <h2>Level Reward?</h2>
@@ -77,13 +79,16 @@ export default function Home() {
               <li>
                 A.Moving to a square on board with dot.
               </li>
+              <img className={styles.method} src="icons/rules/method1.gif"></img>
               <li>
                 B.Moving to a square with a same/lower level Pac.
               </li>
                 <ul>
-                  <li>You will get some percentage of it's dots, round up to integer (0.1=&gt;1 )</li>
+                  <li>You will get some percentage of it's dots, round up to integer (0.1=&gt;1)</li>
                   <li>The percentage is can be changed by the "governer" everyday. </li>
                 </ul>
+
+                <img className={styles.method} src="icons/rules/method2.gif"></img>
               <li>
                 C.Collaborate to surround a pac with other player and click "rob"!
               </li>
@@ -92,6 +97,10 @@ export default function Home() {
                   <li>You may rob higher level player this way, it must have minimum of 4 dots! </li>
                   <li>You will need less player to surround if the victim is adjacent to border/obstacle</li>
                 </ul>
+                <div className={styles.method_container}>
+                <img className={styles.method2} src="icons/rules/method3.gif"></img>
+                <img className={styles.method2} src="icons/rules/method3-2.gif"></img>
+                </div>
             </ul>
 
             <h2>Detailed Mechanism</h2>

@@ -2,6 +2,7 @@
 import webconfig from '../config/config.js';
 import React, { useState, useEffect } from "react";
 import styles from "./ranking.module.css";
+import EndingComponent from '../DisplayComponent/ending.js';
 
 const Rankings = () => {
   const [rankings, setRankings] = useState([]);
@@ -12,6 +13,12 @@ const Rankings = () => {
     level3DotsLocked: "0",
     level4DotsLocked: "0",
   });
+
+  const [showEnding, setShowEnding] = useState(false);
+  const toggleEnding = () => {
+    setShowEnding(!showEnding);
+  };
+
 
   // Fetch rankings from the API
   useEffect(() => {
@@ -79,6 +86,13 @@ const Rankings = () => {
         <div className={styles.headerItem}>
           Total Dots Consumed: {dotInfo.totalDotsConsumed}
         </div>
+      </div>
+     
+      <div className={styles.ending_container}>
+        <button className={styles.button} onClick={toggleEnding}>
+          {showEnding ? 'Hide Info' : 'When does the game end?'}
+        </button>
+        {showEnding && <EndingComponent />}
       </div>
       <h1 className={styles.title}>Player Rankings</h1>
       {rankings.length > 0 ? (

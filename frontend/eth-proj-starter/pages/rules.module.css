@@ -54,3 +54,19 @@
   .levels li {
     margin-bottom: 15px;
   }
+
+  .method{
+    margin-left: 20%;
+    height:40px;
+    border: 2px solid black;
+  }
+
+  .method_container{
+    margin-left: 20%;
+    display: flex;
+  }
+  .method2{
+    margin-left: 10px;
+    height:120px;
+    border: 2px solid black;
+  }

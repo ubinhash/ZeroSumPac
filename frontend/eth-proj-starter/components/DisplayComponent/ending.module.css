@@ -1,5 +1,6 @@
 .endingBlock {
     margin-bottom: 0px;
+    font-size: 14px;
   }
   
   .ending{
@@ -37,6 +38,7 @@
     border-left: 2px solid black;
     border-right: 5px solid black;
     border-bottom: 5px solid black; /* Add your desired border-bottom */
+    font-size: 14px;
   }
 
   .ending_title{

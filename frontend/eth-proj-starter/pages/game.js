@@ -108,7 +108,7 @@ export default function Game() {
     "MOVE_INTERVAL": 10,
     "PROTECTION_INTERVAL": 43200,
     "MAX_SHIELD_INTERVAL": 86400,
-    "MAZE_SWITCH_INTERVAL": 604800,
+    "MAZE_SWITCH_INTERVAL": 259200,
     "MAZE_SWITCH_PENALTY": "1000000000000000",
     "SHIELD_PRICE": "50000000000000",
     "MIN_LOCK_IN_LV": 3,
@@ -130,7 +130,8 @@ export default function Game() {
     "15",
     "20",
     "25"
-  ]
+  ],
+"eliminationModeOn": false
   });
   //TODO set this
 
@@ -140,6 +141,8 @@ export default function Game() {
     GAME_EQUIP: '',
     ZSP: '',
     OTOM:'',
+    EYE:'',
+    KEY:'',
   });
   
   
@@ -164,6 +167,8 @@ export default function Game() {
         GAME_EQUIP: data.GAME_EQUIP,
         ZSP: data.ZSP,
         OTOM:data.OTOM,
+        EYE:data.EYE,
+        KEY:data.KEY,
       });
     } catch (error) {
       console.error('Error fetching contracts:', error);
@@ -315,7 +320,7 @@ export default function Game() {
         </div>
     </div>
       <div className={`${styles.section} ${styles.section2}`}>
-      {display === "maze" && <MyMaze currplayerid={playerData.playerid} playerData={playerData} mazeId={currmaze} onSelect={handlePositionSelection} setTriggerMazeUpdate={setTriggerMazeUpdate} handleOptionSelect={handleOptionSelect} unlocked={mazeUnlocked[currmaze]} unlockRequirement={mazeUnlockRequirements[currmaze]} isspecial={currmaze==totalMaze-1} ></MyMaze>} 
+      {display === "maze" && <MyMaze currplayerid={playerData.playerid} playerData={playerData}  eliminationModeOn={config.eliminationModeOn} mazeId={currmaze} onSelect={handlePositionSelection} setTriggerMazeUpdate={setTriggerMazeUpdate} handleOptionSelect={handleOptionSelect} unlocked={mazeUnlocked[currmaze]} unlockRequirement={mazeUnlockRequirements[currmaze]} isspecial={currmaze==totalMaze-1} ></MyMaze>} 
       {display === "log" && <Logs currplayerid={playerData.playerid}></Logs>} {/* Replace with your actual Log component */}
       {display === "ranking" && <Rankings></Rankings>} {/* Replace with your actual Ranking component */}
       {display === "forfeit" && <ForfeitPage contracts={contracts}  playerData={playerData} setPopupMsg={setPopupMsg} ></ForfeitPage>} {/* Replace with your actual Log component */}
@@ -339,7 +344,7 @@ export default function Game() {
         
             {mazePositionSelected.playerinfo && <>
               ------------<br></br>
-              Player # {mazePositionSelected.selected_playerid} <br></br>
+              Player # {mazePositionSelected.selected_playerid} (ZSP #{mazePositionSelected.playerinfo.tokenId})<br></br>
               Dots: {mazePositionSelected.playerinfo.dots}<br></br>
               Level: {mazePositionSelected.playerinfo.level}<br></br>
               Moves: {computeMove(mazePositionSelected.playerinfo.moveInfo)}<br></br>
@@ -374,7 +379,7 @@ export default function Game() {
                 <span className={styles.unlockText}>Move to adjacent squares</span>
             </button> */}
             <RobPlayerButton contracts={contracts} currplayerid={playerData.playerid} victimplayerid={mazePositionSelected.selected_playerid} selected_position={mazePositionSelected} currmaze={currmaze} setDisplayMsg={setDisplayMsg} setPopupMsg={setPopupMsg} onMoveSuccess={() => {triggerMazeUpdate(); triggerPlayerUpdate();}} ></RobPlayerButton>
-            <MovePlayerButton contracts={contracts} currplayerid={playerData.playerid} playerData={playerData} selected_position={mazePositionSelected} currmaze={currmaze} setDisplayMsg={setDisplayMsg} setPopupMsg={setPopupMsg} onMoveSuccess={() => {triggerMazeUpdate(); triggerPlayerUpdate();}} ></MovePlayerButton>
+            <MovePlayerButton contracts={contracts} maze_switch_penalty={config.config.MAZE_SWITCH_PENALTY} currplayerid={playerData.playerid} playerData={playerData} selected_position={mazePositionSelected} currmaze={currmaze} setDisplayMsg={setDisplayMsg} setPopupMsg={setPopupMsg} onMoveSuccess={() => {triggerMazeUpdate(); triggerPlayerUpdate(); } } ></MovePlayerButton>
             <EnterPlayerButton contracts={contracts} currplayerid={playerData.playerid} playerData={playerData} selected_position={mazePositionSelected} currmaze={currmaze} setDisplayMsg={setDisplayMsg} setPopupMsg={setPopupMsg}onMoveSuccess={() => {triggerMazeUpdate(); triggerPlayerUpdate();}} ></EnterPlayerButton>
             <PopupMessage msg={popupMsg} setMsg={setPopupMsg}></PopupMessage>
         </div>

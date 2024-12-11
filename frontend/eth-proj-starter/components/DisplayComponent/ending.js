@@ -11,13 +11,10 @@ const [showExamples, setShowExamples] = useState({ ending1: false, ending2: fals
     return (
         <div>
           {/* Ending1 */}
-          <h2>Endings and Reward</h2>
-          <p>The game ends when players from a level dominates the resource.</p>
-          <p> There are different rewards distribution for different endings, so players might be aiming for different endings based on their current standing. </p>
           <div className={styles.endingBlock}>
             <div className={`${styles.ending1} ${styles.ending}`}>
                 <div className={styles.ending_title}>ENDING 1 : “MONOPOLY” -- Winner Takes All</div>
-                <div className={styles.ending_description}> 1 Player reached Lv God = Controls 50% of the Dots </div>
+                <div className={styles.ending_description}> 1 Player reached Lv God = Controls &gt; 50% of the Dots </div>
             </div>
             <div className={styles.indentedBlock}>
                 <b>Reward</b>
@@ -33,7 +30,7 @@ const [showExamples, setShowExamples] = useState({ ending1: false, ending2: fals
           <div className={styles.endingBlock}>
             <div className={`${styles.ending2} ${styles.ending}`}>
                 <div className={styles.ending_title}>ENDING 2 : “Oligarchy” - The Privileged Few </div>
-                <div className={styles.ending_description}>     Players that locked-in at lv4 collectively holds &gt;=50% of the Dots in total.  (Max 10 Players)</div>
+                <div className={styles.ending_description}>     Players that locked-in at lv4 collectively holds &gt; 50% of the Dots in total.  (Max 10 Players)</div>
                 <button onClick={() => toggleExample('ending2')} className={styles.example_button}>
                     {showExamples.ending2 ? 'Hide Example' : 'Show Example'}
                 </button>
