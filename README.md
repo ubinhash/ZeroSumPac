@@ -23,18 +23,33 @@ Inspired by the Go, Pac-Man, and Diplomacy, this is an original multi-player "bo
 
 We're building a browser-based collaborative strategy board game (ZeroSumPact), inspired by Go, Pacman and Dipomacy. Where hundred of player can compete in the same game asynchronously. We want this game to mimic a mini-society where resources act as a double-edged sword— it's is something that brings people together something that sparks conflict. 
 
+The game is token-gated by our NFT collection for now. 
+
+(In future season, we might want to invite other nft community on shape to join the game and discuss rewards.)
+
+
 ## Gameplay and Strategy
 
-> Player will compete for limited resource (dots) that is scattered around in a set of mazes. Player may "eat" others to obtain portions of their dots from lower level players. Lower level players may collaborate to "surround" a higher level player to rob and split its dots.
+Player will compete for limited resource (dots) that is scattered around in a set of mazes. Player may "eat" others to obtain portions of their dots from lower level players. Lower level players may collaborate to "surround" a higher level player to rob and split its dots.
 
-> In the initial phase of game, player have limited move per day, they can hop across the mazes with some limitation, do some path-planning and collect dots from the maze efficiently. 
+• In the initial phase of game, player have limited move per day, they can hop across the mazes with some limitation, do some path-planning and collect dots from the maze efficiently. 
 
-> At the later stage of game when "dots" are getting depleted, that's where the competitive - collaborative play come in. Player will have the tendency to form "alliances" with other players, collaborate to rob the dots from other player and vote for governers.
+• At the later stage of game when "dots" are getting depleted, that's where the competitive - collaborative play come in. Player will have the tendency to form "alliances" with other players, collaborate to rob the dots from other player and vote for governers.
 
-> At higher level player may unlock shield, and they may extend shield time by  burning OTOM. To ensure they game doesn't become stagnant, their shield will of turned off for a short period whenever they move.
+• At higher level player may unlock shield, and they may extend shield time by  burning OTOM. To ensure they game doesn't become stagnant, their shield will of turned off for a short period whenever they move.
 
-> There will be different ending conditions & reward such as 1/1 NFT from our collection, percentage mint fund will be distributed to players depending on the ending condition they triggered. People at different level will have  So player may form alliance to work toward that goal collectively based on what they are aiming form.
+• Elimination mode will begin when all the dots are depleted, but the game may end before that happens 🤔️
 
+There will be different ending conditions & reward such as 1/1 NFT from our collection, percentage mint fund will be distributed to players depending on the ending condition they triggered. People at different level will have  So player may form alliance to work toward that goal collectively based on what they are aiming form.
+
+
+## Keys and Eyes
+
+Shapecraft key and eye will give player an advantage in game. 
+
+The key will unlock a special maze.
+
+The eye will give you +1 stride. (allows player to move two step ahead or diagonal)
 
 ## Levels, Endings and Reward
 
@@ -44,8 +59,60 @@ There are different rewards distribution for different endings, so players might
 
 ![Sample Game](screenshots/ending.png)
 
-
 Please check out the https://www.zerosumpact.xyz/rules page for details
+
+
+# Deployments
+
+## Shape Mainnet
+
+Game Contract:
+
+Game-Equip Contract:
+
+Maze Contract:
+
+Reward Contract:
+
+NFT Contract:
+
+
+## Shape Sepolia
+
+Game Contract:
+
+Game-Equip Contract:
+
+Maze Contract:
+
+Reward Contract:
+
+NFT Contract:
+
+
+## Demo Website
+
+We are using shape-sepolia for demo.
+
+We have deployed our contract on shape-mainnet but we are not fully ready to launch the NFT collection. Since the game is token-gated we think it's would be the best to demo this on shape-sepolia.
+
+Website: https://www.zerosumpact.xyz/
+
+You will need to get some testnet token to get started:
+
+Faucet: https://docs.shape.network/documentation/tools/faucets
+
+Step1: [Mint NFT](https://www.zerosumpact.xyz/mint)
+
+Step2: [Head to the game](https://www.zerosumpact.xyz/game)
+
+Step3: Select a NFT from the upper right, and click "Enter Game" to join
+
+Step4: Move around to eat dots. You may select other NFT to join the game and try out attacking each other.
+
+Step5: Vote governer. Invite other friends to join. You will need to level up to unlock shield
+
+This is designed to be a large scale multi-player correspondance game , where you take a few minute to make a few moves everyday and all the players are playing on a shared "board". so it might be a bit bland to play it by yourself when the board isn't filled with other players yet.
 
 
 # Documentation
@@ -231,8 +298,9 @@ Use `goldsky pipeline apply config.yaml` to deploy a pipeline.
 - The "eyes" and the "keys" NFT
 
 
+# Future Plan
 
-## NFT Launch Plan on Mainnet
+## 1. NFT Launch Plan on Mainnet
 
 We plan to launch the NFT on mainnet later in January after further polishing and testing.
 
@@ -241,6 +309,38 @@ Our current plan is to launch ~500 NFT at ~0.015 eth.
 We are open for feedback and suggestions regarding the mint price and quantity. Our goal is to avoid a single player owning an excessive number of NFT characters while ensuring that the mint price is balanced—neither too low (to maintain a meaningful reward pool and fund our team) nor too high (to remain accessible).
 
 We might need to adjust some game parameter if we edit the total quantity to ensure the game is balanced.
+
+## 2. New Features
+
+- Accessibility Tools
+    - Built in chatroom
+    - Mobile friendly version
+    
+- More advanced game mechanics
+    - Formal Alliances Feature 
+    - Adding items onto the maze tat can have special effects
+
+- Future NFT collections + Alternative game version
+    - We might introduce "ghost" characters . Player holding the "ghost" nft will player a very different role in the game and will have different winning condition. 
+
+
+
+## 3. Collaboration with other communities
+
+We hope to collaborate with other NFT projects on shape for future seasons.  (eg: Deeple, Shapet). It will work like this in ideal case
+
+1. Both communities agree to add something to the reward pool  (eg, special item, whitelist spot, airdrop)
+
+2. Based on the number of reward, adjust the ending condition parameters and level parameters.
+
+3. Set up reward contract to store the reward for claiming (if it's nft) or to track recipient of a reward to be sent later.
+
+4. Based on the max number of players (total number of nft that may enter the game),  we may adjust the number of mazes.
+
+5. We may (or may not) add some minor special mechanics that's related to our partner's project. 
+
+6. Announce the rules, Deploy a new season.
+
 
 
 
