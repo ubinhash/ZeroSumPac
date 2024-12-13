@@ -81,7 +81,7 @@ export default function Game() {
   const [totalMaze,setTotalMaze] = useState(10);
   const [mazeUnlocked,setMazeUnlocked]=useState(Array(totalMaze).fill(false));
   const [mazeUnlockRequirements,setMazeUnlockedRequirements]=useState(Array(totalMaze).fill(""));
-  const [unlockedInfo,setunlockedInfo]=useState("There are total of 10 Mazes. They will gradually unlock as mint status and game progresses.");
+  const [unlockedInfo,setunlockedInfo]=useState("There are total of 10 Mazes. Maze will unlock as mint status and game progresses.");
   // const [playerId,setPlayerId] =useState(1);
   const [loadingMaze,setLoadingMaze]=useState(false);
   const [playerData, setPlayerData] = useState({
@@ -313,6 +313,7 @@ export default function Game() {
         </div>
         <div className={styles.menuOptions}>
             {/* Menu option buttons */}
+            <button onClick={() => handleOptionSelect('reward')} >Reward</button>
             <button onClick={() => handleOptionSelect('log')} >Log</button>
             <button onClick={() => handleOptionSelect('ranking')} >Ranking</button>
             <button onClick={() => handleOptionSelect('forfeit')}>Forfeit</button>
@@ -329,6 +330,7 @@ export default function Game() {
       {display === "shield" && <EquipShield contracts={contracts} currplayerid={playerData.playerid} playerData={playerData}  setPopupMsg={setPopupMsg} ></EquipShield>} {/* Replace with your actual Ranking component */}
       {display === "eyes" && <EquipEyes contracts={contracts} currplayerid={playerData.playerid}  setPopupMsg={setPopupMsg} ></EquipEyes>} {/* Replace with your actual Ranking component */}
       {display === "keys" && <EquipKeys contracts={contracts} currplayerid={playerData.playerid}  setPopupMsg={setPopupMsg} ></EquipKeys>} {/* Replace with your actual Ranking component */}
+      {display === "reward" && <h1>Reward</h1>}
       </div>
 
       <div className={`${styles.section} ${styles.section3}`}>

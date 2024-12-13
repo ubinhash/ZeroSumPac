@@ -153,7 +153,12 @@ const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position
 
 
   useEffect(() => {
-    if(  currplayerid!=0 && playerData.playerPosition.maze!=currmaze){
+    if(playerData.status!="Active"){
+      setValueToSend(0);
+      setMoveButtonText("Inactive")
+      setSwitchMaze(false);
+    }
+    else if(  currplayerid!=0 && playerData.playerPosition.maze!=currmaze){
       setValueToSend(maze_switch_penalty);
       setMoveButtonText("Switch Maze");
       setSwitchMaze(true);

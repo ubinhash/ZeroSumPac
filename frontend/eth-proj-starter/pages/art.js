@@ -54,7 +54,7 @@ export default function Home() {
       <div className={styles.section2_left}>
           <div className={styles.section2_text}>
             <h3>ARTIST</h3>
-            The collection is created by a talented artist Kikuchi Nami, whom had experience working for a few gaming company.
+            The collection is created by a talented artist Kikuchi Nami, whom had experience working for several gaming companies.
             <br></br>
             <br></br>
             Growing up between Japan and China,the unresolved scars of the historical conflict that once torn these nations apart still echos in her daily life.

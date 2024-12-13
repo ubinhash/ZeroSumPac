@@ -84,8 +84,9 @@ export default function Home() {
                 B.Moving to a square with a same/lower level Pac.
               </li>
                 <ul>
-                  <li>You will get some percentage of it's dots, round up to integer (0.1=&gt;1)</li>
-                  <li>The percentage is can be changed by the "governer" everyday. </li>
+                  <li>• You will get some percentage of it's dots, round up to integer (0.1=&gt;1)</li>
+                  <li>•  You two will swap places.</li>
+                  <li>•  The percentage is can be changed by the "governer" everyday. (See governor election section) </li>
                 </ul>
 
                 <img className={styles.method} src="icons/rules/method2.gif"></img>
@@ -93,9 +94,9 @@ export default function Home() {
                 C.Collaborate to surround a pac with other player and click "rob"!
               </li>
                  <ul>
-                  <li>Each surrounding player get 10% of it's dots</li>
-                  <li>You may rob higher level player this way, it must have minimum of 4 dots! </li>
-                  <li>You will need less player to surround if the victim is adjacent to border/obstacle</li>
+                  <li>• Each surrounding player get 10% of it's dots</li>
+                  <li>• You may rob higher level player this way, it must have minimum of 4 dots! </li>
+                  <li>• You will need less player to surround if the victim is adjacent to border/obstacle</li>
                 </ul>
                 <div className={styles.method_container}>
                 <img className={styles.method2} src="icons/rules/method3.gif"></img>
@@ -152,14 +153,13 @@ export default function Home() {
                </ul>
             </ul>
 
-            <h2>What will happen after the season ends?</h2>
+            <h2>Future Seaons and collaborations?</h2>
             <ul>
-              <li>We plan to host new seasons with similar game mechanism and different reward after this concludes! We may add new mechanism, adjust some parameter based to either speed-up or slow-down the game.</li>
+              <li>We hope that our game can become a platform for other communities to distribute reward / whitelist to their most active members in a transparent, fun &  bonding way (also kinda proof-of-work).  Whales will have a good advantage,but the commons will have chance to climb to the top as well by collaborating, no one have enough power to decide the game unless they owns 50% of the NFT.</li>
+              <li>We are open to invite other communites to join the game and we can both contribute something to the reward pool for future seasons! We may add new mechanism, adjust some parameter based to either speed-up or slow-down the game.</li>
               <li>Since the reward and game contracts are separate from the NFT contract,we have the flexibility to introduce different rewards, such as NFT from other communities, cash prizes in the next season.</li>
-              <li>We are open to welcome other Shape NFT communities, like Deeple, Shapet, to co-host a season or invite their NFT to join future phases and compete with PAC holders.Please reach out to us if it sounds interesting!</li>
+              <li>We are open to welcome other Shape NFT communities, like Deeple, Shapet, (for non-nft community we can help to distribute a soul-bound token if needed as a entrance ticket) to co-host a season or invite their NFT to join future phases and compete with PAC holders.Please reach out to us if it sounds interesting!</li>
             </ul>
-
-
 
 
 

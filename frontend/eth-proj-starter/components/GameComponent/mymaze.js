@@ -59,6 +59,10 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
       mazeData[7][12].obstacleImage="5-1.png"
       mazeData[6][13].obstacleImage="5-1.png"
       mazeData[5][14].obstacleImage="5-1.png"
+      setDotInfo((prevDotInfo) => ({
+        ...prevDotInfo,
+        total_dot_in_maze: 400-24
+      }));
     }
     else if(mazeId%2==1){
 
@@ -86,7 +90,10 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
       mazeData[12][5].obstacleImage="1-4.png"
       mazeData[14][6].obstacleImage="2-1.png"
       mazeData[14][7].obstacleImage="1-3.png"
-
+      setDotInfo((prevDotInfo) => ({
+        ...prevDotInfo,
+        total_dot_in_maze: 400-20
+      }));
 
 
     }

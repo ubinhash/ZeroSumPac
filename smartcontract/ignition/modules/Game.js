@@ -29,13 +29,22 @@ module.exports = buildModule("Game", (m) => {
 
   m.call(reward,"setOperator",[game,true],{ id: "a10"})
   m.call(reward,"setZSPContract",[zsp],{ id: "a11"})
+  
+  m.call(reward,"mintAndStoreNFT",[11],{ id: "b"})
 
+  // m.call(maze,"unlockMaze",[0,true],{ id: "b"})
 
-  m.call(maze,"unlockMaze",[0,true],{ id: "b"})
   m.call(zsp,"ownerMint",["0x384C2BbE16A3560cc15E3AC43cf3c9FFEA3dd42F",5],{id:"c"})
-  m.call(zsp,"setMintWindows",[0,0,0,1796688000],"c2")
-  m.call(game,"enterGame",[zsp,0,0,1,1],{ id: "d"})
 
+    //TESTNET
+  m.call(zsp,"setMintWindows",[0,0,0,1796688000],{id:"c2"})
+  m.call(game,"enterGame",[zsp,11,0,1,1],{ id: "d"})
+  m.call(zsp,"setBaseURI",["https://storage.googleapis.com/zsp-storage/shape-sepolia/metdata/"],{ id: "e"})
 
+  //   //MAINNET
+  m.call(zsp,"setMintWindows",[0,0,0,0],{id:"c2"})
+  // m.call(zsp,"setBaseURI",["https://storage.googleapis.com/zsp-storage/shape-mainnet/metadata/"],{ id: "e"})
+
+// REMEMBER TO EDIT gameequip during mainnet deployment
   return { game };
 });
