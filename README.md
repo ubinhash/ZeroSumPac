@@ -1,7 +1,9 @@
 
 # ZERO SUM PACT
 
-ZERO SUM PACT is a project that brings together art, history, and strategy into an collabratvie on-chain experience.
+Zero-Sum-Pact is a project that brings together art, history, and strategy into an collabratvie on-chain experience.
+
+We are building a fully on-chain, correspondance-style board game that allows hundres of player to all play together on the same set of "boards".
 
 ## Part 1 Overview. NFT Collection ZeroSumPac
 
@@ -221,6 +223,15 @@ It will interact with maze contract to unlock new mazes when mint surpass certai
 `setSpecial` (only allowed operaters): the game contract will interact with this via the reward contract function to set certain nft to special as a in-game reward for locking-in at lv3.
 
 
+### Deployment
+
+The Game.js file in ignition folder contains relevant setup for deployement to link the set of contracts together. 
+
+Create a `hardhat.config.js` file with relevant network configand priviate key to deploy.
+
+### Overall Architecture
+
+![Architecture1](screenshots/contract-arch.png)
 
 
 ## Frontend
@@ -234,7 +245,7 @@ edit frontend `components/config/config.js` to set backend api url if needed.
 
 ## Backend
 
-We are using express.js for backend to read from contract and parse the indexed events from database.
+We are using express.js for backend to call relevant alchemy api(nft.js), read from contract (gamesetting.js), or parse the indexed events from database (gamestate.js).
 
 Install relevant npm packages, set the following variables in .env
 
@@ -256,9 +267,12 @@ With additional parameters to connect to our database server .
 
 `DB_NAME`: defined in gamesate.js for now, please edit this based on how you deploy your goldsky pipeline
 
+
+You need node.js version 18+. You may need to modify the cors setting based on your frontend.
+
 Then use `node index.js` to run the backend server on localhost or use `pm2 start index.js --name "my-backend"`
 
-Generate Cert files in  `/etc/letsencrypt/live/api.zerosumpact.xyz/`
+Generate SSL Cert files in  `/etc/letsencrypt/live/api.zerosumpact.xyz/`
 Put relevant NGINX config in `/etc/nginx/sites-available/api.zerosumpact.xyz`
 
 Start NGINX to serve it over https
@@ -276,10 +290,13 @@ Displaying a large "board/maze" with all player position in real time requires i
 
 We're using goldsky's mirror pipeline to stream event log directly to our database server and parse it from there, it's probably more straightforward and cost-effective solution compare to subgraph as we will expect very frequent queries of board status.
 
-Use `goldsky pipeline apply config.yaml` to deploy a pipeline.
+Use `goldsky pipeline apply config(3).yaml` to deploy a pipeline. (you will need to create a secret base on your database connection string first)
 
+You will need to setup a database server with relevant ports open to allow external connection.
 
+## Project Architecture
 
+![Architecture2](screenshots/project-arch.png)
 # Tools and Library Used
 
 - Alchemy api
@@ -302,11 +319,13 @@ Use `goldsky pipeline apply config.yaml` to deploy a pipeline.
 
 ## 1. NFT Launch Plan on Mainnet
 
-We plan to launch the NFT on mainnet later in January after further polishing and testing.
+The contracts are live are mainnet but the nft sale is not live yet so the game is not playable on mainnet yet. You may try out testnet version for now, the code are exactly the same except for some parameters.
+
+We plan to publicly launch the NFT on mainnet ideally later in January after further polishing and testing. We will take some time to curate the generated art, potentially add more traits, and do some edit on frontend and adjust game parameter. 
 
 Our current plan is to launch ~500 NFT at ~0.015 eth.
 
-We are open for feedback and suggestions regarding the mint price and quantity. Our goal is to avoid a single player owning an excessive number of NFT characters while ensuring that the mint price is balanced—neither too low (to maintain a meaningful reward pool and fund our team) nor too high (to remain accessible).
+We are open for feedback and suggestions regarding the mint price and quantity and the game. Our goal is to avoid a single player owning an excessive number of NFT characters while ensuring that the mint price is balanced—neither too low (to maintain a meaningful reward pool and fund our team) nor too high (to remain accessible).
 
 We might need to adjust some game parameter if we edit the total quantity to ensure the game is balanced.
 
