@@ -200,6 +200,7 @@ contract Game is Ownable {
         require(GAME_ENDED==Ending.Not_Ended,"Game Ended");
         require(players[playerid].nextMoveTime < block.timestamp,"Wait");
         require(ownsNft(playerid,msg.sender));
+        require(players[playerid].status==PlayerStatus.Active, "N1");
         uint8 currx = players[playerid].playerposition.x;
         uint8 curry = players[playerid].playerposition.y;
         if(players[playerid].playerposition.maze != maze){ //are you switching to a different maze
@@ -296,7 +297,7 @@ contract Game is Ownable {
         // Update the victim's protection timestamp
         victim.protectionExpireTime = block.timestamp + config[ConfigKey.PROTECTION_INTERVAL];
         uint256 dotdelta=(victim.dots* config[ConfigKey.EAT_PERCENTAGE] + 99) / 100;
-        
+        players[victim_playerid].vulnerableTime=0;
         if(mazeContract.hasplayer(maze_victim,x_victim,y_victim - 1)>0){
             _changeDot(victim_playerid, -int256(dotdelta));
             _changeDot(mazeContract.hasplayer(maze_victim,x_victim,y_victim - 1), int256(dotdelta));
@@ -380,7 +381,7 @@ contract Game is Ownable {
         if(dots>=DOTS_REQUIRED_FOR_LEVELS[5]){
             players[playerid].level=5;
             GAME_ENDED = Ending.Ending3_Monoploy;
-            rewardContract.GiveReward(_getPlayerIdAddress(playerid),4);
+            rewardContract.GiveReward(_getPlayerIdAddress(playerid),5);
             emit GameEnded(3);
         }
         else if (dots>=DOTS_REQUIRED_FOR_LEVELS[4]){
@@ -487,7 +488,7 @@ contract Game is Ownable {
        if(GAME_ENDED==Ending.Not_Ended){
             GAME_ENDED=Ending.Paused;
        }
-       if(GAME_ENDED==Ending.Paused){
+       else if(GAME_ENDED==Ending.Paused){
             GAME_ENDED=Ending.Not_Ended;
        }
     }
