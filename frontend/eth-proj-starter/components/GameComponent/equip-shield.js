@@ -224,10 +224,19 @@ const EquipShield = ({ contracts,currplayerid, playerData, network ='shape-sepol
                 {isLoading ? 'Approving' : `Approve OTOM Transfer`}
             </button>
 
-            <button className={styles.submitButton} disabled={!write || isLoading || isPrepareError}
-                    onClick={() => write?.()}>
-                {isLoading ? 'Equiping' : `Transfer OTOM to Shield Player ${currplayerid}`}
-            </button>
+            {playerData.level >= 3 ? (
+                <button
+                    className={styles.submitButton}
+                    disabled={!write || isLoading || isPrepareError}
+                    onClick={() => write?.()}
+                >
+                    {isLoading ? 'Equipping' : `Transfer OTOM to Shield Player ${currplayerid}`}
+                </button>
+            ) : (
+                <button className={styles.submitButton} disabled={true}>
+                     Reach level 3 to unlock shield.
+                </button>
+            )}
 
 
 
