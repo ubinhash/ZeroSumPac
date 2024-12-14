@@ -1,4 +1,4 @@
-name: game-decoded-logs4
+name: game-decoded-logs9
 version: 1
 status: ACTIVE
 resource_size: s
@@ -9,7 +9,7 @@ sources:
     version: 1.0.0
     type: dataset
     start_at: earliest
-    filter: address = lower('0xeF0F735942a5DB62858544F64F186F0585F22B87')
+    filter: address = lower('0xF1015Df39007C7b2A44bB4EF8B88ED8f0534B251')
 transforms:
   shape_decoded:
     primary_key: id
@@ -19,14 +19,15 @@ transforms:
       SELECT 
         `id`,
         _gs_log_decode(
-            _gs_fetch_abi('https://gist.githubusercontent.com/ubinhash/19930d13e9f264eb9c929a989176837a/raw/8ac4b83e3c76ee61cead2f18d9f8e49451ef65bf/gamenov26.json', 'raw'), 
+            _gs_fetch_abi('https://gist.githubusercontent.com/ubinhash/6a625b5c5baa34aed3013f662af722e4/raw/840710e7416ac0e68e5ce620f03e5e06677ecbc2/gamesep10.json', 'raw'), 
             `topics`, 
             `data`
         ) AS `decoded`, 
         log_index,
         transaction_index,
         block_number, 
-        transaction_hash 
+        transaction_hash,
+        block_timestamp 
       FROM shape_sepolia_raw_logs
   shape_clean:
     primary_key: id
@@ -39,15 +40,16 @@ transforms:
         log_index,
         transaction_index,
         block_number,
-        transaction_hash
+        transaction_hash,
+        block_timestamp
         FROM shape_decoded 
         WHERE decoded IS NOT NULL
 sinks:
   postgres_shape_sepolia_raw_logs_start_block_6761524:
     type: postgres
-    table: shape_sepolia_raw_logs_nov26_4
+    table: [ENTER TABLE NAME HERE]
     schema: public
-    secret_name: POSTGRES_SECRET_CM3S84L560
+    secret_name: [ENTER SECRET NAME HERE]
     description: 'Postgres sink for: shape_sepolia_raw_logs_start_block_6761524'
     from: shape_clean
 
