@@ -421,7 +421,7 @@ contract Game is Ownable {
     }
 
     function _checkEliminationMode() internal {
-        if(mazeContract.total_dots_consumed==mazeContract.total_dots_in_mazes){
+        if(mazeContract.total_dots_consumed()==mazeContract.total_dots_in_mazes()){
             eliminationModeOn=true;
             config[ConfigKey.EAT_PERCENTAGE] = 100;
             config[ConfigKey.ROB_PERCENTAGE] = 25;

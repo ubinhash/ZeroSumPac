@@ -37,10 +37,10 @@ contract GameEquip is  IERC1155Receiver,Ownable {
         // keysToken = IERC721();
 
         //Testnet
-        otomToken = IERC1155(0xc709F59f1356230025d4fdFDCeD92341A14FF2F8);
-        otomDatabase =IOtomsDatabase(0xC6E01938846D3d62EafD7FF485afeE416f6D8A40);
-         eyesToken = IERC721(0xAA394da7d62E502a7E3dA7e11d21A74c277143d5);
-         keysToken = IERC721(0x01eB5CF188ba7d075FDf7eDF2BB8426b17CA3320);
+        // otomToken = IERC1155(0xc709F59f1356230025d4fdFDCeD92341A14FF2F8);
+        // otomDatabase =IOtomsDatabase(0xC6E01938846D3d62EafD7FF485afeE416f6D8A40);
+        //  eyesToken = IERC721(0xAA394da7d62E502a7E3dA7e11d21A74c277143d5);
+        //  keysToken = IERC721(0x01eB5CF188ba7d075FDf7eDF2BB8426b17CA3320);
     }
 
     modifier onlyAllowedOperator() {
