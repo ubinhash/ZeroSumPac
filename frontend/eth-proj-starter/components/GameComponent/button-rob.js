@@ -76,7 +76,7 @@ const RobPlayerButton = ({ contracts,currplayerid,victimplayerid ,selected_posit
 
       <button  className={styles.actionButton}  disabled={!write || isLoading || isPrepareError} onClick={() => write?.()}>{isLoading ? 'Robbing' : 'ROB'}
 
-      <span className={styles.unlockText}>Surround a victim to rob 10% of dots</span>
+      <span className={styles.unlockText}>Surround a victim (&gt; 4 dots) to rob 10%</span>
       {/* {currplayerid} */}
       {/* {isSuccess && <p>Player moved successfully!</p>}
       {isPrepareError && <p style={{ color: 'red' ,fontSize:"5px"}}>Error: {prepareError?.message}</p>} */}

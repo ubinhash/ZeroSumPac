@@ -48,15 +48,16 @@ const computeMaxMove =(config,level) =>{
 const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate,handleOptionSelect }) => {
   // Example player data (replace with actual data from your source)
   const { address } = useAccount();
-  const [players,setplayers] = useState([
-    {
-      "tokenId": "0",
-      "contract": "0xe70128b41a93F0B7f4255A8293F665023FcbEDEd",
-      "name": "ZSP #0",
-      "balance": "1",
-      "image": "/icons/pacs/fullpac.jpg"
-    },
-  ]);
+  const [players,setplayers] = useState([]);
+  // const [players,setplayers] = useState([
+  //   {
+  //     "tokenId": "0",
+  //     "contract": "0xe70128b41a93F0B7f4255A8293F665023FcbEDEd",
+  //     "name": "ZSP #0",
+  //     "balance": "1",
+  //     "image": "/icons/pacs/fullpac.jpg"
+  //   },
+  // ]);
 
 
 

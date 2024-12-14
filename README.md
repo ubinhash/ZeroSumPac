@@ -18,17 +18,20 @@ Our design process began with the Shape Network's minimalistic black circle logo
 
 Inspired by the Go, Pac-Man, and Diplomacy, this is an original multi-player "board game" designed by @ubinhash, allowing hundreds of players to compete asynchronously. It puts up players in a battle for scarce resources. The decision to compete, or collaborate, is in the player's hand.
 
+
+
 ![Sample Game](screenshots/game.png)
 
 
-# GAMEPLAY EXPLAINED
+# 1. GAMEPLAY EXPLAINED
 
-We're building a browser-based collaborative strategy board game (ZeroSumPact), inspired by Go, Pacman and Dipomacy. Where hundred of player can compete in the same game asynchronously. We want this game to mimic a mini-society where resources act as a double-edged sword— it's is something that brings people together something that sparks conflict. 
+We're building a browser-based collaborative strategy board game (ZeroSumPact), inspired by Go, Pacman and Dipomacy. Where hundred of player can compete in the same game asynchronously. 
 
-The game is token-gated by our NFT collection for now. 
+We want this game to mimic a mini-society where resources act as a double-edged sword— it's is something that brings people together something that sparks conflict. 
 
-(In future season, we might want to invite other nft community on shape to join the game and discuss rewards.)
+The game is token-gated by our NFT collection for now. Players can play to earn reward as such 1/1 NFT, rare traits, mint fund for this season.
 
+In future season, we would like to invite other nft community on shape to join the game together with us.
 
 ## Gameplay and Strategy
 
@@ -45,7 +48,7 @@ Player will compete for limited resource (dots) that is scattered around in a se
 There will be different ending conditions & reward such as 1/1 NFT from our collection, percentage mint fund will be distributed to players depending on the ending condition they triggered. People at different level will have  So player may form alliance to work toward that goal collectively based on what they are aiming form.
 
 
-## Keys and Eyes
+## Shapecraft Keys and Eyes Integration
 
 Shapecraft key and eye will give player an advantage in game. 
 
@@ -64,32 +67,33 @@ There are different rewards distribution for different endings, so players might
 Please check out the https://www.zerosumpact.xyz/rules page for details
 
 
-# Deployments
+# 2. Deployments
 
 ## Shape Mainnet
 
-Game Contract:
+Game Contract: [0xfbc78eb3Da5daeaB4C7919d9C86b4e73EA48ad3F](https://shapescan.xyz/address/0xfbc78eb3Da5daeaB4C7919d9C86b4e73EA48ad3F#code)
 
-Game-Equip Contract:
+Game-Equip Contract:  [0x029475695b3A94C7ca6508d189592A558DEfF186](https://shapescan.xyz/address/0x029475695b3A94C7ca6508d189592A558DEfF186#code)
 
-Maze Contract:
+Maze Contract: [0xBA9d8dEa3C034787A1c34879b3A1514de7c7319F](https://shapescan.xyz/address/0xBA9d8dEa3C034787A1c34879b3A1514de7c7319F#code)
 
-Reward Contract:
+Reward Contract: [0x7e3023d80035d74616094cf60F05E158aFe2bbbe](https://shapescan.xyz/address/0x7e3023d80035d74616094cf60F05E158aFe2bbbe#code)
 
-NFT Contract:
+NFT Contract: [0x27b9FC734E9cA7C27988a857391b7EdfCE7e979f](https://shapescan.xyz/address/0x27b9FC734E9cA7C27988a857391b7EdfCE7e979f#code)
 
 
 ## Shape Sepolia
 
-Game Contract:
 
-Game-Equip Contract:
+Game Contract: [ 0xF1015Df39007C7b2A44bB4EF8B88ED8f0534B251](https://explorer-sepolia.shape.network/address/0xF1015Df39007C7b2A44bB4EF8B88ED8f0534B251#code)
 
-Maze Contract:
+Game-Equip Contract:[0xD723E4733667F065a455b284a36f327fBc483506](https://explorer-sepolia.shape.network/address/0xD723E4733667F065a455b284a36f327fBc483506#code)
 
-Reward Contract:
+Maze Contract: [0xb7f9a13d62ac6148538662D55A1b3E8e158A0e9e](https://explorer-sepolia.shape.network/address/0xb7f9a13d62ac6148538662D55A1b3E8e158A0e9e#code)
 
-NFT Contract:
+Reward Contract:[0xacEaF91EdE0bD82f619732ebF1d9c31cCdd8B252](https://explorer-sepolia.shape.network/address/0xacEaF91EdE0bD82f619732ebF1d9c31cCdd8B252#code)
+
+NFT Contract:[0x254A5096467131D39da35E6064BBa351558F441D](https://explorer-sepolia.shape.network/address/0x254A5096467131D39da35E6064BBa351558F441D#code)
 
 
 ## Demo Website
@@ -104,9 +108,9 @@ You will need to get some testnet token to get started:
 
 Faucet: https://docs.shape.network/documentation/tools/faucets
 
-Step1: [Mint NFT](https://www.zerosumpact.xyz/mint)
+Step1: Mint NFT
 
-Step2: [Head to the game](https://www.zerosumpact.xyz/game)
+Step2: Head to the game page
 
 Step3: Select a NFT from the upper right, and click "Enter Game" to join
 
@@ -117,7 +121,7 @@ Step5: Vote governer. Invite other friends to join. You will need to level up to
 This is designed to be a large scale multi-player correspondance game , where you take a few minute to make a few moves everyday and all the players are playing on a shared "board". so it might be a bit bland to play it by yourself when the board isn't filled with other players yet.
 
 
-# Documentation
+# 3. Documentation
 
 ## Smart Contract
 
@@ -297,7 +301,8 @@ You will need to setup a database server with relevant ports open to allow exter
 ## Project Architecture
 
 ![Architecture2](screenshots/project-arch.png)
-# Tools and Library Used
+
+## Tools and Library Used
 
 - Alchemy api
 - Hardhat
@@ -309,15 +314,15 @@ You will need to setup a database server with relevant ports open to allow exter
 - Nginx & pm2 for backend deployment
 - Vercel for frontend deployment
 
-### Additional integration
+## Additional integration
 
 - OTOM by golid
 - The "eyes" and the "keys" NFT
 
 
-# Future Plan
+# 5.Future Plan
 
-## 1. NFT Launch Plan on Mainnet
+### a. NFT Launch Plan on Mainnet
 
 The contracts are live are mainnet but the nft sale is not live yet so the game is not playable on mainnet yet. You may try out testnet version for now, the code are exactly the same except for some parameters.
 
@@ -329,7 +334,7 @@ We are open for feedback and suggestions regarding the mint price and quantity a
 
 We might need to adjust some game parameter if we edit the total quantity to ensure the game is balanced.
 
-## 2. New Features
+### b. New Features
 
 - Accessibility Tools
     - Built in chatroom
@@ -337,14 +342,15 @@ We might need to adjust some game parameter if we edit the total quantity to ens
     
 - More advanced game mechanics
     - Formal Alliances Feature 
-    - Adding items onto the maze tat can have special effects
+    - Introduction of weapons, guild
+    - Adding items onto the maze which can trigger special effects
 
 - Future NFT collections + Alternative game version
     - We might introduce "ghost" characters . Player holding the "ghost" nft will player a very different role in the game and will have different winning condition. 
 
 
 
-## 3. Collaboration with other communities
+### c. Collaboration with other communities
 
 We hope to collaborate with other NFT projects on shape for future seasons.  (eg: Deeple, Shapet). It will work like this in ideal case
 
@@ -363,7 +369,33 @@ We hope to collaborate with other NFT projects on shape for future seasons.  (eg
 
 
 
-## Final Thoughts
+# 6. Conclusion
+
+## Highlight
+
+1. Browser Accessible
+
+2. Fully On-Chain for Transparency 
+    
+    In addition, we will be able to add the Gasback from previous season to future reward pot.
+
+3. Asynchronous Play for Maximum Flexibility
+
+    No grinding required, players are expected to spend ~10 minute per day on the game and a season may last for weeks before ending condition is met. A simple way to make interacting with project on shape part of people's daily routine.
+
+4. Novelty in Reward Distribution (multi-ending)
+
+5. Experimentation with user-controlled game rule
+
+6. Cheat-proof design
+    It is challenging to design a fully-on chain, perfect information board game that is resilient to AI and botting. 
+    
+    In our game it's designed such that if everyone is a perfect playing selfish-actor, it will naturally converge toward an average distribution of dots, which is much less than the minium level to obtain reward.(At lower level shield is not unlocked) Even if a few player break from the equilibirum, they can't end the game by themselves unless they control 50% of the the players. 
+
+7. Modular design to allow future integration with other projects
+
+
+## Final words
 
 This game is designed like a mini social experiment to allow hundres of player to participate asynchonously. If all player are "selfish actors" and all traverse locally optimal path, they won't be able to break free from the "equilibirum" state where all player basically gets the average amount of dots -- this is less than what's required to get to a level with reward.  In order level up, player will realize they have to collaborate with others, make deals/sacrifices, collaborate to surround other "prey" that out there alone , and the first set of players to realize that will level up and unlock shield which gives them a huge advantage in game.
 

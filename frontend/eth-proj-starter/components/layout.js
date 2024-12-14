@@ -13,6 +13,7 @@ import {
   mainnet,
 } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from 'wagmi/providers/public';
 import NavBar from './nav';
 import { WagmiProvider } from 'wagmi'
@@ -48,8 +49,8 @@ export const shapeSepolia = {
     symbol: 'ETH',
   },
   rpcUrls: {
-    // public: { http: ['https://sepolia.shape.network'] },
-    public: { http: ['https://shape-sepolia.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk'] },
+    public: { http: ['https://sepolia.shape.network'] },
+    // public: { http: ['https://shape-sepolia.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk'] },
     // default: { http: ['https://sepolia.shape.network'] },
     default: { http: ['https://shape-sepolia.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk'] },
   },
@@ -62,9 +63,18 @@ export const shapeSepolia = {
 const { chains, publicClient  } = configureChains(
   [shapeSepolia,shapeMainnet],
   [
-    alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY , priority:0 }),
-    publicProvider({ priority: 1 }),
-
+    jsonRpcProvider({
+      rpc: (chain) => {
+        if (chain.id === shapeSepolia.id) {
+          return { http: ["https://shape-sepolia.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk"] };
+        }
+        if (chain.id === shapeMainnet.id) {
+          return { http: ["https://shape-mainnet.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk"] };  // Add custom RPC for your custom chain
+        }
+      },
+      priority: 1,
+    }),
+    publicProvider({ priority: 0 }),
   ]
 );
 
@@ -81,6 +91,7 @@ const wagmiConfig = createConfig({
 })
 
 export default function Layout({ children }) {
+  console.log('Alchemy API Key:', process.env.ALCHEMY_API_KEY);
   return (
   
     <WagmiConfig config={wagmiConfig}>
@@ -90,6 +101,7 @@ export default function Layout({ children }) {
           <NavBar children={children}>
 
           </NavBar>
+         
         </div>
         
       </RainbowKitProvider>
