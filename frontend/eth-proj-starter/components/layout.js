@@ -31,7 +31,7 @@ export const shapeMainnet = {
   },
   rpcUrls: {
     public: { http: ['https://mainnet.shape.network'] },
-    default: { http: ['https://shape-mainnet.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk'] },
+    default: { http: ['USE ALCHEMY ENDGPOINT HERE'] },
   },
   blockExplorers: {
     etherscan: { name: 'ShapeScan', url: 'https://shapescan.xyz' },
@@ -50,9 +50,7 @@ export const shapeSepolia = {
   },
   rpcUrls: {
     public: { http: ['https://sepolia.shape.network'] },
-    // public: { http: ['https://shape-sepolia.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk'] },
-    // default: { http: ['https://sepolia.shape.network'] },
-    default: { http: ['https://shape-sepolia.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk'] },
+    default: { http: [USE ALCHEMY ENDPOINT HERE] },
   },
   blockExplorers: {
     etherscan: { name: 'ShapeSepoliaScan', url: 'https://explorer-sepolia.shape.network' },
@@ -61,15 +59,15 @@ export const shapeSepolia = {
 } 
 
 const { chains, publicClient  } = configureChains(
-  [shapeSepolia,shapeMainnet],
+  [shapeSepolia],
   [
     jsonRpcProvider({
       rpc: (chain) => {
         if (chain.id === shapeSepolia.id) {
-          return { http: ["https://shape-sepolia.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk"] };
+          return { http: ["USE ALCHEMY ENDPOINT HERE"] };
         }
         if (chain.id === shapeMainnet.id) {
-          return { http: ["https://shape-mainnet.g.alchemy.com/v2/VGMzYP6Q2dZfOdE9TMGuWBQf90dFT3Tk"] };  // Add custom RPC for your custom chain
+          return { http: ["USE ALCHEMY ENDPOINT HERE"] };  // Add custom RPC for your custom chain
         }
       },
       priority: 1,

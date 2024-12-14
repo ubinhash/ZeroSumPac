@@ -14,7 +14,7 @@ const DB = {
     },
     'shape-sepolia': {
         connectionString: process.env.DB_CONNECTION_STRING,
-        dbname:'shape_sepolia_raw_logs_sep5'
+        dbname:'shape_sepolia_raw_logs_sep14'
     }
 };
 
