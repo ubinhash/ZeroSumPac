@@ -33,7 +33,7 @@ const CountdownShield = ({ shieldExpireTime, protectionExpireTime, vulnerableTim
                 const timeUntilVulnerableExpires = vulnerableTime - currentTime;
                 const minutes = Math.floor(timeUntilVulnerableExpires / 60);
                 const seconds = Math.ceil(timeUntilVulnerableExpires % 60);
-                return `Not Shielded (vulnerable time expires in ${minutes} min ${seconds} sec)`;
+                return `Temporarily Vulnerable (vulnerable time expires in ${minutes} min ${seconds} sec)`;
             }
         }
 
@@ -313,7 +313,7 @@ export default function Game() {
         </div>
         <div className={styles.menuOptions}>
             {/* Menu option buttons */}
-            <button onClick={() => handleOptionSelect('reward')} >Reward</button>
+            {/* <button onClick={() => handleOptionSelect('reward')} >Reward</button> */}
             <button onClick={() => handleOptionSelect('log')} >Log</button>
             <button onClick={() => handleOptionSelect('ranking')} >Ranking</button>
             <button onClick={() => handleOptionSelect('forfeit')}>Forfeit</button>
@@ -359,8 +359,8 @@ export default function Game() {
               /><br></br>
               -------------
             </>}
-            <br></br>
-            {contracts.GAME}
+            {/* <br></br> */}
+            {/* {contracts.GAME} */}
             <br></br>
             {displayMsg}
         </div>
