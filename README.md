@@ -102,11 +102,19 @@ We are using shape-sepolia for demo.
 
 We have deployed our contract on shape-mainnet but we are not fully ready to launch the NFT collection. Since the game is token-gated we think it's would be the best to demo this on shape-sepolia.
 
-Website: https://www.zerosumpact.xyz/
+Our Website: https://www.zerosumpact.xyz/
 
-You will need to get some testnet token to get started:
+--------
+
+You will need to get some testnet sepolia token to get started:
 
 Faucet: https://docs.shape.network/documentation/tools/faucets
+
+To build shield, you will need to get to lv3 and get some testnet molecule (combine otom to form molecule) from golid's project. feel free to tag me on discord (@ubinhash) or send me an email if the judges would like want me to adjust any game parameters to test out these features.
+
+https://testnet.otom.xyz/
+
+--------
 
 Step1: Mint NFT
 
@@ -272,7 +280,7 @@ With additional parameters to connect to our database server .
 `DB_NAME`: defined in gamesate.js for now, please edit this based on how you deploy your goldsky pipeline
 
 
-You need node.js version 18+. You may need to modify the cors setting based on your frontend.
+You need node.js version 18+. You may need to modify the cors setting based on your frontend if you're not testing on localhost, please add your domain to allowed origin andremember to generate ssl certificate for your domain for api and open relevant ports on your server.
 
 Then use `node index.js` to run the backend server on localhost or use `pm2 start index.js --name "my-backend"`
 
@@ -313,6 +321,7 @@ You will need to setup a database server with relevant ports open to allow exter
 - Next.js for frontend
 - Nginx & pm2 for backend deployment
 - Vercel for frontend deployment
+- GCP
 
 ## Additional integration
 
