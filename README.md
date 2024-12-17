@@ -348,6 +348,7 @@ We might need to adjust some game parameter if we edit the total quantity to ens
 - Accessibility Tools
     - Built in chatroom
     - Mobile friendly version
+    - Reward claim frontend (currently only available via direct contract interaction)
     
 - More advanced game mechanics
     - Formal Alliances Feature 
@@ -402,6 +403,12 @@ We hope to collaborate with other NFT projects on shape for future seasons.  (eg
     In our game it's designed such that if everyone is a perfect playing selfish-actor, it will naturally converge toward an average distribution of dots, which is much less than the minium level to obtain reward.(At lower level shield is not unlocked) Even if a few player break from the equilibirum, they can't end the game by themselves unless they control 50% of the the players. 
 
 7. Modular design to allow future integration with other projects
+    We are interested in inviting other nft holders to our game for future season. With that in mind the game contract is already designed such that we can easily add and remove allowed nft contracts to enter the game and it requires minimal change in frontend/backend as well. In the future season we just have to write a new reward contract for each season to customize the reward.
+
+    We've already integrated with shapecraft key, eyes and otom, these unlocks certain features in game. 
+
+8. Original art collection 
+    The collection is created for this hackathon by our artist, we've included a few 1/1 (shown on our website) that pays tribute to existing projects on shape as well.
 
 
 ## Final words
