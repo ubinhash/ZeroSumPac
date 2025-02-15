@@ -71,15 +71,15 @@ Please check out the https://www.zerosumpact.xyz/rules page for details
 
 ## Shape Mainnet
 
-Game Contract: [0xfbc78eb3Da5daeaB4C7919d9C86b4e73EA48ad3F](https://shapescan.xyz/address/0xfbc78eb3Da5daeaB4C7919d9C86b4e73EA48ad3F#code)
+Game Contract: [0x0467e39Be6565907EC903A5e59073053aD075B3A](https://shapescan.xyz/address/0x0467e39Be6565907EC903A5e59073053aD075B3A#code)
 
-Game-Equip Contract:  [0x029475695b3A94C7ca6508d189592A558DEfF186](https://shapescan.xyz/address/0x029475695b3A94C7ca6508d189592A558DEfF186#code)
+Game-Equip Contract:  [0xE99c2A6faEBfAfdA652B20Ae31C99d4a3faf1bA8](https://shapescan.xyz/address/0xE99c2A6faEBfAfdA652B20Ae31C99d4a3faf1bA8#code)
 
-Maze Contract: [0xBA9d8dEa3C034787A1c34879b3A1514de7c7319F](https://shapescan.xyz/address/0xBA9d8dEa3C034787A1c34879b3A1514de7c7319F#code)
+Maze Contract: [0xd82665A08F5B3639A8Ba586988aCd72b194c5CEa](https://shapescan.xyz/address/0xd82665A08F5B3639A8Ba586988aCd72b194c5CEa#code)
 
-Reward Contract: [0x7e3023d80035d74616094cf60F05E158aFe2bbbe](https://shapescan.xyz/address/0x7e3023d80035d74616094cf60F05E158aFe2bbbe#code)
+Reward Contract: [0xCb8f2F02aCa73b2EAc4C880184326d684556e69b](https://shapescan.xyz/address/0xCb8f2F02aCa73b2EAc4C880184326d684556e69b#code)
 
-NFT Contract: [0x27b9FC734E9cA7C27988a857391b7EdfCE7e979f](https://shapescan.xyz/address/0x27b9FC734E9cA7C27988a857391b7EdfCE7e979f#code)
+NFT Contract: [0xb532d02Df0F4edF70a99F443258951D1fBF606d1](https://shapescan.xyz/address/0xb532d02Df0F4edF70a99F443258951D1fBF606d1#code)
 
 
 ## Shape Sepolia
