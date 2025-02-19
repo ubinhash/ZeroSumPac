@@ -5,7 +5,10 @@ require('dotenv').config();
 const { Web3 } = require('web3');
 const CONTRACTS = {
     'shape-mainnet': {
-        GAME: "TODO",
+        GAME: process.env.GAME_MAINNET ,    // Replace with actual Sepolia PAC contract address
+        MAZE : process.env.MAZE_MAINNET ,
+        GAME_EQUIP:process.env.GAME_EQUIP_MAINNET,
+        ZSP:process.env.ZSP_MAINNET,
         OTOM:"0x2f9810789aebBB6cdC6c0332948fF3B6D11121E3",
         EYE:"0xF3851e1b7824BD920350E6Fe9B890bb76d01C9f7",
         KEY:"0x05aA491820662b131d285757E5DA4b74BD0F0e5F",
@@ -49,7 +52,7 @@ const static_config = {
 };
 
 router.get('/getConfig', async (req, res) => {
-    const {network="shape-sepolia" } = req.query;
+    const {network="shape-mainnet" } = req.query;
     const gamecontract = CONTRACTS[network]?.GAME;
     console.log(gamecontract)
     const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
@@ -97,12 +100,12 @@ router.get('/getConfig', async (req, res) => {
 });
 
 router.get('/getContracts', async (req, res) => {
-    const {network="shape-sepolia" } = req.query;
+    const {network="shape-mainnet" } = req.query;
     res.send(CONTRACTS[network]);
 });
 
 router.get('/getDotConsumed', async (req, res) => {
-    const { network = "shape-sepolia",maze_number = 0 } = req.query;
+    const { network = "shape-mainnet",maze_number = 0 } = req.query;
 
     const gameContractAddress = CONTRACTS[network]?.GAME;
     const mazeContractAddress = CONTRACTS[network]?.MAZE;
@@ -168,7 +171,7 @@ const getMazeUnlockRequirements = async (mazeContract) => {
 };
 
 router.get('/getMazeUnlock', async (req, res) => {
-    const { network = "shape-sepolia",playerid=0 } = req.query;
+    const { network = "shape-mainnet",playerid=0 } = req.query;
   
 
     const mazeContractAddress = CONTRACTS[network]?.MAZE;
@@ -204,7 +207,7 @@ router.get('/getMazeUnlock', async (req, res) => {
 });
 
 router.get('/getSpecialMazeUnlock', async (req, res) => {
-    const { network = "shape-sepolia",playerid=0 } = req.query;
+    const { network = "shape-mainnet",playerid=0 } = req.query;
   
 
     const mazeContractAddress = CONTRACTS[network]?.MAZE;
@@ -236,7 +239,7 @@ router.get('/getSpecialMazeUnlock', async (req, res) => {
 });
 
 router.get('/getPlayerId', async (req, res) => {
-    const { network = "shape-sepolia", contract, tokenid } = req.query;
+    const { network = "shape-mainnet", contract, tokenid } = req.query;
 
     if (!contract || !tokenid) {
         return res.status(400).json({ error: "Missing contractAddress or tokenId parameter" });
@@ -264,7 +267,7 @@ router.get('/getPlayerId', async (req, res) => {
 });
 
 router.get('/getMaxStride', async (req, res) => {
-    const { network = "shape-sepolia",playerid } = req.query;
+    const { network = "shape-mainnet",playerid } = req.query;
 
     // Validate input
     if (!playerid) {
@@ -296,7 +299,7 @@ router.get('/getMaxStride', async (req, res) => {
 
 
 router.get('/getPlayerInfo', async (req, res) => {
-    const { network = "shape-sepolia", playerid } = req.query;
+    const { network = "shape-mainnet", playerid } = req.query;
 
     // Validate input
     if (!playerid) {
@@ -358,7 +361,7 @@ router.get('/getPlayerInfo', async (req, res) => {
 });
 
 router.get('/getTopVoted', async (req, res) => {
-    const { network = "shape-sepolia",playerid=0 } = req.query;
+    const { network = "shape-mainnet",playerid=0 } = req.query;
 
 
 
@@ -391,7 +394,7 @@ router.get('/getTopVoted', async (req, res) => {
 });
 
 router.get('/keyUsed', async (req, res) => {
-    const { network = "shape-sepolia",tokenid } = req.query;
+    const { network = "shape-mainnet",tokenid } = req.query;
         // Validate input
     if (!tokenid) {
         return res.status(400).json({ error: "Missing tokenid parameter" });
@@ -420,7 +423,7 @@ router.get('/keyUsed', async (req, res) => {
 });
 
 router.get('/eyesUsed', async (req, res) => {
-    const { network = "shape-sepolia",tokenid } = req.query;
+    const { network = "shape-mainnet",tokenid } = req.query;
         // Validate input
     if (!tokenid) {
         return res.status(400).json({ error: "Missing tokenid parameter" });
@@ -449,6 +452,35 @@ router.get('/eyesUsed', async (req, res) => {
 });
 
 
+
+
+    router.get('/playerid_to_address', async (req, res) => {
+        const { network = "shape-mainnet", playerid } = req.query;
+    
+        if (!playerid) {
+            return res.status(400).json({ error: "Missing playerid parameter" });
+        }
+        const gameContractAddress = CONTRACTS[network]?.GAME; // Adjust if the mapping is in a different contract
+        if (!gameContractAddress) {
+            return res.status(500).json({ error: `Contract not found for GAME on ${network}` });
+        }
+    
+        const web3 = network === "shape-mainnet" ? web3Mainnet : web3Sepolia;
+    
+        try {
+            // Instantiate the contract
+            const gameContract = new web3.eth.Contract(GAME_ABI, gameContractAddress);
+    
+            // Call the mapping with the provided parameters
+            const address = await gameContract.methods._getPlayerIdAddress(playerid).call();
+    
+            // Send the result
+            res.send({ address: address.toString() });
+        } catch (error) {
+            console.error('Error fetching address from playerid:', error.message);
+            res.status(500).json({ error: 'Failed to fetch address', details: error.message });
+        }
+    });
 
 //Function to get player info (player location, dots ranks etc)
 //function to get isCurrentMazeUnlockedForPlayer returns array[] DONE

@@ -98,7 +98,7 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate,handleOpti
   }
   useEffect(() => {
     if (address) {
-      const network = 'shape-sepolia'; // Or dynamically set the network based on user's selection
+      const network = 'shape-mainnet'; // Or dynamically set the network based on user's selection
       fetchUserNft(address, network);
     } else {
       setplayers([]);
@@ -106,7 +106,7 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate,handleOpti
   
     setTriggerPlayerUpdate(() => () => {
       if(selectedPlayer){
-        fetchPlayerData(selectedPlayer, 'shape-sepolia');
+        fetchPlayerData(selectedPlayer, 'shape-mainnet');
       }
       
     });
@@ -191,7 +191,7 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate,handleOpti
     }
     else{
       setSelectedPlayer(player);
-      await fetchPlayerData(player,'shape-sepolia');
+      await fetchPlayerData(player,'shape-mainnet');
     }
 
      // Pass selected player data back to parent
@@ -217,7 +217,10 @@ const PlayerSelect = ({ onSelectPlayer,config, setTriggerPlayerUpdate,handleOpti
       </div>
     <div className={styles.middle}>
         <div className={styles.avatar}>
-        <img src={selectedPlayer?.image||"/icons/pacs/mypac.png"} />
+          <a href={`https://shapescan.xyz/token/${selectedPlayer?.contract}/instance/${selectedPlayer?.tokenId}`}  target="_blank" rel="noopener noreferrer">
+               <img src={selectedPlayer?.image||"/icons/pacs/mypac.png"} />
+          </a>
+       
         </div>
         <div className={styles.playerinfo}>
             <div className={styles.playerinfo_top}>

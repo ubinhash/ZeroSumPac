@@ -10,7 +10,7 @@ require('dotenv').config();
 const DB = {
     'shape-mainnet': {
         connectionString: process.env.DB_CONNECTION_STRING,
-        dbname:''
+        dbname:'shape_mainnet_raw_logs_test1' //TODO
     },
     'shape-sepolia': {
         connectionString: process.env.DB_CONNECTION_STRING,
@@ -93,7 +93,7 @@ Object.keys(DB).forEach((network) => {
 });
 
 router.get('/logs', async (req, res) => {
-    const {network="shape-sepolia" } = req.query;
+    const {network="shape-mainnet" } = req.query;
     // const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
     // const client = new Client({ connectionString });
@@ -123,7 +123,7 @@ router.get('/logs', async (req, res) => {
 });
 
 router.get('/rawlogs', async (req, res) => {
-    const {network="shape-sepolia" } = req.query;
+    const {network="shape-mainnet" } = req.query;
     const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
     const client= pools[network]; 
@@ -170,7 +170,7 @@ router.get('/rawlogs', async (req, res) => {
         // const result = await client.query(query, values);
 
 router.get('/player_locations', async (req, res) => {
-    const {maze_number = 0, network="shape-sepolia" } = req.query;
+    const {maze_number = 0, network="shape-mainnet" } = req.query;
     console.log(maze_number,req.query)
     const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
@@ -227,7 +227,7 @@ router.get('/player_locations', async (req, res) => {
 });
 
 router.get('/dot_locations', async (req, res) => {
-    const {maze_number = 0,network="shape-sepolia" } = req.query;
+    const {maze_number = 0,network="shape-mainnet" } = req.query;
     const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
     // const client = new Client({ connectionString });
@@ -274,7 +274,7 @@ router.get('/dot_locations', async (req, res) => {
 
 
 router.get('/rankings', async (req, res) => {
-    const {network="shape-sepolia" } = req.query;
+    const {network="shape-mainnet" } = req.query;
     const connectionString=DB[network].connectionString;
     const dbname=DB[network].dbname;
     // const client = new Client({ connectionString });
@@ -331,7 +331,7 @@ router.get('/rankings', async (req, res) => {
 });
 
 router.get('/playerid_to_tokenid', async (req, res) => {
-    const { network = "shape-sepolia" } = req.query;
+    const { network = "shape-mainnet" } = req.query;
     const connectionString = DB[network].connectionString;
     const dbname = DB[network].dbname;
     const client = pools[network]; // Use connection pool for performance
@@ -365,6 +365,8 @@ router.get('/playerid_to_tokenid', async (req, res) => {
         // No need to end client if using connection pool
     }
 });
+
+
 
 
 module.exports = router;

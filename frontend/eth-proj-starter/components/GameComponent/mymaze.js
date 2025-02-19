@@ -221,9 +221,10 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
 
 
   useEffect(() => {
-    if(isspecial){
+    // if(isspecial){
+  
       fetchSpecialMazeUnlocked(currplayerid);
-    }
+    
   }, [currplayerid]);
   
 
@@ -277,7 +278,7 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
   const handleSelect = async (rowIndex, colIndex) => {
     setSelectedX(rowIndex);
     setSelectedY(colIndex);
-    const selectedPlayerData=await fetchPlayerData(maze[rowIndex][colIndex].hasPlayer,'shape-sepolia' );
+    const selectedPlayerData=await fetchPlayerData(maze[rowIndex][colIndex].hasPlayer,'shape-mainnet' );
     onSelect(rowIndex,colIndex,maze[rowIndex][colIndex].hasPlayer,selectedPlayerData);
   };
 
@@ -287,7 +288,7 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
       { ((unlockRequirement && !unlocked) && (!isspecial || (isspecial && !specialMazeUnlocked)))  && 
      
       <div className={styles.centerInfo}>    
-       {specialMazeUnlocked}
+      
             {unlockRequirement} 
             <br></br>
            {isspecial && <button className={styles2.actionButton} onClick={() => handleOptionSelect('keys')}>Equip</button>}
@@ -339,9 +340,14 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
                  
                     {( cell?.hasPlayer !== 0) && (
                       <img
-                        src={cell.hasPlayer == currplayerid ? "/icons/pacs/mypac.png" : `/icons/pacs/avatar/${playeridToTokenId[cell.hasPlayer]%10 ||"pac"}.jpg`}
+                        src={cell.hasPlayer == currplayerid ? "/icons/pacs/mypac.png" : `/icons/pacs/avatar/${playeridToTokenId[cell.hasPlayer] ||"pac"}.jpg`}
                         alt="Player Icon"
                         className={styles.cellImage}
+                        onError={(e) => {
+                          e.target.onerror = null; // Prevent looping if the fallback also fails
+                          e.target.src = "/icons/pacs/avatar/pac.jpg"; // Fallback to "pac" image
+                        }}
+          
                       />
                     )}
 
@@ -373,7 +379,9 @@ const MyMaze = ({ mazeId,currplayerid=0 ,onSelect,setTriggerMazeUpdate,unlocked,
         </div>
       </div>
       <div className={styles.infoSection}>
-        <div className={styles.info1}>({hoverX},{hoverY}) {currplayerid}</div>
+        <div className={styles.info1}>
+            ({hoverX}, {hoverY}) {currplayerid == 0 ? "" : `ID: ${currplayerid}`}
+        </div>
         <div className={styles.info2}> Maze {mazeId} Dot Eaten : {dotInfo.maze_dot_consumed} /  {dotInfo.total_dot_in_maze} </div>
         <div className={styles.info3}>Total Dot:  {dotInfo.total_dot_consumed} /  {dotInfo.total_dots}  </div>
       </div>

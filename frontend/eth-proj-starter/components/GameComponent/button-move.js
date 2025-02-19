@@ -159,7 +159,14 @@ const MovePlayerButton = ({ contracts,currplayerid,playerData ,selected_position
       setSwitchMaze(false);
     }
     else if(  currplayerid!=0 && playerData.playerPosition.maze!=currmaze){
-      setValueToSend(maze_switch_penalty);
+      // setValueToSend(maze_switch_penalty);
+      const currentTime = Date.now() / 1000; 
+      if(playerData.nextSwitchMazeTime<currentTime){
+        setValueToSend(0);
+      }
+      else{
+          setValueToSend(maze_switch_penalty);
+      }
       setMoveButtonText("Switch Maze");
       setSwitchMaze(true);
     }

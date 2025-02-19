@@ -4,7 +4,7 @@ import webconfig from '../config/config.js';
 import { useAccount } from 'wagmi';  
 import gameEquipABI from '../abi/game-equip-abi.js';
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
-const EquipKeys = ({ contracts,currplayerid, network ='shape-sepolia',setPopupMsg}) => {
+const EquipKeys = ({ contracts,currplayerid, network ='shape-mainnet',setPopupMsg}) => {
     const { address } = useAccount();
     const [nfts, setNfts] = useState([]);
     const [selectedTokenId, setSelectedTokenId] = useState(null);

@@ -43,7 +43,7 @@ const CountdownShield = ({ shieldExpireTime}) => {
 };
 
 
-const EquipShield = ({ contracts,currplayerid, playerData, network ='shape-sepolia',setPopupMsg}) => {
+const EquipShield = ({ contracts,currplayerid, playerData, network ='shape-mainnet',setPopupMsg}) => {
     const { address } = useAccount();
     const [nfts, setNfts] = useState([]);
     const [selectedTokenId, setSelectedTokenId] = useState(null);

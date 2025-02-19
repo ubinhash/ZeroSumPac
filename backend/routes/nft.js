@@ -26,7 +26,7 @@ require('dotenv').config();
 const CONTRACTS = {
     'shape-mainnet': {
         OTOM: "0x2f9810789aebBB6cdC6c0332948fF3B6D11121E3",
-        PAC: "",// "0x7564e43e59A14823d5D66e86c98C0AaB9d96743E",
+        PAC: process.env.ZSP_MAINNET,// "0x7564e43e59A14823d5D66e86c98C0AaB9d96743E",
         KEY:"0x05aA491820662b131d285757E5DA4b74BD0F0e5F",
         EYE:"0xF3851e1b7824BD920350E6Fe9B890bb76d01C9f7"
     },
@@ -135,7 +135,7 @@ const parseNFTInfo = (nfts) => {
 
 
 router.get('/getOTOMByOwner', async (req, res) => {
-    const { owner, withMetadata = "false",network="shape-sepolia" } = req.query;
+    const { owner, withMetadata = "false",network="shape-mainnet" } = req.query;
 
     if (!owner) {
         return res.status(400).json({ error: "Missing required parameter: owner" });
@@ -156,7 +156,7 @@ router.get('/getOTOMByOwner', async (req, res) => {
 });
 
 router.get('/getOTOMMoleculeByOwner', async (req, res) => {
-    const { owner, withMetadata = "true",network="shape-sepolia" } = req.query;
+    const { owner, withMetadata = "true",network="shape-mainnet" } = req.query;
 
     if (!owner) {
         return res.status(400).json({ error: "Missing required parameter: owner" });
@@ -178,7 +178,7 @@ router.get('/getOTOMMoleculeByOwner', async (req, res) => {
 });
 
 router.get('/getPacByOwner', async (req, res) => {
-    const { owner, withMetadata = "true",network="shape-sepolia"} = req.query;
+    const { owner, withMetadata = "true",network="shape-mainnet"} = req.query;
 
     if (!owner) {
         return res.status(400).json({ error: "Missing required parameter: owner" });
@@ -202,7 +202,7 @@ router.get('/getPacByOwner', async (req, res) => {
 });
 
 router.get('/getKeyByOwner', async (req, res) => {
-    const { owner, withMetadata = "true",network="shape-sepolia"} = req.query;
+    const { owner, withMetadata = "true",network="shape-mainnet"} = req.query;
 
     if (!owner) {
         return res.status(400).json({ error: "Missing required parameter: owner" });
@@ -226,7 +226,7 @@ router.get('/getKeyByOwner', async (req, res) => {
 });
 
 router.get('/getEyeByOwner', async (req, res) => {
-    const { owner, withMetadata = "true",network="shape-sepolia"} = req.query;
+    const { owner, withMetadata = "true",network="shape-mainnet"} = req.query;
 
     if (!owner) {
         return res.status(400).json({ error: "Missing required parameter: owner" });

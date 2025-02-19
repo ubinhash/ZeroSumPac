@@ -4,7 +4,7 @@ import gameEquipABI from '../abi/game-equip-abi.js';
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
 import webconfig from '../config/config.js';
 const Laws = ({contracts,eat_percentage,currplayerid,setPopupMsg}) => {
-  const [currentRate, setCurrentRate] = useState(eat_percentage);
+  const [currentRate, setCurrentRate] = useState('loading');
 
   const [votePlayerId, setVotePlayerId] = useState(null);
   const [governer,setGoverner]=useState(0);
@@ -13,6 +13,7 @@ const Laws = ({contracts,eat_percentage,currplayerid,setPopupMsg}) => {
   const [playerVotedCount,setPlayerVotedCount]=useState(0);
   const [playerVoted,setPlayerVoted]=useState(false);
   const isGovernor=currplayerid!=0 && currplayerid==governer;
+  const [loading, setLoading] = useState(true); 
   const handleRateChange = (e) => {
     const value = e.target.value;
   
@@ -89,6 +90,35 @@ const Laws = ({contracts,eat_percentage,currplayerid,setPopupMsg}) => {
     }
   };
 
+  const fetchConfig = async () => {
+    try {
+      // const response = await fetch(`http://localhost:3002/getContracts`);
+      const response = await fetch(`${webconfig.apiBaseUrl}/getConfig`);
+      
+      const data = await response.json();
+
+      // Update the contracts state with the fetched data
+      if(data){
+        setCurrentRate(data.config.EAT_PERCENTAGE)
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error fetching contracts:', error);
+      setLoading(true);
+    }
+  };
+
+  useEffect(() => {
+    if(eat_percentage==-1){
+      setLoading(true);
+      fetchConfig();
+    }
+    else{
+      setCurrentRate(eat_percentage);
+      setLoading(false);
+    }
+  }, [eat_percentage]);
+
   useEffect(() => {
 
 
@@ -144,10 +174,11 @@ const Laws = ({contracts,eat_percentage,currplayerid,setPopupMsg}) => {
 
             </p>
 
-  
+            {loading && ( <p className={styles.infotext} > Loading Percentage..</p> ) }
               <button className={styles.actionButton}  disabled={!write2 || isLoading2 || isPrepareError2}
                     onClick={() => write2?.()}>Change</button>
               <div className={styles.infotext}>Governer can make changes once per day</div>
+           
             </div>
         </div>
 
@@ -155,10 +186,10 @@ const Laws = ({contracts,eat_percentage,currplayerid,setPopupMsg}) => {
         <div className={styles.section}>
         <div className={styles.sectionTitle}>
           Election
-          <div className={styles.titleinfo}>Elect tommorow's governer </div>
+          <div className={styles.titleinfo}>Elect tomorrow's governor </div>
         </div>
         <div className={styles.sectionContent}>
-          <div>New Governer will be elected everyday on UTC 0:00 </div>
+          <div>A new governor will be elected every day at 00:00 UTC </div>
 
             <input 
               type="number" 
@@ -176,7 +207,7 @@ const Laws = ({contracts,eat_percentage,currplayerid,setPopupMsg}) => {
       {isPrepareError && <p style={{ color: 'red' ,fontSize:"5px"}}>Error: {prepareError?.message}</p>} */}
 
           <p className={styles.infotext}>
-            When two candiadates receives the same amount of votes, the candidate that reaches that vote count earlist will win.
+            If two candidates receive the same number of votes, the candidate who reaches that vote count first will win
           </p>
           <div className={styles.leadingCandidate}>
             <div><b>Leading Candidate</b></div>

@@ -13,9 +13,16 @@
     padding:5px 0px;
     flex-direction: column;
   }
-  .actionButton:hover{
+  .actionButton:enabled{
+    background-color: orange;
+  }
+  .actionButton:enabled:hover {
+    background-color: rgb(250, 206, 143);
+  }
+  .actionButton:disabled:hover{
     background-color: aliceblue;
   }
+
   .actionButton:active{
     background-color:black;
     color:white;

@@ -49,6 +49,7 @@
   .title {
     font-size: 60px;
     margin-bottom: 10px;
+    margin-top: 0px;
     text-align: center;
   }
   
@@ -70,7 +71,13 @@
     cursor: pointer;
     font-family: inherit;
   }
-  
+  .quantityButtonMax{
+
+    font-size: 10px;
+    margin-left: 5px;
+
+  }
+
   .quantityInput {
     width: 250px;
     height: 60px;
@@ -93,6 +100,12 @@
   
   .leftText, .rightText {
     padding: 0 10px;
+  }
+  .maxText{
+    text-decoration: underline;
+    background-color: rgb(241, 106, 106);
+    color:white;
+    cursor: pointer;
   }
   
   .mintButton {
@@ -127,3 +140,118 @@
   .pricetag{
     font-size: 15px;
   }
+
+  .contract{
+    margin-top: 10px;
+    font-size: 10px;
+    color:black;
+  }
+  .contract a {
+    color: black; /* Set link color to black */
+    text-decoration: underline;
+  }
+  .alertText{
+    font-size: 14px;
+    background-color: rgb(252, 228, 228);
+    color:rgb(0, 0, 0);
+    padding:5px 20px;
+    /* margin-bottom: 10px; */
+    margin-top: 10px;
+    border: 2px solid black;
+    border-radius: 3px;
+  }
+
+  .bridgeText{
+    font-size: 14px;
+    background-color: rgb(0, 0, 0);
+    color:white;
+    padding:5px 10px;
+    /* margin-bottom: 10px; */
+    margin-top: 10px;
+    border: 2px solid black;
+  
+  }
+  .txText{
+    font-size: 16px;
+    color:black;
+    text-decoration: underline;
+    padding-top: 5px;
+  }
+  .countdownText{
+    font-size: 16px;
+    margin-bottom: 0px;
+    border:1px solid black;
+    padding:5px 25px;
+    border-radius: 3px;
+    background-color: black;
+    color:white;
+
+  }
+  .number{
+    color:rgb(255, 191, 191)
+  }
+
+  .mobileText{
+    display: none;
+  }
+
+@media (max-width: 900px) {
+  .left {
+    display: none;
+  }
+  .right {
+    width: calc(100%);
+
+    margin-left: 0px; 
+    padding: 10px;
+  }
+  .textSection {
+
+    width: calc(80%);
+    font-size: 12px;
+
+  }
+  .title{
+    font-size: 30px;
+  }
+
+  .quantityButton {
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+
+
+  }
+
+  
+  .quantityInput {
+    width: 100px;
+    height: 30px;
+    font-size: 15px;
+
+
+  }
+  .countdownText{
+    font-size: 10px;
+    padding:5px 5px;
+  }
+  .bridgeText{
+    font-size: 12px;
+  }
+  .txText{
+    font-size: 12px;
+  }
+  .alertText{
+    font-size: 10px;
+  }
+  .mintButton {
+    padding: 10px 20px;
+    font-size: 20px;
+   
+  }
+  .mobileText{
+    display: block;
+    font-size: 10px;
+    color:blue;
+  }
+}

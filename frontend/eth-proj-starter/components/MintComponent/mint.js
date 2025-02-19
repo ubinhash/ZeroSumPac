@@ -4,6 +4,8 @@ import ChainInfo from '../network';
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction ,useContractRead} from 'wagmi';
 import ZSPABI from '../abi/zsp-abi.js';
 import webconfig from '../config/config.js';
+import whitelist from './whitelist.js'
+import { useAccount } from 'wagmi';  
 const ImageRotator = () => {
 
     
@@ -52,18 +54,126 @@ const ImageRotator = () => {
       </div>
     );
   };
+
+
+
+  const Countdown = ({ targetTimestamp ,text}) => {
+    const [timeLeft, setTimeLeft] = useState(null); // Start with null to avoid SSR mismatch
+  
+    useEffect(() => {
+      setTimeLeft(calculateTimeLeft(targetTimestamp)); // Initialize after mount
+  
+      const timer = setInterval(() => {
+        setTimeLeft(calculateTimeLeft(targetTimestamp));
+      }, 1000);
+  
+      return () => clearInterval(timer);
+    }, [targetTimestamp]);
+  
+    function calculateTimeLeft(target) {
+      const now = Math.floor(Date.now() / 1000);
+      let diff = target - now;
+      
+      if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  
+      const days = Math.floor(diff / 86400);
+      diff %= 86400;
+      const hours = Math.floor(diff / 3600);
+      diff %= 3600;
+      const minutes = Math.floor(diff / 60);
+      const seconds = diff % 60;
+  
+      return { days, hours, minutes, seconds };
+    }
+  
+    if (!timeLeft) return null; // Prevent rendering on the server
+  
+    return (
+      <div className={styles.countdownText}>
+        {text}
+        <span className={styles.number}>{timeLeft.days}</span> DAY{" "}
+        <span className={styles.number}>{timeLeft.hours}</span> HR{" "}
+        <span className={styles.number}>{timeLeft.minutes}</span> MIN{" "}
+        <span className={styles.number}>{timeLeft.seconds}</span> SEC
+      </div>
+    );
+  };
+  
+
+  
+
   
 
 
 const MintComponent = ({setPopupMsg}) => {
   // Local state variables
-  const [network, setNetwork] = useState(null); 
+  const [network, setNetwork] = useState('shape-mainnet'); 
   const [quantity, setQuantity] = useState(1); // Default starting quantity
-  const [price,setPrice]=useState(15000000000000000);
-  const [totalprice,setTotalPrice]=useState(price*quantity);
-  const maxAmount = 4; // Maximum allowed quantity
-  const [currentSupply,setCurrentSuuply] = useState(0); // Current minted supply
-  const totalSupply = 555; // Total supply available
+  const [publicPrice,setPublicPrice]=useState(18000000000000000);
+  const [wlPrice,setWLPrice]=useState(15000000000000000);
+  const [price, setPrice] = useState(publicPrice);
+  const [publicStartTime, setPublicStartTime] = useState(1739808000); // Example timestamp 1739808000
+  const [whitelistStartTime, setWhitelistStartTime] = useState(1739721600); // 1739721600
+  const [title, setTitle] = useState("Minting Soon"); 
+  const [alertText, setAlertText] = useState("Please Connect Your Wallet"); 
+
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const { address } = useAccount();
+  const [hasWhitelist, setHasWhitelist] = useState(false);
+  const [proof,setProof] = useState(null);
+  const [showWLMint,setShowWLMint]=useState(false);
+  const [showWLCountdown,setShowWLCountdown]=useState(false);
+
+  useEffect(() => {
+    const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+
+    if (!address) {
+      setAlertText("Please Connect Your Wallet");
+    } else if (currentTime < publicStartTime) {
+      if (address.toLowerCase() in whitelist) {
+        setProof(whitelist[address.toLowerCase()]["proof"])
+        setAlertText("You are in the whitelist");
+      } else {
+        setAlertText("Not in whitelist");
+      }
+    } else {
+      setAlertText(""); // Clear the alert text if currentTime >= publicStartTime
+    }
+  }, [address, publicStartTime]); 
+
+  useEffect(() => {
+    const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+    const price = currentTime < publicStartTime ? wlPrice : publicPrice;
+    if (currentTime >= publicStartTime) {
+      
+      setTitle( "PUBLIC MINT");
+      setMaxAmount(10)
+      setShowWLMint(false);
+      setShowWLCountdown(false);
+    }
+    else if (currentTime >= whitelistStartTime) {
+      setTitle( "WHITELIST MINT");
+      setMaxAmount(2)
+      setShowWLMint(true);
+      setShowWLCountdown(false);
+    } else {
+
+      setTitle( "MINTING SOON");
+      setMaxAmount(2)
+      setShowWLMint(true);
+      setShowWLCountdown(true);
+      
+    }
+    setPrice(price);
+    setTotalPrice(price * quantity);
+  }, [publicStartTime, whitelistStartTime, wlPrice, publicPrice, quantity]);
+
+
+  const [maxAmount,setMaxAmount] = useState(10); // Maximum allowed quantity
+  const [currentSupply,setCurrentSupply] = useState(0); // Current minted supply
+  const [totalSupply,setTotalSupply] = useState(0); // Current minted supply
+  // const totalSupply = 555; // Total supply available
   const [contracts, setContracts] = useState({
     GAME: '',
     MAZE: '',
@@ -82,17 +192,37 @@ const MintComponent = ({setPopupMsg}) => {
     abi: ZSPABI, // ABI of the contract
     functionName: 'publicMint', // Function name
     args: [quantity], // Arguments for the function
-    value:totalprice.toString(),
+    value:totalPrice.toString(),
+
+  });
+
+  const {
+    config: config_mint_wl,
+    error: prepareError_wl,
+    isError: isPrepareError_wl,
+  } = usePrepareContractWrite({
+    address: contracts.ZSP, // Address for your GAME contract
+    abi: ZSPABI, // ABI of the contract
+    functionName: 'whitelistMint', // Function name
+    args: [quantity,2,proof], // Arguments for the function
+    value:totalPrice.toString(),
 
   });
 
   // Contract write hook
-  const { data, write } = useContractWrite(config_mint);
+  // const { data, write } = useContractWrite(config_mint);
+  const { data: dataPublic, write: writePublic } = useContractWrite(config_mint);
+  const { data: dataWL, write: writeWL } = useContractWrite(config_mint_wl);
 
   // Wait for transaction to complete
-  const { isLoading, isSuccess } = useWaitForTransaction({
-    hash: data?.hash,
+  const { isLoading: isLoadingPublic, isSuccess: isSuccessPublic } = useWaitForTransaction({
+    hash: dataPublic?.hash,
   });
+  
+  const { isLoading: isLoadingWL, isSuccess: isSuccessWL } = useWaitForTransaction({
+    hash: dataWL?.hash,
+  });
+  
 
   const {data:dataread,refetch} = useContractRead({
     address: contracts.ZSP,
@@ -100,10 +230,26 @@ const MintComponent = ({setPopupMsg}) => {
     functionName: 'totalSupply',
     onSettled(data, error) {
         if(data){
-          setCurrentSuuply(Number(data))
+          setCurrentSupply(Number(data))
         }
         if(error){
             console.log("failed")
+            console.log(error)
+        }
+
+    },
+  })
+
+  const {data:data_max,refetch:refetch_max} = useContractRead({
+    address: contracts.ZSP,
+    abi: ZSPABI,
+    functionName: 'maxSupply',
+    onSettled(data, error) {
+        if(data){
+          setTotalSupply(Number(data))
+        }
+        if(error){
+            console.log("failed data max")
             console.log(error)
         }
 
@@ -143,6 +289,11 @@ const MintComponent = ({setPopupMsg}) => {
     }
   };
 
+  const handleMax = () => {
+    setQuantity(maxAmount);
+  };
+
+
   const handleDecrease = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -158,20 +309,29 @@ const MintComponent = ({setPopupMsg}) => {
   useEffect(() => {
     fetchContracts();
     refetch();
+    refetch_max()
 
   }, [network]);
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoadingWL||isLoadingPublic) {
       setPopupMsg(`Waiting for transaction to confirm`);
     }
-    if(isSuccess){
-      setPopupMsg(`Mint Success! Head the "Play" tab to enter the game! `);
+    if(isSuccessWL){
+      setPopupMsg(`Mint Success! Head the "Play" tab to select & view your NFT! `);
       refetch();
+      refetch_max()
+    }
+    if(isSuccessPublic){
+      setPopupMsg(`Mint Success! Head the "Play" tab to select & view your NFT! `);
+      refetch();
+      refetch_max()
+      
+
     }
 
 
-  }, [isLoading,isSuccess,isPrepareError]); 
+  }, [isLoadingPublic,isSuccessPublic,isLoadingWL,isSuccessWL]); 
   
 
   return (
@@ -192,8 +352,11 @@ const MintComponent = ({setPopupMsg}) => {
      
       {/* Right Section */}
       <div className={styles.right}>
-        <h1 className={styles.title}>PUBLIC MINT</h1>
-
+      {/* {showWLCountdown ?(
+      <Countdown targetTimestamp={whitelistStartTime} text="WL MINT IN: "/>):(
+       <Countdown targetTimestamp={publicStartTime} text="PUBLIC IN: "/> )} */}
+        <h1 className={styles.title}>{title}</h1>
+        
             {/* Icons Row */}
             <div className={styles.iconsRow}>
             {Array.from({ length: quantity }).map((_, index) => (
@@ -215,22 +378,47 @@ const MintComponent = ({setPopupMsg}) => {
             readOnly
           />
           <button className={styles.quantityButton} onClick={handleIncrease}>+</button>
+       
         </div>
 
         {/* Text Section */}
         <div className={styles.textSection}>
-          <span className={styles.leftText}>Max {maxAmount}</span>
+          <span onClick={handleMax} className={`${styles.leftText} ${styles.maxText}`}>Max {maxAmount} {showWLMint? (""):("/ TX")}</span>
+       
           <span className={styles.rightText}>
             {currentSupply}/{totalSupply} Minted
           </span>
         </div>
 
         {/* Mint Button */}
-        <button className={styles.mintButton} disabled={!write || isLoading || isPrepareError}
-                    onClick={() => write?.()}>
+        {!showWLMint ?(
+        <button 
+          className={styles.mintButton} 
+          disabled={!writePublic || isLoadingPublic || isPrepareError}
+          onClick={() => writePublic?.()}
+        >
           MINT
-          <div className={styles.pricetag}>{ weiToEth(totalprice)} ETH</div>
+          <div className={styles.pricetag}>{weiToEth(totalPrice)} ETH</div>
         </button>
+        ):(
+
+        <button 
+          className={styles.mintButton} 
+          disabled={!writeWL || isLoadingWL || isPrepareError_wl}
+          onClick={() => writeWL?.()}
+        >
+          MINT
+          <div className={styles.pricetag}>{weiToEth(totalPrice)} ETH</div>
+        </button>
+        )}
+        {alertText&& <div className={styles.alertText} >{alertText}</div>}
+
+        <a  href="https://relay.link/shape"  className={styles.bridgeText}  target="_blank" rel="noopener noreferrer"> &gt; Bridge ETH to Shape L2 &lt;</a>
+        {dataPublic && dataPublic.hash && <a className={styles.txText} href={`https://shapescan.xyz/tx/${dataPublic.hash}`} target="_blank" rel="noopener noreferrer" > View Transaction </a>}
+        {dataWL && dataWL.hash && <a className={styles.txText} href={`https://shapescan.xyz/tx/${dataWL.hash}`} target="_blank" rel="noopener noreferrer"> View Transaction </a>}
+
+        <div className={styles.contract}> NFT Contract: <a href={`https://shapescan.xyz/address/${contracts.ZSP}`}  target="_blank" rel="noopener noreferrer">{contracts.ZSP}</a></div>
+        <div className={styles.mobileText}> This Site is Optimized For Desktop</div>
       </div>
     </div>
   );
